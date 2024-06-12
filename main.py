@@ -11,9 +11,10 @@ def text(toprint):
             sleep(texttime)
     print('\n',end='')
 class Goblin():
-    pos = [randint(-3,3),randint(-3,3)]
-    health = randint(1,3)
-    damage = randint(1,2)
+    def __init__(self):
+        pos = [randint(-3,3),randint(-3,3)]
+        health = randint(1,3)
+        self.damage = randint(1,2)
     def turn(self):
         if self.pos == Player.pos:
             self.battle()
@@ -26,16 +27,19 @@ class Player():
     def move(self,x,y):
         self.pos[0] += x
         self.pos[1] += y
+    
 class Item():
     def __init__(self,name,x,y):
         self.pos = [x,y]
         self.name = name
         
-
-Play = True
 Player1 = Player()
 Gobby = Goblin()
 text(Gobby.pos)
+Start = True
+while Start:
+    Start = False
+Play = True
 while Play:
     text(f"Pos: {Player1.pos}")
     Direction = input('Enter Direction: ')
@@ -47,3 +51,4 @@ while Play:
         Player1.move(0,-1)
     elif Direction == 'd':
         Player1.move(1,0)
+    Gobby.turn()
