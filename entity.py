@@ -1,5 +1,8 @@
 from weapons import fists
 
+#Import Functions
+from loop import text
+
 class Entity():
     def __init__(self, name:str, maxhp=1) -> None:
         self.name = name
@@ -9,7 +12,7 @@ class Entity():
     
     def attack(self, target) -> None:
         target.hp -= self.weapon.dmg
-        print(f'{self.name} dealt {self.weapon.dmg} damage using {self.weapon.name}!')
+        text(f'{self.name} dealt {self.weapon.dmg} damage using {self.weapon.name}!')
 
 class Player(Entity):
     def __init__(self, name: str, maxhp=1) -> None:
@@ -19,10 +22,10 @@ class Player(Entity):
 
     def equip(self, weapon) -> None:
         self.weapon = weapon
-        print(f'{self.name} equipped a {self.weapon.name}!')
+        text(f'{self.name} equipped a {self.weapon.name}!')
 
     def drop(self) -> None:
-        print(f'{self.name} dropped the {self.weapon.name}!')
+        text(f'{self.name} dropped the {self.weapon.name}!')
         self.weapon = self.defaultWeapon
 
 class Enemy(Entity):

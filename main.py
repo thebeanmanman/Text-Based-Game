@@ -1,6 +1,7 @@
 #Import Modules
 from random import randint
 from time import sleep
+import os
 
 #Import Classes
 from entity import Player,Enemy
@@ -12,16 +13,17 @@ from loop import text
 #Import Names
 from names import GOBBYLIST
 
-
+os.system('cls')
 hero = Player(name='The Main Character', maxhp=100)
 hero.equip(ironSword)
 goblin = Enemy(name=GOBBYLIST[randint(0,len(GOBBYLIST))], maxhp=20, weapon=shortBow)
+hero.drop()
 while True:
     hero.attack(goblin)
     goblin.attack(hero)
 
-    print(f'HP of {hero.name}: {hero.hp}')
-    print(f'HP of {goblin.name}: {goblin.hp}')
+    text(f'HP of {hero.name}: {hero.hp}')
+    text(f'HP of {goblin.name}: {goblin.hp}')
 
     input()
 '''
