@@ -54,4 +54,4 @@ while Play:
         Player1.move(0,-1)
     elif Direction == 'd':
         Player1.move(1,0)
-    Gobby.turn()
+    Gobby.turn(Player1)
