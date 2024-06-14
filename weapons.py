@@ -1,12 +1,13 @@
 class Weapon:
-    def __init__(self, name:str, type:str, dmg:int, goldvalue=1, rarity=1) -> None:
+    def __init__(self, name:str, type:str, dmg:int, goldvalue=1, rarity=1,crt=0) -> None:
         self.name = name
         self.type = type
         self.dmg = dmg
         self.goldvalue = goldvalue
         self.rarity = rarity
+        self.crt = crt
 
-ironSword = Weapon(name='Iron Sword',type='Sharp',dmg=2)
+ironSword = Weapon(name='Iron Sword',type='Sharp',dmg=3,crt=10)
 
 shortBow = Weapon(name='Short Bow',type='Ranged',dmg=4)
 

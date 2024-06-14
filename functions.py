@@ -1,5 +1,6 @@
 from time import sleep 
-def text(toprint):
+from random import randint
+def text(toprint) -> None:
     texttime = 0.03
     toprint = str(toprint)
     for char in toprint:
@@ -9,3 +10,8 @@ def text(toprint):
         else:
             sleep(texttime)
     print('\n',end='')
+
+def chance(percentage) -> bool:
+    if percentage >= randint(0,100):
+        return True
+    return False

@@ -1,7 +1,7 @@
 from weapons import fists
 
 #Import Functions
-from loop import text
+from functions import text,chance
 
 class Entity():
     def __init__(self, name:str, maxhp=1) -> None:
@@ -11,8 +11,12 @@ class Entity():
         self.weapon = fists
     
     def attack(self, target) -> None:
-        target.hp -= self.weapon.dmg
-        text(f'{self.name} dealt {self.weapon.dmg} damage using {self.weapon.name}!')
+        if chance(self.weapon.crt):
+            target.hp -= self.weapon.dmg*3
+            text(f'{self.name} dealt {self.weapon.dmg*3} damage using {self.weapon.name} Critial Hit!')
+        else:
+            target.hp -= self.weapon.dmg
+            text(f'{self.name} dealt {self.weapon.dmg} damage using {self.weapon.name}!')
 
 class Player(Entity):
     def __init__(self, name: str, maxhp=1) -> None:
