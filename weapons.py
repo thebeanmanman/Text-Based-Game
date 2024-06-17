@@ -7,8 +7,8 @@ class Weapon:
         self.rarity = rarity
         self.crt = crt
 
-ironSword = Weapon(name='Iron Sword',type='Sharp',dmg=3,crt=10)
+ironSword = Weapon(name='Iron Sword',type='Sharp',dmg=3,crt=50)
 
 shortBow = Weapon(name='Short Bow',type='Ranged',dmg=4)
 
-fists = Weapon(name='Fists',type='Blunt',dmg=1,goldvalue=0)
+fists = Weapon(name='Fists',type='Blunt',dmg=1,goldvalue=0,crt=0.0001)

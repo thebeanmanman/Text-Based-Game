@@ -1,7 +1,7 @@
 from time import sleep 
-from random import randint
+import random
 def text(toprint) -> None:
-    texttime = 0.03
+    texttime = 0.025
     toprint = str(toprint)
     for char in toprint:
         print(char,flush=True,end='')
@@ -12,6 +12,9 @@ def text(toprint) -> None:
     print('\n',end='')
 
 def chance(percentage) -> bool:
-    if percentage >= randint(0,100):
+    if percentage/100 >= random.random():
         return True
     return False
+
+def col(r, g, b, text):
+    return f"\033[38;2;{r};{g};{b}m{text}\033[0m"

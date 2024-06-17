@@ -10,14 +10,18 @@ from weapons import shortBow,ironSword
 from functions import text
 
 #Import Names
-from names import GOBBYLIST
+from names import Goblinlist
+
+#Create starting variables
+Start = True
 
 os.system('cls')
 hero = Player(name='The Main Character', maxhp=100)
 hero.equip(ironSword)
-goblin = Enemy(name=GOBBYLIST[randint(0,len(GOBBYLIST))], maxhp=20, weapon=shortBow)
+goblin = Enemy(name=Goblinlist[randint(0,len(Goblinlist))], maxhp=20, weapon=shortBow)
 # hero.drop()
 while True:
+    #Create a use function for weapons that handle crits and stuff
     hero.attack(goblin)
     goblin.attack(hero)
 
