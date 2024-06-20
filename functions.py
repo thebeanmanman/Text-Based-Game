@@ -1,7 +1,9 @@
+#Import modules
 from time import sleep 
 import random
+
 def text(toprint) -> None:
-    texttime = 0.025
+    texttime = 0.5/len(toprint)
     toprint = str(toprint)
     for char in toprint:
         print(char,flush=True,end='')
