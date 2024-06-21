@@ -13,15 +13,14 @@ class Entity():
     def attack(self, target) -> None:
         if chance(self.weapon.crt):
             target.hp -= self.weapon.dmg*3
-            text(f'{self.name} dealt {col(255,0,0,self.weapon.dmg*3)} damage using {self.weapon.name} {col(255,0,0,"[Critial Hit!]")}')
+            text(f'{self.name} dealt {col.rgb(255,0,0,self.weapon.dmg*3)} damage using {self.weapon.name} {col.rgb(255,0,0,"[Critial Hit!]")}')
         else:
             target.hp -= self.weapon.dmg
             text(f'{self.name} dealt {self.weapon.dmg} damage using {self.weapon.name}!')
-
+        target.hp = max(target.hp,0)
 class Player(Entity):
     def __init__(self, name: str, maxhp=1) -> None:
         super().__init__(name, maxhp)
-
         self.defaultWeapon = self.weapon
 
     def equip(self, weapon) -> None:

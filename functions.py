@@ -3,7 +3,7 @@ from time import sleep
 import random
 
 def text(toprint) -> None:
-    texttime = 0.5/len(toprint)
+    texttime = 0.6/(len(''.join(e for e in toprint if e.isalnum())))
     toprint = str(toprint)
     for char in toprint:
         print(char,flush=True,end='')
@@ -18,5 +18,29 @@ def chance(percentage) -> bool:
         return True
     return False
 
-def col(r, g, b, text):
-    return f"\033[38;2;{r};{g};{b}m{text}\033[0m"
+class Colour():
+    @staticmethod
+    def rgb(r, g, b, text):
+        return f"\033[38;2;{r};{g};{b}m{text}\033[0m"
+    
+    @staticmethod
+    def common(text):
+        return f"\033[38;2;{5};{5};{5}m{text}\033[0m"
+    
+    @staticmethod
+    def uncommon(text):
+        return f"\033[38;2;{0};{185};{0}m{text}\033[0m"
+    
+    @staticmethod
+    def rare(text):
+        return f"\033[38;2;{0};{0};{255}m{text}\033[0m"
+    
+    @staticmethod
+    def epic(text):
+        return f"\033[38;2;{150};{0};{255}m{text}\033[0m"
+    
+    @staticmethod
+    def leg(text):
+        return f"\033[38;2;{239};{204};{0}m{text}\033[0m"    
+
+col = Colour()
