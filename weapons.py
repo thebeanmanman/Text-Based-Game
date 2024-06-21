@@ -12,3 +12,5 @@ ironSword = Weapon(name='Iron Sword',type='Sharp',dmg=3,crt=50)
 shortBow = Weapon(name='Short Bow',type='Ranged',dmg=4)
 
 fists = Weapon(name='Fists',type='Blunt',dmg=1,goldvalue=0,crt=0.0001)
+
+claws = Weapon(name='Claws',type='Sharp',dmg=2,crt=10)

@@ -1,4 +1,4 @@
-from entity import Enemy
+from entity import Goblin
 from functions import text
 
 
@@ -13,7 +13,7 @@ class Dungeon():
     
     def Generate(self):
         self.startRoom.createBranch('up',self.rooms[0])
-        print(self.startRoom.up)
+        print(self.startRoom.up.enemies[0].name)
 
 
 class Room():
@@ -50,6 +50,6 @@ class EnemyRoom(Room):
 
 startRoom = Room(desc='You enter the dungeon...')
 
-goblinRoom = EnemyRoom(desc='You enter a dark room...',enemies=[Goblin])
+goblinRoom = EnemyRoom(desc='You enter a dark room...',enemies=[Goblin(),Goblin(),Goblin()])
 
 Level1 = Dungeon(rooms=[goblinRoom],roomNum=2,startRoom=startRoom,reqRooms=None)
