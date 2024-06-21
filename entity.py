@@ -1,4 +1,6 @@
 from weapons import fists
+from names import Goblinlist
+from random import randint
 
 #Import Functions
 from functions import text,chance,col
@@ -35,3 +37,7 @@ class Enemy(Entity):
     def __init__(self, name: str,weapon, maxhp=1) -> None:
         super().__init__(name, maxhp)
         self.weapon = weapon
+
+class Goblin(Entity):
+    def __init__(self, name: str, maxhp=1) -> None:
+        self.name = Goblinlist[randint(0,len(Goblinlist))]
