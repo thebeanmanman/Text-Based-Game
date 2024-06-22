@@ -1,6 +1,10 @@
 #Import modules
 from time import sleep 
 import random
+import os
+
+#Control Variables
+ClearTerminal = False
 
 #Creates a text animation
 def text(toprint) -> None:
@@ -14,10 +18,16 @@ def text(toprint) -> None:
             sleep(texttime)
     print('\n',end='')
 
+# Returns a Boolean based on a chance of something happening
 def chance(percentage) -> bool:
     if percentage/100 >= random.random():
         return True
     return False
+
+#Clears the terminal based on wether 
+def wipe():
+    if ClearTerminal:
+        os.system('cls')
 
 #Returns a random item from a list
 def randItem(list):

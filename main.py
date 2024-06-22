@@ -12,7 +12,7 @@ from weapons import shortBow,ironSword
 from dungeon import Level1
 
 #Import Functions
-from functions import text,option
+from functions import text,option,wipe
 
 #Import Names
 from names import Goblinlist
@@ -30,7 +30,7 @@ def titleSelect():
         text('Thanks for playing!')
 
 def title_screen():
-    os.system('cls')
+    wipe()
     print(f'---Welcome to {gameName}!---')
     text('- Play')
     text('- Help')
@@ -38,7 +38,7 @@ def title_screen():
     titleSelect()
 
 def helpMenu():
-    os.system('cls')
+    wipe()
     print(f'---Welcome to {gameName}!---')
     text('Type up, down, left and right to move')
     text('Press enter to return to the menu')

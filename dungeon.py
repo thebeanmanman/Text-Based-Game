@@ -6,7 +6,7 @@ import os
 from entity import Goblin
 
 # Import Functions
-from functions import text,randItem,moveOption
+from functions import text,randItem,moveOption,wipe
 
 # Import Dictionaries
 from dictionaries import iconDict
@@ -35,6 +35,9 @@ class Dungeon():
         y = x
         while i <= self.roomNum and self.rooms:
             self.map[y][x] = currRoom.icon
+            currRoom.x = x
+            currRoom.y = y
+            currRoom.lvl = self
             dirList = currRoom.nodirCheck()
             direction = randItem(dirList)
             nextRoom = randItem(self.rooms)
@@ -48,17 +51,21 @@ class Dungeon():
             currRoom = nextRoom
     
     def printMap(self):
+        print('')
         for row in self.map:
             print(''.join(row))
         print('')
+        print(f'Your Location: {iconDict["Player"]}')
         print(f'Start Room: {iconDict["Start Room"]}')
         print(f'Enemy Room: {iconDict["Enemy Room"]}')
-
 
 class Room():
     def __init__(self,desc:str,icon:str) -> None:
         self.desc = desc
         self.icon = icon
+        self.x = 0
+        self.y = 0
+        self.lvl = None
         self.north = None
         self.south = None
         self.west = None
@@ -67,7 +74,8 @@ class Room():
 
     #When the player enters the room
     def enter(self,player):
-        os.system('cls')
+        wipe()
+        self.lvl.map[self.y][self.x] = player.icon
         text(self.desc)
         self.move(player)
 
@@ -75,6 +83,7 @@ class Room():
         options = self.dirCheck()
         text(f'You can move {", ".join(options)}')
         direction = moveOption(options,player)
+        self.lvl.map[self.y][self.x] = self.icon
         if direction == 'north':
             player.room = self.north
             player.room.enter(player)
@@ -87,6 +96,7 @@ class Room():
         if direction == 'east':
             player.room = self.east
             player.room.enter(player)
+        
 
     #Creates a branch between rooms
     def createBranch(self,dir,room):
@@ -147,7 +157,8 @@ class EnemyRoom(Room):
         self.enemies = enemies
 
     def enter(self,player):
-        os.system('cls')
+        wipe()
+        self.lvl.map[self.y][self.x] = player.icon
         text(self.desc)
         if self.cleared:
             text('You have already cleared this room.')
@@ -183,8 +194,8 @@ startRoom = StartRoom(desc='You enter the dungeon...')
 
 goblinRoom = EnemyRoom(desc='You enter a dark room...',enemies=[Goblin()])
 goblinRoom1 = EnemyRoom(desc='You enter a dim room...',enemies=[Goblin(),Goblin()])
-goblinRoom2 = EnemyRoom(desc='You enter a dank room...',enemies=[Goblin()])
-goblinRoom3 = EnemyRoom(desc='You enter a smelly room...',enemies=[Goblin(),Goblin()])
-goblinRoom4 = EnemyRoom(desc='You enter a horrid room...',enemies=[Goblin()])
+goblinRoom2 = EnemyRoom(desc='You enter a small room...',enemies=[Goblin()])
+goblinRoom3 = EnemyRoom(desc='You enter a room...',enemies=[Goblin(),Goblin()])
+goblinRoom4 = EnemyRoom(desc='You enter a gloomy room...',enemies=[Goblin()])
 
 Level1 = Dungeon(rooms=[goblinRoom,goblinRoom1,goblinRoom2,goblinRoom3,goblinRoom4,],roomNum=5,startRoom=startRoom,reqRooms=None,mapsize=9)

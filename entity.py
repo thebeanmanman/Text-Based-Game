@@ -5,6 +5,9 @@ from random import randint
 #Import Functions
 from functions import text,chance,randItem,col
 
+# Import Dictionaries
+from dictionaries import iconDict
+
 class Entity():
     def __init__(self, name:str, maxhp=1) -> None:
         self.name = name
@@ -26,6 +29,7 @@ class Player(Entity):
         self.defaultWeapon = self.weapon
         self.room = None
         self.DungLvl = DungLvl
+        self.icon = iconDict['Player']
 
     def equip(self, weapon) -> None:
         self.weapon = weapon
@@ -44,7 +48,7 @@ class Enemy(Entity):
         self.weapon = weapon
     
     def death(self,player):
-        text(f'You have killed {self.name}. Gained ____')
+        text(f'You have slain {self.name}. Gained ____')
 
 class Goblin(Enemy):
     def __init__(self, weapon=claws,hp=4,) -> None:
