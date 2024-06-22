@@ -25,6 +25,7 @@ def randItem(list):
         return None
     else:
         return list[random.randint(0,len(list)-1)]
+    
 
 #Returns a players choice from a list of options
 def option(optionList):
