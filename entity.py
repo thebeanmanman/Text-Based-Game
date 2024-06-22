@@ -21,10 +21,11 @@ class Entity():
             text(f'{self.name} dealt {self.weapon.dmg} damage using their {self.weapon.name}!')
         target.hp = max(target.hp,0)
 class Player(Entity):
-    def __init__(self, name: str, maxhp=1) -> None:
+    def __init__(self, name: str,DungLvl, maxhp=1, ) -> None:
         super().__init__(name, maxhp)
         self.defaultWeapon = self.weapon
         self.room = None
+        self.DungLvl = DungLvl
 
     def equip(self, weapon) -> None:
         self.weapon = weapon

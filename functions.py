@@ -25,7 +25,6 @@ def randItem(list):
         return None
     else:
         return list[random.randint(0,len(list)-1)]
-    
 
 #Returns a players choice from a list of options
 def option(optionList):
@@ -34,7 +33,19 @@ def option(optionList):
         return choice
     else:
         text('Unknown action. Please try again')
-        option(optionList)
+        return option(optionList)
+
+def moveOption(optionList,player):
+    choice = input('> ').lower()
+    if choice in optionList:
+        return choice
+    elif choice == 'map':
+        player.DungLvl.printMap()
+        return moveOption(optionList,player)
+    else:
+        text('Unknown action. Please try again')
+        return moveOption(optionList,player)
+    
 
 class Colour():
     @staticmethod

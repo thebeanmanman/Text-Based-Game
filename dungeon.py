@@ -6,36 +6,54 @@ import os
 from entity import Goblin
 
 # Import Functions
-from functions import text,randItem,option
+from functions import text,randItem,moveOption
 
 
 class Dungeon():
-    def __init__(self,reqRooms:list,rooms:list,roomNum:int,startRoom) -> None:
+    def __init__(self,reqRooms:list,rooms:list,roomNum:int,startRoom,mapsize:int) -> None:
         self.reqRooms = reqRooms
         self.rooms = rooms
         self.roomNum = roomNum
         self.startRoom = startRoom
+
+        self.mapsize = mapsize
+        self.map = []
+        for i in range(mapsize):
+            row = []
+            for j in range(mapsize):
+                row.append(' . ')
+            self.map.append(row)
 
         self.Generate()
     
     def Generate(self):
         i = 0
         currRoom = self.startRoom
+        x = (self.mapsize//2)
+        y = x
         while i <= self.roomNum and self.rooms:
+            self.map[y][x] = currRoom.icon
             dirList = currRoom.nodirCheck()
             direction = randItem(dirList)
             nextRoom = randItem(self.rooms)
-            print(f'Current: {currRoom}. Next: {nextRoom}, Direction: {direction}')
-            currRoom.createBranch(direction,nextRoom)
+            # print(f'Current: {currRoom}. Next: {nextRoom}, Direction: {direction}')
+            currRoom.createBranch(direction[0],nextRoom)
             i += 1
+            x += direction[1]
+            y += direction[2]
             if currRoom in self.rooms:
                 self.rooms.remove(currRoom)
             currRoom = nextRoom
+    
+    def printMap(self):
+        for row in self.map:
+            print(''.join(row))
 
 
 class Room():
-    def __init__(self,desc:str) -> None:
+    def __init__(self,desc:str,icon:str) -> None:
         self.desc = desc
+        self.icon = icon
         self.north = None
         self.south = None
         self.west = None
@@ -51,7 +69,7 @@ class Room():
     def move(self,player):
         options = self.dirCheck()
         text(f'You can move {", ".join(options)}')
-        direction = option(options)
+        direction = moveOption(options,player)
         if direction == 'north':
             player.room = self.north
             player.room.enter(player)
@@ -65,7 +83,7 @@ class Room():
             player.room = self.east
             player.room.enter(player)
 
-    #Creates a branch f
+    #Creates a branch between rooms
     def createBranch(self,dir,room):
         if dir == 'north':
             self.north = room
@@ -86,13 +104,13 @@ class Room():
     def nodirCheck(self):
         dirList = []
         if not self.north:
-            dirList.append('north')
+            dirList.append(['north',0,-1])
         if not self.south:
-            dirList.append('south')
+            dirList.append(['south',0,1])
         if not self.west:
-            dirList.append('west')
+            dirList.append(['west',-1,0])
         if not self.east:
-            dirList.append('east')
+            dirList.append(['east',1,0])
         return dirList
     
     #Returns a list of directions that do already have a room
@@ -114,31 +132,31 @@ class Room():
     
 
 class EnemyRoom(Room):
-    def __init__(self, desc: str,enemies:list,) -> None:
-        super().__init__(desc)
+    def __init__(self, desc: str,enemies:list,icon='[E]') -> None:
+        super().__init__(desc,icon)
         self.enemies = enemies
 
     def enter(self,player):
         os.system('cls')
+        text(self.desc)
         if self.cleared:
             text('You have already cleared this room.')
-        text(self.desc)
-        self.battling = True
-        enemy = self.spawnEnemy()
-        while self.battling:
-            player.attack(enemy)
-            enemy.attack(player)
-            text(f'Your HP: {player.hp}')
-            text(f'{enemy.name}s HP: {enemy.hp}')
-            input()
-            if player.hp <= 0:
-                self.battling = False
-                player.death()
-            elif enemy.hp <= 0:
-                enemy.death(player)
-                self.enemies.pop(0)
-                enemy = self.spawnEnemy()
-
+        else:
+            self.battling = True
+            enemy = self.spawnEnemy()
+            while self.battling:
+                player.attack(enemy)
+                enemy.attack(player)
+                text(f'Your HP: {player.hp}')
+                text(f'{enemy.name}s HP: {enemy.hp}')
+                input()
+                if player.hp <= 0:
+                    self.battling = False
+                    player.death()
+                elif enemy.hp <= 0:
+                    enemy.death(player)
+                    self.enemies.pop(0)
+                    enemy = self.spawnEnemy()
         self.move(player)
     
     def spawnEnemy(self):
@@ -151,7 +169,7 @@ class EnemyRoom(Room):
             self.battling = False
             self.clear()
 
-startRoom = Room(desc='You enter the dungeon...')
+startRoom = Room(desc='You enter the dungeon...',icon='[O]')
 
 goblinRoom = EnemyRoom(desc='You enter a dark room...',enemies=[Goblin()])
 goblinRoom1 = EnemyRoom(desc='You enter a dim room...',enemies=[Goblin(),Goblin()])
@@ -159,4 +177,4 @@ goblinRoom2 = EnemyRoom(desc='You enter a dank room...',enemies=[Goblin()])
 goblinRoom3 = EnemyRoom(desc='You enter a smelly room...',enemies=[Goblin(),Goblin()])
 goblinRoom4 = EnemyRoom(desc='You enter a horrid room...',enemies=[Goblin()])
 
-Level1 = Dungeon(rooms=[goblinRoom,goblinRoom1,goblinRoom2,goblinRoom3,goblinRoom4,],roomNum=5,startRoom=startRoom,reqRooms=None)
+Level1 = Dungeon(rooms=[goblinRoom,goblinRoom1,goblinRoom2,goblinRoom3,goblinRoom4,],roomNum=5,startRoom=startRoom,reqRooms=None,mapsize=9)
