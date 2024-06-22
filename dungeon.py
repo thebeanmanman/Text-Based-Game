@@ -8,6 +8,8 @@ from entity import Goblin
 # Import Functions
 from functions import text,randItem,moveOption
 
+# Import Dictionaries
+from dictionaries import iconDict
 
 class Dungeon():
     def __init__(self,reqRooms:list,rooms:list,roomNum:int,startRoom,mapsize:int) -> None:
@@ -48,6 +50,9 @@ class Dungeon():
     def printMap(self):
         for row in self.map:
             print(''.join(row))
+        print('')
+        print(f'Start Room: {iconDict["Start Room"]}')
+        print(f'Enemy Room: {iconDict["Enemy Room"]}')
 
 
 class Room():
@@ -130,9 +135,14 @@ class Room():
         self.cleared = True
         text('You have cleared this room.')
     
+class StartRoom(Room):
+    def __init__(self, desc: str, icon=iconDict['Start Room']) -> None:
+        super().__init__(desc, icon)
+        self.cleared = True
+
 
 class EnemyRoom(Room):
-    def __init__(self, desc: str,enemies:list,icon='[E]') -> None:
+    def __init__(self, desc: str,enemies:list,icon=iconDict['Enemy Room']) -> None:
         super().__init__(desc,icon)
         self.enemies = enemies
 
@@ -169,7 +179,7 @@ class EnemyRoom(Room):
             self.battling = False
             self.clear()
 
-startRoom = Room(desc='You enter the dungeon...',icon='[O]')
+startRoom = StartRoom(desc='You enter the dungeon...')
 
 goblinRoom = EnemyRoom(desc='You enter a dark room...',enemies=[Goblin()])
 goblinRoom1 = EnemyRoom(desc='You enter a dim room...',enemies=[Goblin(),Goblin()])
