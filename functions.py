@@ -2,6 +2,7 @@
 from time import sleep 
 import random
 
+#Creates a text animation
 def text(toprint) -> None:
     texttime = 0.6/(len(''.join(e for e in toprint if e.isalnum())))
     toprint = str(toprint)
@@ -18,11 +19,33 @@ def chance(percentage) -> bool:
         return True
     return False
 
+#Returns a random item from a list
+def randItem(list):
+    if not list:
+        return None
+    else:
+        return list[random.randint(0,len(list)-1)]
+
+#Returns a players choice from a list of options
+def option(optionList):
+    choice = input('> ').lower()
+    if choice in optionList:
+        return choice
+    else:
+        text('Unknown action. Please try again')
+        option(optionList)
+
 class Colour():
     @staticmethod
     def rgb(r, g, b, text):
         return f"\033[38;2;{r};{g};{b}m{text}\033[0m"
     
+    # Regular Colours
+    @staticmethod
+    def red(text):
+        return f"\033[38;2;{255};{0};{0}m{text}\033[0m"    
+    
+    # Rarity Colours
     @staticmethod
     def common(text):
         return f"\033[38;2;{5};{5};{5}m{text}\033[0m"

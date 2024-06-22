@@ -9,9 +9,10 @@ import os
 #Import Classes
 from entity import Player,Enemy
 from weapons import shortBow,ironSword
+from dungeon import Level1
 
 #Import Functions
-from functions import text
+from functions import text,option
 
 #Import Names
 from names import Goblinlist
@@ -20,16 +21,13 @@ from names import Goblinlist
 gameName = 'Dungeon Runner'
 
 def titleSelect():
-    option = input('> ').lower()
-    if option == 'play':
+    choice = option(['play','help','quit'])
+    if choice == 'play':
         startGame()
-    elif option == 'help':
+    elif choice == 'help':
         helpMenu()
-    elif option == 'quit':
+    elif choice == 'quit':
         text('Thanks for playing!')
-    else:
-        text('Unknown command. Please try again')
-        titleSelect()
 
 def title_screen():
     os.system('cls')
@@ -50,16 +48,7 @@ def helpMenu():
 def startGame():
     hero = Player(name='The Main Character', maxhp=100)
     hero.equip(ironSword)
-    goblin = Enemy(name=Goblinlist[randint(0,len(Goblinlist))], maxhp=20, weapon=shortBow)
-    # hero.drop()
-    while True:
-        #Create a use function for weapons that handle crits and stuff
-        hero.attack(goblin)
-        goblin.attack(hero)
-
-        text(f'HP of {hero.name}: {hero.hp}')
-        text(f'HP of {goblin.name}: {goblin.hp}')
-
-        input()
+    hero.room = Level1.startRoom
+    hero.room.enter(hero)
 
 title_screen()
