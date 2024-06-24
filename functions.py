@@ -4,7 +4,7 @@ import random
 import os
 
 #Control Variables
-ClearTerminal = False
+ClearTerminal = True
 
 #Creates a text animation
 def text(toprint) -> None:

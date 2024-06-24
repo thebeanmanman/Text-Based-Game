@@ -11,6 +11,8 @@ from functions import text,randItem,moveOption,wipe
 # Import Dictionaries
 from dictionaries import iconDict
 
+# Import Grammar
+from grammar import orChoice
 class Dungeon():
     def __init__(self,reqRooms:list,rooms:list,roomNum:int,startRoom,mapsize:int) -> None:
         self.reqRooms = reqRooms
@@ -23,36 +25,69 @@ class Dungeon():
         for i in range(mapsize):
             row = []
             for j in range(mapsize):
-                row.append(' . ')
+                row.append('')
             self.map.append(row)
 
-        self.Generate()
-    
-    def Generate(self):
-        i = 0
-        currRoom = self.startRoom
+        self.GenerateMap()
+
+    def GenerateMap(self):
+        Generate = True
         x = (self.mapsize//2)
         y = x
-        while i <= self.roomNum and self.rooms:
-            self.map[y][x] = currRoom.icon
+        currRoom = self.startRoom
+        i = 0
+        while i <= self.roomNum and self.rooms and Generate:
+            self.map[y][x] = currRoom
             currRoom.x = x
             currRoom.y = y
             currRoom.lvl = self
-            dirList = currRoom.nodirCheck()
-            direction = randItem(dirList)
-            nextRoom = randItem(self.rooms)
-            # print(f'Current: {currRoom}. Next: {nextRoom}, Direction: {direction}')
-            currRoom.createBranch(direction[0],nextRoom)
-            i += 1
-            x += direction[1]
-            y += direction[2]
-            if currRoom in self.rooms:
-                self.rooms.remove(currRoom)
-            currRoom = nextRoom
+            dirList = self.mapDirCheck(x,y)
+            if dirList:
+                direction = randItem(dirList)
+                nextRoom = randItem(self.rooms)
+                i += 1
+                x = direction[1]
+                y = direction[0]
+                if currRoom in self.rooms:
+                    self.rooms.remove(currRoom)
+                currRoom = nextRoom
+            else:
+                Generate = False
+        self.createMap()
+
+    def mapDirCheck(self,x,y,reverse=False):
+        dirList = []
+        if y-1 >= 0 and not self.map[y-1][x]:
+            dirList.append([y-1,x,'north'])
+        if y+1 < self.mapsize and not self.map[y+1][x]:
+            dirList.append([y+1,x,'south'])
+        if x-1 >= 0 and not self.map[y][x-1]:
+            dirList.append([y,x-1,'west'])
+        if x+1 < self.mapsize and not self.map[y][x+1]:
+            dirList.append([y,x+1,'east'])
+
+        if reverse: 
+            reversedDir = {'north','south','west','east'} - set([item[2] for item in dirList])
+            return list(reversedDir)
+        else:
+            return dirList
     
+    def createMap(self):
+        self.dispMap = []
+        for row in self.map:
+            newrow = []
+            for room in row:
+                if room:
+                    print(room)
+                    newrow.append(room.icon)
+                else:
+                    newrow.append(' . ')
+            self.dispMap.append(newrow)
+        
+
     def printMap(self):
         print('')
-        for row in self.map:
+        for row in self.dispMap:
             print(''.join(row))
         print('')
         print(f'Your Location: {iconDict["Player"]}')
@@ -66,81 +101,33 @@ class Room():
         self.x = 0
         self.y = 0
         self.lvl = None
-        self.north = None
-        self.south = None
-        self.west = None
-        self.east = None
         self.cleared = False
 
     #When the player enters the room
     def enter(self,player):
         wipe()
-        self.lvl.map[self.y][self.x] = player.icon
+        self.lvl.dispMap[self.y][self.x] = player.icon
         text(self.desc)
         self.move(player)
 
     def move(self,player):
-        options = self.dirCheck()
-        text(f'You can move {", ".join(options)}')
+        options = self.lvl.mapDirCheck(self.x,self.y,reverse=True)
+        text(f'You can move {orChoice(options)}')
         direction = moveOption(options,player)
-        self.lvl.map[self.y][self.x] = self.icon
+        self.lvl.dispMap[self.y][self.x] = self.icon
         if direction == 'north':
-            player.room = self.north
+            player.room = self.lvl.map[self.y-1][self.x]
             player.room.enter(player)
         if direction == 'south':
-            player.room = self.south
+            player.room = self.lvl.map[self.y+1][self.x]
             player.room.enter(player)
         if direction == 'west':
-            player.room = self.west
+            player.room = self.lvl.map[self.y][self.x-1]
             player.room.enter(player)
         if direction == 'east':
-            player.room = self.east
+            player.room = self.lvl.map[self.y][self.x+1]
             player.room.enter(player)
         
-
-    #Creates a branch between rooms
-    def createBranch(self,dir,room):
-        if dir == 'north':
-            self.north = room
-            room.south = self
-        elif dir == 'south':
-            self.south = room
-            room.north = self
-        elif dir == 'west':
-            self.west = room
-            room.east = self
-        elif dir == 'east':
-            self.east = room
-            room.west = self
-        else:
-            print('No direction stated for room gen')
-    
-    #Returns a list of directions that don't already have a room
-    def nodirCheck(self):
-        dirList = []
-        if not self.north:
-            dirList.append(['north',0,-1])
-        if not self.south:
-            dirList.append(['south',0,1])
-        if not self.west:
-            dirList.append(['west',-1,0])
-        if not self.east:
-            dirList.append(['east',1,0])
-        return dirList
-    
-    #Returns a list of directions that do already have a room
-    def dirCheck(self):
-        dirList = []
-        if self.north:
-            dirList.append('north')
-        if self.south:
-            dirList.append('south')
-        if self.west:
-            dirList.append('west')
-        if self.east:
-            dirList.append('east')
-        return dirList
-    
     def clear(self):
         self.cleared = True
         text('You have cleared this room.')
@@ -158,7 +145,7 @@ class EnemyRoom(Room):
 
     def enter(self,player):
         wipe()
-        self.lvl.map[self.y][self.x] = player.icon
+        self.lvl.dispMap[self.y][self.x] = player.icon
         text(self.desc)
         if self.cleared:
             text('You have already cleared this room.')
