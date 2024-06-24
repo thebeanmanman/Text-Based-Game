@@ -53,7 +53,7 @@ class Dungeon():
                 currRoom = nextRoom
             else:
                 Generate = False
-        self.createMap()
+        self.createDispMap()
 
     def mapDirCheck(self,x,y,reverse=False):
         dirList = []
@@ -67,24 +67,22 @@ class Dungeon():
             dirList.append([y,x+1,'east'])
 
         if reverse: 
-            reversedDir = {'north','south','west','east'} - set([item[2] for item in dirList])
-            return list(reversedDir)
+            reversedDir = list({'north','south','west','east'} - set([item[2] for item in dirList]))
+            return reversedDir
         else:
             return dirList
     
-    def createMap(self):
+    def createDispMap(self):
         self.dispMap = []
         for row in self.map:
             newrow = []
             for room in row:
                 if room:
-                    print(room)
                     newrow.append(room.icon)
                 else:
                     newrow.append(' . ')
             self.dispMap.append(newrow)
         
-
     def printMap(self):
         print('')
         for row in self.dispMap:
@@ -186,3 +184,6 @@ goblinRoom3 = EnemyRoom(desc='You enter a room...',enemies=[Goblin(),Goblin()])
 goblinRoom4 = EnemyRoom(desc='You enter a gloomy room...',enemies=[Goblin()])
 
 Level1 = Dungeon(rooms=[goblinRoom,goblinRoom1,goblinRoom2,goblinRoom3,goblinRoom4,],roomNum=5,startRoom=startRoom,reqRooms=None,mapsize=9)
+# for row in Level1.map:
+#     print(row)
+# Level1.printMap()

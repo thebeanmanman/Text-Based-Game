@@ -1,6 +1,5 @@
 from weapons import fists,claws
 from names import Goblinlist
-from random import randint
 
 #Import Functions
 from functions import text,chance,randItem,col
