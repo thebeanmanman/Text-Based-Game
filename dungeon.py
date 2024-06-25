@@ -2,13 +2,17 @@
 from entity import Goblin
 
 # Import Functions
-from functions import text,randItem,moveOption,wipe
+from functions import text,randItem,Option,wipe
 
 # Import Dictionaries
 from dictionaries import iconDict,moveDict
 
 # Import Grammar
 from grammar import orChoice
+
+# Import Weapons
+from weapons import common,uncommon,rare,epic,legendary
+
 class Dungeon():
     def __init__(self,reqRooms:list,rooms:list,roomNum:int,startRoom,mapsize:int) -> None:
         self.reqRooms = reqRooms
@@ -85,9 +89,9 @@ class Dungeon():
             print(''.join(row))
         print('')
         print(f'Your Location: {iconDict["Player"]}')
+        print(f'Treasure Room: {iconDict["Treasure Room"]}')
         print(f'Start Room: {iconDict["Start Room"]}')
         print(f'Enemy Room: {iconDict["Enemy Room"]}')
-        print(f'Treasure Room: {iconDict["Treasure Room"]}')
 
 class Room():
     def __init__(self,desc:str,icon:str) -> None:
@@ -108,18 +112,18 @@ class Room():
     def move(self,player):
         options = self.lvl.mapDirCheck(self.x,self.y,reverse=True)
         text(f'You can move {orChoice(options)}')
-        direction = moveOption(options,player)
+        direction = Option(player=player,North='north' in options,South='south' in options,West='west' in options,East='east',Map=True)
         self.lvl.dispMap[self.y][self.x] = self.icon
         if direction in moveDict['north']:
             player.room = self.lvl.map[self.y-1][self.x]
             player.room.enter(player)
-        if direction == moveDict['south']:
+        if direction in moveDict['south']:
             player.room = self.lvl.map[self.y+1][self.x]
             player.room.enter(player)
-        if direction == moveDict['west']:
+        if direction in moveDict['west']:
             player.room = self.lvl.map[self.y][self.x-1]
             player.room.enter(player)
-        if direction == moveDict['east']:
+        if direction in moveDict['east']:
             player.room = self.lvl.map[self.y][self.x+1]
             player.room.enter(player)
         

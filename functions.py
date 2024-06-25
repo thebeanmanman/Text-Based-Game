@@ -40,25 +40,21 @@ def randItem(list):
         return list[random.randint(0,len(list)-1)]
 
 #Returns a players choice from a list of options
-def option(optionList):
+def Option(player=None,North=False,South=False,West=False,East=False,Map=False,Other=False,OtherList=[]):
     choice = input('> ').lower()
-    if choice in optionList:
+    if North and choice in moveDict['north']:
         return choice
+    elif South and choice in moveDict['south']:
+        return choice
+    elif West and choice in moveDict['west']:
+        return choice
+    elif East and choice in moveDict['east']:
+        return choice
+    elif Other and choice in OtherList:
+        return choice
+    elif Map and choice == 'map':
+        player.DungLvl.printMap()
+        return Option(player=player,North=North,South=South,West=West,East=East,Map=Map,Other=Other,OtherList=OtherList)
     else:
         text('Unknown action. Please try again')
-        return option(optionList)
-
-def moveOption(optionList,player):
-    choosing = True
-    expandedMoves = moveDict[optionList[0]]
-    optionList.pop(0)
-    for option in optionList:
-        expandedMoves += moveDict[option]
-    while choosing:
-        choice = input('> ').lower()
-        if choice in expandedMoves:
-            return choice
-        elif choice == 'map':
-            player.DungLvl.printMap()
-        else:
-            text('Unknown action. Please try again')
+        return Option(player=player,North=North,South=South,West=West,East=East,Map=Map,Other=Other,OtherList=OtherList)

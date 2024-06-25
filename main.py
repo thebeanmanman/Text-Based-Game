@@ -4,13 +4,13 @@ from weapons import ironSword
 from dungeon import Level1
 
 #Import Functions
-from functions import text,option,wipe
+from functions import text,Option,wipe
 
 #Global Variables
 gameName = 'Dungeon Runner'
 
 def titleSelect():
-    choice = option(['play','help','quit'])
+    choice = Option(Other=True,OtherList=['play','help','quit'])
     if choice == 'play':
         startGame()
     elif choice == 'help':
