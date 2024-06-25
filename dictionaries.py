@@ -1,9 +1,10 @@
-from functions import col
+from colours import col
 
 iconDict = {
     'Enemy Room': '[E]',
     'Start Room': '[O]',
-    'Player' : f'[{col.red("X")}]'
+    'Player' : f'[{col.red("X")}]',
+    'Treasure Room': '[T]'
 }
 moveDict = {
     'north': ['north','up','w'],

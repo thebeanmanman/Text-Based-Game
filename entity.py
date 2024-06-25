@@ -2,7 +2,8 @@ from weapons import fists,claws
 from names import Goblinlist
 
 #Import Functions
-from functions import text,chance,randItem,col
+from functions import text,chance,randItem
+from colours import col
 
 # Import Dictionaries
 from dictionaries import iconDict

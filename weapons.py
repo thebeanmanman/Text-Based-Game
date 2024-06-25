@@ -1,4 +1,13 @@
-class Weapon:
+from colours import col
+
+class Item():
+    def __init__(self,rarity:int,name:str) -> None:
+        self.name
+        if rarity == 1:
+            common.append(self)
+            self.name = f'{col.common()} {self.name}'
+
+class Weapon(Item):
     def __init__(self, name:str, type:str, dmg:int, goldvalue=1, rarity=1,crt=0) -> None:
         self.name = name
         self.type = type
@@ -6,6 +15,8 @@ class Weapon:
         self.goldvalue = goldvalue
         self.rarity = rarity
         self.crt = crt
+
+common = []
 
 ironSword = Weapon(name='Iron Sword',type='Sharp',dmg=3,crt=50)
 

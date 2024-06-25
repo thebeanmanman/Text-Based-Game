@@ -3,6 +3,9 @@ from time import sleep
 import random
 import os
 
+# Import Dictionaries
+from dictionaries import moveDict
+
 #Control Variables
 ClearTerminal = True
 
@@ -46,46 +49,16 @@ def option(optionList):
         return option(optionList)
 
 def moveOption(optionList,player):
-    choice = input('> ').lower()
-    if choice in optionList:
-        return choice
-    elif choice == 'map':
-        player.DungLvl.printMap()
-        return moveOption(optionList,player)
-    else:
-        text('Unknown action. Please try again')
-        return moveOption(optionList,player)
-    
-
-class Colour():
-    @staticmethod
-    def rgb(r, g, b, text):
-        return f"\033[38;2;{r};{g};{b}m{text}\033[0m"
-    
-    # Regular Colours
-    @staticmethod
-    def red(text):
-        return f"\033[38;2;{255};{0};{0}m{text}\033[0m"    
-    
-    # Rarity Colours
-    @staticmethod
-    def common(text):
-        return f"\033[38;2;{5};{5};{5}m{text}\033[0m"
-    
-    @staticmethod
-    def uncommon(text):
-        return f"\033[38;2;{0};{185};{0}m{text}\033[0m"
-    
-    @staticmethod
-    def rare(text):
-        return f"\033[38;2;{0};{0};{255}m{text}\033[0m"
-    
-    @staticmethod
-    def epic(text):
-        return f"\033[38;2;{150};{0};{255}m{text}\033[0m"
-    
-    @staticmethod
-    def leg(text):
-        return f"\033[38;2;{239};{204};{0}m{text}\033[0m"    
-
-col = Colour()
+    choosing = True
+    expandedMoves = moveDict[optionList[0]]
+    optionList.pop(0)
+    for option in optionList:
+        expandedMoves += moveDict[option]
+    while choosing:
+        choice = input('> ').lower()
+        if choice in expandedMoves:
+            return choice
+        elif choice == 'map':
+            player.DungLvl.printMap()
+        else:
+            text('Unknown action. Please try again')

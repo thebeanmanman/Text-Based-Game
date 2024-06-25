@@ -1,7 +1,3 @@
-# Import Modules
-from random import randint
-import os
-
 # Import Enemies
 from entity import Goblin
 
@@ -9,7 +5,7 @@ from entity import Goblin
 from functions import text,randItem,moveOption,wipe
 
 # Import Dictionaries
-from dictionaries import iconDict
+from dictionaries import iconDict,moveDict
 
 # Import Grammar
 from grammar import orChoice
@@ -91,6 +87,7 @@ class Dungeon():
         print(f'Your Location: {iconDict["Player"]}')
         print(f'Start Room: {iconDict["Start Room"]}')
         print(f'Enemy Room: {iconDict["Enemy Room"]}')
+        print(f'Treasure Room: {iconDict["Treasure Room"]}')
 
 class Room():
     def __init__(self,desc:str,icon:str) -> None:
@@ -113,16 +110,16 @@ class Room():
         text(f'You can move {orChoice(options)}')
         direction = moveOption(options,player)
         self.lvl.dispMap[self.y][self.x] = self.icon
-        if direction == 'north':
+        if direction in moveDict['north']:
             player.room = self.lvl.map[self.y-1][self.x]
             player.room.enter(player)
-        if direction == 'south':
+        if direction == moveDict['south']:
             player.room = self.lvl.map[self.y+1][self.x]
             player.room.enter(player)
-        if direction == 'west':
+        if direction == moveDict['west']:
             player.room = self.lvl.map[self.y][self.x-1]
             player.room.enter(player)
-        if direction == 'east':
+        if direction == moveDict['east']:
             player.room = self.lvl.map[self.y][self.x+1]
             player.room.enter(player)
         
@@ -174,16 +171,22 @@ class EnemyRoom(Room):
         else:
             self.battling = False
             self.clear()
-
+    
+class TreasureRoom(Room):
+    def __init__(self, desc: str) -> None:
+        super().__init__(desc)
+        self.icon = iconDict['Treasure Room']
+    
+# Start Rooms
 startRoom = StartRoom(desc='You enter the dungeon...')
 
+# Enemy Rooms
 goblinRoom = EnemyRoom(desc='You enter a dark room...',enemies=[Goblin()])
 goblinRoom1 = EnemyRoom(desc='You enter a dim room...',enemies=[Goblin(),Goblin()])
 goblinRoom2 = EnemyRoom(desc='You enter a small room...',enemies=[Goblin()])
 goblinRoom3 = EnemyRoom(desc='You enter a room...',enemies=[Goblin(),Goblin()])
 goblinRoom4 = EnemyRoom(desc='You enter a gloomy room...',enemies=[Goblin()])
 
-Level1 = Dungeon(rooms=[goblinRoom,goblinRoom1,goblinRoom2,goblinRoom3,goblinRoom4,],roomNum=5,startRoom=startRoom,reqRooms=None,mapsize=9)
-# for row in Level1.map:
-#     print(row)
-# Level1.printMap()
+# Treasure Room
+
+Level1 = Dungeon(rooms=[goblinRoom,goblinRoom1,goblinRoom2,goblinRoom3,goblinRoom4,],roomNum=7,startRoom=startRoom,reqRooms=None,mapsize=9)

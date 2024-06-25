@@ -1,21 +1,10 @@
-#
-# ! 
-# TODO: Create a game class that handles running the game loop
-
-#Import Modules
-from random import randint
-import os
-
 #Import Classes
-from entity import Player,Enemy
-from weapons import shortBow,ironSword
+from entity import Player
+from weapons import ironSword
 from dungeon import Level1
 
 #Import Functions
 from functions import text,option,wipe
-
-#Import Names
-from names import Goblinlist
 
 #Global Variables
 gameName = 'Dungeon Runner'
