@@ -1,3 +1,5 @@
+from random import choices
+
 # Import Enemies
 from entity import Goblin
 
@@ -8,7 +10,7 @@ from functions import text,randItem,Option,wipe
 from dictionaries import iconDict,moveDict
 
 # Import Grammar
-from grammar import orChoice
+from grammar import orChoice,AreIs,Plural
 
 # Import Weapons
 from weapons import common,uncommon,rare,epic,legendary
@@ -163,8 +165,10 @@ class EnemyRoom(Room):
                 elif enemy.hp <= 0:
                     enemy.death(player)
                     self.enemies.pop(0)
+                    text(f'There {AreIs(len(self.enemies))} {len(self.enemies)} {Plural(len(self.enemies),"enemy")} left.')
                     enemy = self.spawnEnemy()
-        self.move(player)
+        if player.hp > 0:
+            self.move(player)
     
     def spawnEnemy(self):
         if self.enemies:
@@ -177,9 +181,18 @@ class EnemyRoom(Room):
             self.clear()
     
 class TreasureRoom(Room):
-    def __init__(self, desc: str) -> None:
-        super().__init__(desc)
-        self.icon = iconDict['Treasure Room']
+    def __init__(self, desc: str,icon=iconDict['Treasure Room']) -> None:
+        super().__init__(desc,icon)
+        self.rollTreasure()
+    
+    def rollTreasure(self):
+        rarityLvl = choices([common,uncommon,rare,epic,legendary], weights=(37,28,19,13,3), k=1)[0]
+        self.treasure = randItem(rarityLvl)
+
+    def enter(self,player):
+        wipe()
+        self.lvl.dispMap[self.y][self.x] = player.icon
+
     
 # Start Rooms
 startRoom = StartRoom(desc='You enter the dungeon...')
@@ -191,6 +204,7 @@ goblinRoom2 = EnemyRoom(desc='You enter a small room...',enemies=[Goblin()])
 goblinRoom3 = EnemyRoom(desc='You enter a room...',enemies=[Goblin(),Goblin()])
 goblinRoom4 = EnemyRoom(desc='You enter a gloomy room...',enemies=[Goblin()])
 
-# Treasure Room
+# Treasure Rooms
+treasureRoom = TreasureRoom(desc='You enter a room with a treasure chest inside.')
 
 Level1 = Dungeon(rooms=[goblinRoom,goblinRoom1,goblinRoom2,goblinRoom3,goblinRoom4,],roomNum=7,startRoom=startRoom,reqRooms=None,mapsize=9)

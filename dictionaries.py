@@ -7,8 +7,8 @@ iconDict = {
     'Treasure Room': '[T]'
 }
 moveDict = {
-    'north': ['north','up','w'],
+    'north': ['north','up','n'],
     'south': ['south','down','s'],
-    'west': ['west','left','a'],
-    'east': ['east','right','d'],
+    'west': ['west','left','w'],
+    'east': ['east','right','e'],
 }

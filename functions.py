@@ -23,7 +23,7 @@ def text(toprint) -> None:
 
 # Returns a Boolean based on a chance of something happening
 def chance(percentage) -> bool:
-    if percentage/100 >= random.random():
+    if percentage >= random.random():
         return True
     return False
 
