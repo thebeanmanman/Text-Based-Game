@@ -4,7 +4,7 @@ import random
 import os
 
 # Import Dictionaries
-from dictionaries import moveDict
+from dictionaries import optionDict
 
 #Control Variables
 ClearTerminal = True
@@ -40,21 +40,25 @@ def randItem(list):
         return list[random.randint(0,len(list)-1)]
 
 #Returns a players choice from a list of options
-def Option(player=None,North=False,South=False,West=False,East=False,Map=False,Other=False,OtherList=[]):
-    choice = input('> ').lower()
-    if North and choice in moveDict['north']:
-        return choice
-    elif South and choice in moveDict['south']:
-        return choice
-    elif West and choice in moveDict['west']:
-        return choice
-    elif East and choice in moveDict['east']:
-        return choice
-    elif Other and choice in OtherList:
-        return choice
-    elif Map and choice == 'map':
-        player.DungLvl.printMap()
-        return Option(player=player,North=North,South=South,West=West,East=East,Map=Map,Other=Other,OtherList=OtherList)
-    else:
-        text('Unknown action. Please try again')
-        return Option(player=player,North=North,South=South,West=West,East=East,Map=Map,Other=Other,OtherList=OtherList)
+def Option(player=None,North=False,South=False,West=False,East=False,Map=False,Other=False,OtherList=[],Yes=False,No=False):
+    choosing = True
+    while choosing:
+        choice = input('> ').lower()
+        if North and choice in optionDict['north']:
+            return choice
+        elif South and choice in optionDict['south']:
+            return choice
+        elif West and choice in optionDict['west']:
+            return choice
+        elif East and choice in optionDict['east']:
+            return choice
+        elif Other and choice in OtherList:
+            return choice
+        elif Map and choice == 'map':
+            player.DungLvl.printMap()
+        elif Yes and choice in optionDict['yes']:
+            return choice
+        elif No and choice in optionDict['no']:
+            return choice
+        else:
+            text('Unknown action. Please try again')

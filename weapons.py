@@ -1,37 +1,42 @@
 from colours import col
+from functions import text
 
 class Item():
-    def __init__(self,rarity:int,name:str,desc:str,playerItem=True) -> None:
+    def __init__(self,rarity:int,name:str,desc:str) -> None:
         self.name = name
         self.desc = desc
-        self.playerItem = playerItem
         self.assignRarity(rarity)
 
     def assignRarity(self, rarity):
-        if self.playerItem:
-            if rarity == 1:
-                common.append(self)
-                self.rarname = f'{col.commont} {col.common(self.name)}'
-            elif rarity == 2:
-                uncommon.append(self)
-                self.rarname = f'{col.uncommont} {col.uncommon(self.name)}'
-            elif rarity == 3:
-                rare.append(self)
-                self.rarname = f'{col.raret} {col.rare(self.name)}'
-            elif rarity == 4:
-                epic.append(self)
-                self.rarname = f'{col.epict} {col.epic(self.name)}'
-            elif rarity == 5:
-                legendary.append(self)
-                self.rarname = f'{col.legt} {col.leg(self.name)}'
+        if rarity == 1:
+            common.append(self)
+            self.rarname = f'{col.commont} {col.common(self.name)}'
+        elif rarity == 2:
+            uncommon.append(self)
+            self.rarname = f'{col.uncommont} {col.uncommon(self.name)}'
+        elif rarity == 3:
+            rare.append(self)
+            self.rarname = f'{col.raret} {col.rare(self.name)}'
+        elif rarity == 4:
+            epic.append(self)
+            self.rarname = f'{col.epict} {col.epic(self.name)}'
+        elif rarity == 5:
+            legendary.append(self)
+            self.rarname = f'{col.legt} {col.leg(self.name)}'
 
 class Weapon(Item):
-    def __init__(self, name:str, type:str, dmg:int,desc='',rarity=1, goldvalue=1,crt=0,playerItem=True) -> None:
-        super().__init__(name=name,desc=desc,rarity=rarity,playerItem=playerItem)
+    def __init__(self, name:str, type:str, dmg:int,desc='',rarity=0, goldvalue=0,crt=0) -> None:
+        super().__init__(name=name,desc=desc,rarity=rarity)
         self.type = type
         self.dmg = dmg
         self.goldvalue = goldvalue
         self.crt = crt
+    
+    def showStats(self):
+        text(f'Description: {self.desc}')
+        text(f'Damage: {self.dmg}')
+        if self.crt > 0:
+            text(f'Critical Hit Chance: {int(self.crt*100)}%')
 
 common = []
 uncommon = []
@@ -39,16 +44,25 @@ rare = []
 epic = []
 legendary = []
 
-# rarityList = [common,uncommon,rare,epic,legendary]
-
+### Weapons ###
+# Common
 woodenSword = Weapon(name='Wooden Sword',type='Sharp',dmg=3,crt=0.01,rarity=1,desc='A sword made of wood.')
-ironSword = Weapon(name='Iron Sword',type='Sharp',dmg=3,crt=0.5,rarity=3,desc='A sword made of iron.')
-diamondSword = Weapon(name='Diamond Sword',type='Sharp',dmg=3,crt=0.01,rarity=5,desc='A sword made of diamonds.')
+stick = Weapon(name='Stick',type='Blunt',dmg=1,desc='Utterly Useless',rarity=1)
 
-greatSword = Weapon(name='Great Sword',type='Sharp',dmg=9,crt=0.05,rarity=4,desc='A great sword.')
-
+# Uncommon
 shortBow = Weapon(name='Short Bow',type='Ranged',dmg=4,desc='A short bow',rarity=2)
 
-fists = Weapon(name='Fists',type='Blunt',dmg=1,goldvalue=0,crt=0.0001,desc='Punchy Punchy',playerItem=False)
+# Rare
+ironSword = Weapon(name='Iron Sword',type='Sharp',dmg=3,crt=0.5,rarity=3,desc='A sword made of iron.')
 
-claws = Weapon(name='Claws',type='Sharp',dmg=2,crt=0.1,playerItem=False)
+# Epic
+greatSword = Weapon(name='Great Sword',type='Sharp',dmg=9,crt=0.05,rarity=4,desc='A great sword.')
+
+# Legendary
+diamondSword = Weapon(name='Diamond Sword',type='Sharp',dmg=3,crt=0.01,rarity=5,desc='A sword made of diamonds.')
+goldenStick = Weapon(name='Golden Stick',type='Blunt',dmg=4,crt=1,rarity=5,desc='Golden, sticky and WHAAAAT 100% Crtical Hit Chance?!')
+
+# Unobtainable Weapons / Enemy Weapons
+fists = Weapon(name='Fists',type='Blunt',dmg=1,crt=0.0001,desc='Punchy Punchy',rarity=0)
+claws = Weapon(name='Claws',type='Sharp',dmg=2,crt=0.1,rarity=0)
+mimicJaws = Weapon(name='Jaws',type='Sharp',dmg=5,crt=0.15,rarity=0)

@@ -1,19 +1,22 @@
 from random import choices
 
 # Import Enemies
-from entity import Goblin
+from entity import Goblin,Mimic
 
 # Import Functions
-from functions import text,randItem,Option,wipe
+from functions import text,randItem,Option,wipe,chance
 
 # Import Dictionaries
-from dictionaries import iconDict,moveDict
+from dictionaries import iconDict,optionDict
 
 # Import Grammar
 from grammar import orChoice,AreIs,Plural
 
 # Import Weapons
 from weapons import common,uncommon,rare,epic,legendary
+
+#Import Colours
+from colours import col
 
 class Dungeon():
     def __init__(self,reqRooms:list,rooms:list,roomNum:int,startRoom,mapsize:int) -> None:
@@ -43,7 +46,7 @@ class Dungeon():
             currRoom.x = x
             currRoom.y = y
             currRoom.lvl = self
-            dirList = self.mapDirCheck(x,y)
+            dirList = self.mapNoDirCheck(x,y)
             if dirList:
                 direction = randItem(dirList)
                 nextRoom = randItem(self.rooms)
@@ -57,7 +60,7 @@ class Dungeon():
                 Generate = False
         self.createDispMap()
 
-    def mapDirCheck(self,x,y,reverse=False):
+    def mapNoDirCheck(self,x,y):
         dirList = []
         if y-1 >= 0 and not self.map[y-1][x]:
             dirList.append([y-1,x,'north'])
@@ -68,11 +71,19 @@ class Dungeon():
         if x+1 < self.mapsize and not self.map[y][x+1]:
             dirList.append([y,x+1,'east'])
 
-        if reverse: 
-            reversedDir = list({'north','south','west','east'} - set([item[2] for item in dirList]))
-            return reversedDir
-        else:
-            return dirList
+        return dirList
+    
+    def mapDirCheck(self,x,y):
+        dirList = []
+        if y-1 >= 0 and self.map[y-1][x]:
+            dirList.append('north')
+        if y+1 < self.mapsize and self.map[y+1][x]:
+            dirList.append('south')
+        if x-1 >= 0 and self.map[y][x-1]:
+            dirList.append('west')
+        if x+1 < self.mapsize and self.map[y][x+1]:
+            dirList.append('east')
+        return dirList
     
     def createDispMap(self):
         self.dispMap = []
@@ -96,11 +107,10 @@ class Dungeon():
         print(f'Enemy Room: {iconDict["Enemy Room"]}')
 
 class Room():
-    def __init__(self,desc:str,icon:str) -> None:
-        self.desc = desc
-        self.icon = icon
+    def __init__(self,Level) -> None:
         self.x = 0
         self.y = 0
+        self.Level = Level
         self.lvl = None
         self.cleared = False
 
@@ -112,20 +122,20 @@ class Room():
         self.move(player)
 
     def move(self,player):
-        options = self.lvl.mapDirCheck(self.x,self.y,reverse=True)
+        options = self.lvl.mapDirCheck(self.x,self.y)
         text(f'You can move {orChoice(options)}')
         direction = Option(player=player,North='north' in options,South='south' in options,West='west' in options,East='east',Map=True)
         self.lvl.dispMap[self.y][self.x] = self.icon
-        if direction in moveDict['north']:
+        if direction in optionDict['north']:
             player.room = self.lvl.map[self.y-1][self.x]
             player.room.enter(player)
-        if direction in moveDict['south']:
+        if direction in optionDict['south']:
             player.room = self.lvl.map[self.y+1][self.x]
             player.room.enter(player)
-        if direction in moveDict['west']:
+        if direction in optionDict['west']:
             player.room = self.lvl.map[self.y][self.x-1]
             player.room.enter(player)
-        if direction in moveDict['east']:
+        if direction in optionDict['east']:
             player.room = self.lvl.map[self.y][self.x+1]
             player.room.enter(player)
         
@@ -134,15 +144,22 @@ class Room():
         text('You have cleared this room.')
     
 class StartRoom(Room):
-    def __init__(self, desc: str, icon=iconDict['Start Room']) -> None:
-        super().__init__(desc, icon)
+    def __init__(self, Level) -> None:
+        super().__init__(Level)
+        self.icon = iconDict['Start Room']
         self.cleared = True
+
+        if Level == 1:
+            self.desc = 'You enter the dungeon...'
 
 
 class EnemyRoom(Room):
-    def __init__(self, desc: str,enemies:list,icon=iconDict['Enemy Room']) -> None:
-        super().__init__(desc,icon)
+    def __init__(self,Level,enemies:list) -> None:
+        super().__init__(Level)
+        self.desc = 'You enter a room filled with enemies.' 
+        self.icon = iconDict['Enemy Room']
         self.enemies = enemies
+
 
     def enter(self,player):
         wipe()
@@ -153,17 +170,12 @@ class EnemyRoom(Room):
         else:
             self.battling = True
             enemy = self.spawnEnemy()
+            text(f'You have encountered {enemy.name}!')
             while self.battling:
-                player.attack(enemy)
-                enemy.attack(player)
-                text(f'Your HP: {player.hp}')
-                text(f'{enemy.name}s HP: {enemy.hp}')
-                input()
+                player.battle(enemy)
                 if player.hp <= 0:
                     self.battling = False
-                    player.death()
                 elif enemy.hp <= 0:
-                    enemy.death(player)
                     self.enemies.pop(0)
                     text(f'There {AreIs(len(self.enemies))} {len(self.enemies)} {Plural(len(self.enemies),"enemy")} left.')
                     enemy = self.spawnEnemy()
@@ -173,27 +185,85 @@ class EnemyRoom(Room):
     def spawnEnemy(self):
         if self.enemies:
             enemy = self.enemies[0]
-            text(f'You have encountered {enemy.name}!')
-            input()
             return enemy
         else:
             self.battling = False
             self.clear()
     
 class TreasureRoom(Room):
-    def __init__(self, desc: str,icon=iconDict['Treasure Room']) -> None:
-        super().__init__(desc,icon)
+    def __init__(self,Level):
+        super().__init__(Level)
+
+        # Visual Variables:
+        self.desc = 'You enter a room with a large treasure chest inside.'
+        self.icon = iconDict['Treasure Room']
+
+        # Chances for each rarity tier
+        self.commonCh = 37
+        self.uncommonCh = 28
+        self.rareCh = 19
+        self.epicCh = 13
+        self.legCh = 3
+
+        # Mimic variables
+        self.mimicChance = 0.1
+        self.IsMimic = False
+        self.Mimic = Mimic()
+
+        # Rolls for loot and mimic chances
         self.rollTreasure()
+        self.rollMimic()
     
     def rollTreasure(self):
-        rarityLvl = choices([common,uncommon,rare,epic,legendary], weights=(37,28,19,13,3), k=1)[0]
+        rarityLvl = choices([common,uncommon,rare,epic,legendary], weights=(self.commonCh,self.uncommonCh,self.rareCh,self.epicCh,self.legCh), k=1)[0]
         self.treasure = randItem(rarityLvl)
+    
+    def rollMimic(self):
+        if chance(self.mimicChance):
+            self.IsMimic = True        
 
     def enter(self,player):
         wipe()
         self.lvl.dispMap[self.y][self.x] = player.icon
+        text(self.desc)
+        if self.cleared:
+            text('You have already cleared this room.')
+            self.move(player)
+        else:
+            text('Open the chest?')
+            answer = Option(Yes=True,No=True)
+            if answer in optionDict['yes']:
+                text('Your curiousity is tempted by the chest and you approach it...')
+                self.open(player)
+            elif answer in optionDict['no']:
+                text('You supress the desire to see what treasure awaits you and you move on.')
+                self.clear()
+                self.move(player)
+        
+    def open(self,player):
+        text('Your hands swiftly unlock the chest, awaiting your reward...')
+        if self.IsMimic:
+            text(f'{col.red("Only to find rows upon rows of gnashing teeth.")}')
+            text(f'You have encountered a {col.red("Mimic!")}')
+            player.battle(self.Mimic)
+            if player.hp > 0:
+                self.clear()
+                self.move(player)
+        else:
+            text('You find an item lying in the bottom of the chest.')
+            text(f'You have found a {self.treasure.rarname}!')
+            self.treasure.showStats()
+            text('Would you like to equip it?')
+            answer = Option(Yes=True,No=True)
+            if answer in optionDict['yes']:
+                player.equip(self.treasure)
+                self.clear()
+                self.move(player)
+            elif answer in optionDict['no']:
+                text('You leave the item in the chest and move on.')
+                self.clear()
+                self.move(player)
 
-    
 # Start Rooms
 startRoom = StartRoom(desc='You enter the dungeon...')
 
@@ -205,6 +275,11 @@ goblinRoom3 = EnemyRoom(desc='You enter a room...',enemies=[Goblin(),Goblin()])
 goblinRoom4 = EnemyRoom(desc='You enter a gloomy room...',enemies=[Goblin()])
 
 # Treasure Rooms
-treasureRoom = TreasureRoom(desc='You enter a room with a treasure chest inside.')
+treasureRoom = TreasureRoom(desc='You enter a room with a large treasure chest inside.')
+treasureRoom2 = TreasureRoom(desc='dnja')
 
-Level1 = Dungeon(rooms=[goblinRoom,goblinRoom1,goblinRoom2,goblinRoom3,goblinRoom4,],roomNum=7,startRoom=startRoom,reqRooms=None,mapsize=9)
+Level1 = Dungeon(rooms=[goblinRoom,goblinRoom1,goblinRoom2,goblinRoom3,goblinRoom4,treasureRoom],roomNum=7,startRoom=startRoom,reqRooms=None,mapsize=9)
+
+a = randItem([TreasureRoom,EnemyRoom,StartRoom])
+new = a(desc='You enyer')
+print(new.desc)

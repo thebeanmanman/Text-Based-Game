@@ -6,9 +6,11 @@ iconDict = {
     'Player' : f'[{col.red("X")}]',
     'Treasure Room': '[T]'
 }
-moveDict = {
+optionDict = {
     'north': ['north','up','n'],
     'south': ['south','down','s'],
     'west': ['west','left','w'],
     'east': ['east','right','e'],
+    'yes': ['yes','y','yeah'],
+    'no': ['no','n','nah']
 }
