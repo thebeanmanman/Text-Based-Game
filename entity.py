@@ -40,6 +40,13 @@ class Player(Entity):
         text(f'You dropped the {self.weapon.name}!')
         self.weapon = self.defaultWeapon
 
+    def currentWeaponStats(self):
+        if self.weapon == fists:
+            text(f'Your current weapon is your fists.')
+        else:
+            text(f'Your current weapon is a {self.weapon.rarname}')
+        self.weapon.showStats()
+
     def battle(self,enemy):
         self.battling = True
         while self.battling:

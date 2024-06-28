@@ -47,7 +47,7 @@ legendary = []
 ### Weapons ###
 # Common
 woodenSword = Weapon(name='Wooden Sword',type='Sharp',dmg=3,crt=0.01,rarity=1,desc='A sword made of wood.')
-stick = Weapon(name='Stick',type='Blunt',dmg=1,desc='Utterly Useless',rarity=1)
+stick = Weapon(name='Stick',type='Blunt',dmg=1,desc='Utterly Useless',crt=0.01,rarity=1)
 
 # Uncommon
 shortBow = Weapon(name='Short Bow',type='Ranged',dmg=4,desc='A short bow',rarity=2)
@@ -63,7 +63,7 @@ diamondSword = Weapon(name='Diamond Sword',type='Sharp',dmg=3,crt=0.01,rarity=5,
 goldenStick = Weapon(name='Golden Stick',type='Blunt',dmg=4,crt=1,rarity=5,desc='Golden, sticky and WHAAAAT 100% Crtical Hit Chance?!')
 
 # Unobtainable Weapons / Enemy Weapons
-fists = Weapon(name='Fists',type='Blunt',dmg=1,crt=0.0001,desc='Punchy Punchy',rarity=0)
+fists = Weapon(name='Fists',type='Blunt',dmg=1,desc='Punchy Punchy',rarity=0)
 goblinDagger = Weapon(name='Dagger',type='Sharp',dmg=2,crt=0.1,rarity=0)
 mimicJaws = Weapon(name='Jaws',type='Sharp',dmg=5,crt=0.15,rarity=0)
 spiderFangs = Weapon(name='Fangs',type='Sharp',dmg=1,rarity=0) # Add Poison Chance

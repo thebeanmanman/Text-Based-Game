@@ -30,7 +30,7 @@ def chance(percentage) -> bool:
 #Clears the terminal based on wether 
 def wipe():
     if ClearTerminal:
-        os.system('cls')
+        os.system('cls' if os.name=='nt' else 'clear')
 
 #Returns a random item from a list
 def randItem(list):

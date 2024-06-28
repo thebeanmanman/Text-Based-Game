@@ -12,6 +12,6 @@ optionDict = {
     'west': ['west','left','w'],
     'east': ['east','right','e'],
     'yes': ['yes','y','yeah'],
-    'no': ['no','n','nah'],
+    'no': ['no','n','nah','never'],
     'map': ['map','m','dungeon','rooms']
 }

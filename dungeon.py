@@ -188,7 +188,6 @@ class StartRoom(Room):
     def __init__(self, Level) -> None:
         super().__init__(Level)
         self.icon = iconDict['Start Room']
-        self.cleared = True
 
         if Level == 1:
             self.desc = 'You enter the dungeon...'
@@ -249,6 +248,7 @@ class EnemyRoom(Room):
         if self.enemies:
             enemy = self.enemies[0]
             text(f'You have encountered {enemy.name}!')
+            input()
             return enemy
         else:
             self.battling = False
@@ -315,9 +315,13 @@ class TreasureRoom(Room):
                 self.move(player)
         else:
             text('You find an item lying in the bottom of the chest.')
+            print()
             text(f'You have found a {self.treasure.rarname}!')
             self.treasure.showStats()
-            text('Would you like to equip it?')
+            print()
+            player.currentWeaponStats()
+            print()
+            text(f'Would you like to equip the {self.treasure.rarname}?')
             answer = Option(Yes=True,No=True)
             if answer in optionDict['yes']:
                 player.equip(self.treasure)
