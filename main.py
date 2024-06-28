@@ -35,8 +35,8 @@ def helpMenu():
     title_screen()
 
 def startGame():
-    hero = Player(name='The Main Character', maxhp=50, DungLvl=Level1)
-    hero.equip(ironSword)
+    hero = Player(name='The Main Character', maxhp=10, DungLvl=Level1)
+    # hero.equip(ironSword)
     hero.room = Level1.startRoom
     hero.room.enter(hero)
 
