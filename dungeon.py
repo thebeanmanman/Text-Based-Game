@@ -1,7 +1,7 @@
-from random import choices
+from random import choices,randint
 
 # Import Enemies
-from entity import Goblin,Mimic
+from entity import Goblin,Mimic,Spider
 
 # Import Functions
 from functions import text,randItem,Option,wipe,chance
@@ -19,11 +19,13 @@ from weapons import common,uncommon,rare,epic,legendary
 from colours import col
 
 class Dungeon():
-    def __init__(self,reqRooms:list,rooms:list,roomNum:int,startRoom,mapsize:int) -> None:
+    def __init__(self,reqRooms:list,rooms:list,roomNum:int,mapsize:int,Level:int,roomChances:list) -> None:
         self.reqRooms = reqRooms
         self.rooms = rooms
         self.roomNum = roomNum
-        self.startRoom = startRoom
+        self.startRoom = StartRoom(Level)
+        self.Level = Level
+        self.roomChances = roomChances
 
         self.mapsize = mapsize
         self.map = []
@@ -41,7 +43,7 @@ class Dungeon():
         y = x
         currRoom = self.startRoom
         i = 0
-        while i <= self.roomNum and self.rooms and Generate:
+        while i <= self.roomNum and Generate:
             self.map[y][x] = currRoom
             currRoom.x = x
             currRoom.y = y
@@ -49,27 +51,29 @@ class Dungeon():
             dirList = self.mapNoDirCheck(x,y)
             if dirList:
                 direction = randItem(dirList)
-                nextRoom = randItem(self.rooms)
-                i += 1
+                nextRoom = self.rollRooms()
                 x = direction[1]
                 y = direction[0]
-                if currRoom in self.rooms:
-                    self.rooms.remove(currRoom)
                 currRoom = nextRoom
+                i += 1
             else:
                 Generate = False
         self.createDispMap()
 
+    def rollRooms(self):
+        room = choices(self.rooms,weights=self.roomChances,k=1)[0]
+        return room(self.Level)
+
     def mapNoDirCheck(self,x,y):
         dirList = []
         if y-1 >= 0 and not self.map[y-1][x]:
-            dirList.append([y-1,x,'north'])
+            dirList.append([y-1,x])
         if y+1 < self.mapsize and not self.map[y+1][x]:
-            dirList.append([y+1,x,'south'])
+            dirList.append([y+1,x])
         if x-1 >= 0 and not self.map[y][x-1]:
-            dirList.append([y,x-1,'west'])
+            dirList.append([y,x-1])
         if x+1 < self.mapsize and not self.map[y][x+1]:
-            dirList.append([y,x+1,'east'])
+            dirList.append([y,x+1])
 
         return dirList
     
@@ -154,11 +158,22 @@ class StartRoom(Room):
 
 
 class EnemyRoom(Room):
-    def __init__(self,Level,enemies:list) -> None:
+    def __init__(self,Level) -> None:
         super().__init__(Level)
-        self.desc = 'You enter a room filled with enemies.' 
+        self.desc = 'You enter a dimly lit room.' 
         self.icon = iconDict['Enemy Room']
-        self.enemies = enemies
+        self.enemies = []
+        if self.Level == 1:
+            self.EnemyTypes = [Goblin,Spider]
+        
+        self.rollEnemy()
+
+    def rollEnemy(self):
+        enemyNum  = randint(1,3)
+        for i in range(enemyNum):
+            enemyType = randItem(self.EnemyTypes)
+            InstantiatedEnemy = enemyType()
+            self.enemies.append(InstantiatedEnemy)
 
 
     def enter(self,player):
@@ -168,9 +183,9 @@ class EnemyRoom(Room):
         if self.cleared:
             text('You have already cleared this room.')
         else:
+            text('It is filled with enemies!')
             self.battling = True
             enemy = self.spawnEnemy()
-            text(f'You have encountered {enemy.name}!')
             while self.battling:
                 player.battle(enemy)
                 if player.hp <= 0:
@@ -185,6 +200,7 @@ class EnemyRoom(Room):
     def spawnEnemy(self):
         if self.enemies:
             enemy = self.enemies[0]
+            text(f'You have encountered {enemy.name}!')
             return enemy
         else:
             self.battling = False
@@ -265,21 +281,17 @@ class TreasureRoom(Room):
                 self.move(player)
 
 # Start Rooms
-startRoom = StartRoom(desc='You enter the dungeon...')
+# startRoom = StartRoom()
 
-# Enemy Rooms
-goblinRoom = EnemyRoom(desc='You enter a dark room...',enemies=[Goblin()])
-goblinRoom1 = EnemyRoom(desc='You enter a dim room...',enemies=[Goblin(),Goblin()])
-goblinRoom2 = EnemyRoom(desc='You enter a small room...',enemies=[Goblin()])
-goblinRoom3 = EnemyRoom(desc='You enter a room...',enemies=[Goblin(),Goblin()])
-goblinRoom4 = EnemyRoom(desc='You enter a gloomy room...',enemies=[Goblin()])
+# # Enemy Rooms
+# goblinRoom = EnemyRoom(desc='You enter a dark room...',enemies=[Goblin()])
+# goblinRoom1 = EnemyRoom(desc='You enter a dim room...',enemies=[Goblin(),Goblin()])
+# goblinRoom2 = EnemyRoom(desc='You enter a small room...',enemies=[Goblin()])
+# goblinRoom3 = EnemyRoom(desc='You enter a room...',enemies=[Goblin(),Goblin()])
+# goblinRoom4 = EnemyRoom(desc='You enter a gloomy room...',enemies=[Goblin()])
 
-# Treasure Rooms
-treasureRoom = TreasureRoom(desc='You enter a room with a large treasure chest inside.')
-treasureRoom2 = TreasureRoom(desc='dnja')
+# # Treasure Rooms
+# treasureRoom = TreasureRoom(desc='You enter a room with a large treasure chest inside.')
+# treasureRoom2 = TreasureRoom(desc='dnja')
 
-Level1 = Dungeon(rooms=[goblinRoom,goblinRoom1,goblinRoom2,goblinRoom3,goblinRoom4,treasureRoom],roomNum=7,startRoom=startRoom,reqRooms=None,mapsize=9)
-
-a = randItem([TreasureRoom,EnemyRoom,StartRoom])
-new = a(desc='You enyer')
-print(new.desc)
+Level1 = Dungeon(rooms=[TreasureRoom,EnemyRoom],roomNum=7,reqRooms=None,mapsize=9,Level=1,roomChances=[5,20])

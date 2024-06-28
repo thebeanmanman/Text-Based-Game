@@ -1,4 +1,4 @@
-from weapons import fists,claws,mimicJaws
+from weapons import fists,goblinDagger,mimicJaws,spiderFangs
 from names import Goblinlist
 
 #Import Functions
@@ -67,7 +67,7 @@ class Enemy(Entity):
         text(f'You have slain {self.name}. Gained ____')
 
 class Goblin(Enemy):
-    def __init__(self, weapon=claws,hp=4,) -> None:
+    def __init__(self, weapon=goblinDagger,hp=4,) -> None:
         self.name = f'{randItem(Goblinlist)} The Goblin'
         self.weapon = weapon
         self.maxhp = hp
@@ -77,5 +77,12 @@ class Mimic(Enemy):
     def __init__(self,hp=10) -> None:
         self.name = 'The Mimic'
         self.weapon = mimicJaws
+        self.maxhp = hp
+        self.hp = hp
+
+class Spider(Enemy):
+    def __init__(self,hp=3):
+        self.name = 'The Spider'
+        self.weapon = spiderFangs
         self.maxhp = hp
         self.hp = hp

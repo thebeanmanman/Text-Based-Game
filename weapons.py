@@ -64,5 +64,6 @@ goldenStick = Weapon(name='Golden Stick',type='Blunt',dmg=4,crt=1,rarity=5,desc=
 
 # Unobtainable Weapons / Enemy Weapons
 fists = Weapon(name='Fists',type='Blunt',dmg=1,crt=0.0001,desc='Punchy Punchy',rarity=0)
-claws = Weapon(name='Claws',type='Sharp',dmg=2,crt=0.1,rarity=0)
+goblinDagger = Weapon(name='Dagger',type='Sharp',dmg=2,crt=0.1,rarity=0)
 mimicJaws = Weapon(name='Jaws',type='Sharp',dmg=5,crt=0.15,rarity=0)
+spiderFangs = Weapon(name='Fangs',type='Sharp',dmg=3,rarity=0) # Add Poison Chance
