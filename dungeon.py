@@ -192,6 +192,17 @@ class StartRoom(Room):
 
         if Level == 1:
             self.desc = 'You enter the dungeon...'
+            self.reEnter = 'You enter the room that you started in.\nAre you sure your not lost?'
+    
+    def enter(self, player):
+        wipe()
+        self.lvl.dispMap[self.y][self.x] = player.icon
+        if self.cleared:
+            text(self.reEnter)
+        else:
+            self.cleared = True
+            text(self.desc)
+        self.move(player)
 
 
 class EnemyRoom(Room):
