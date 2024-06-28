@@ -35,7 +35,44 @@ class Dungeon():
                 row.append('')
             self.map.append(row)
 
-        self.GenerateMap()
+        self.NewGen()
+
+    def NewGen(self):
+        Generate = True
+        center = self.mapsize//2
+        x = center
+        y = center
+        currRoom = self.startRoom
+        i = 0
+        while i <= self.roomNum and Generate:
+            self.map[y][x] = currRoom
+            currRoom.x = x
+            currRoom.y = y
+            currRoom.lvl = self
+            x = center
+            y = center
+            while self.map[y][x]:
+                dirList = self.NewDirList(x,y)
+                if dirList:
+                    direction = randItem(dirList)
+                    x,y = direction[1],direction[0]
+                else:
+                    Generate = False
+            currRoom = self.rollRooms()
+            i += 1
+        self.createDispMap()
+
+    def NewDirList(self,x,y):
+        dirList = []
+        if y-1 >= 0:
+            dirList.append([y-1,x])
+        if y+1 < self.mapsize:
+            dirList.append([y+1,x])
+        if x-1 >= 0:
+            dirList.append([y,x-1])
+        if x+1 < self.mapsize:
+            dirList.append([y,x+1])
+        return dirList
 
     def GenerateMap(self):
         Generate = True
@@ -294,4 +331,4 @@ class TreasureRoom(Room):
 # treasureRoom = TreasureRoom(desc='You enter a room with a large treasure chest inside.')
 # treasureRoom2 = TreasureRoom(desc='dnja')
 
-Level1 = Dungeon(rooms=[TreasureRoom,EnemyRoom],roomNum=7,reqRooms=None,mapsize=9,Level=1,roomChances=[5,20])
+Level1 = Dungeon(rooms=[TreasureRoom,EnemyRoom],roomNum=14,reqRooms=None,mapsize=9,Level=1,roomChances=[5,20])

@@ -54,7 +54,7 @@ def Option(player=None,North=False,South=False,West=False,East=False,Map=False,O
             return choice
         elif Other and choice in OtherList:
             return choice
-        elif Map and choice == 'map':
+        elif Map and choice in optionDict['map']:
             player.DungLvl.printMap()
         elif Yes and choice in optionDict['yes']:
             return choice

@@ -25,7 +25,7 @@ class Entity():
         target.hp = max(target.hp,0)
 
 class Player(Entity):
-    def __init__(self, name: str,DungLvl, maxhp=1, ) -> None:
+    def __init__(self, name: str,DungLvl, maxhp=10, ) -> None:
         super().__init__(name, maxhp)
         self.defaultWeapon = self.weapon
         self.room = None
