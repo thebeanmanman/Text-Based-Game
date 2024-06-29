@@ -10,7 +10,7 @@ from dictionaries import optionDict
 ClearTerminal = True
 
 
-#Creates a text animation
+#Creates a smooth text animation
 def text(toprint) -> None:
     for line in str(toprint).split('\n'):
         avoidValues = []
@@ -39,7 +39,7 @@ def chance(percentage) -> bool:
         return True
     return False
 
-#Clears the terminal based on wether 
+#Controls whether the terminal will be cleared or not. Also allows for compatibility between operating systems (Debugging)
 def wipe():
     if ClearTerminal:
         os.system('cls' if os.name=='nt' else 'clear')
