@@ -11,18 +11,23 @@ class Item():
         if rarity == 1:
             common.append(self)
             self.rarname = f'{col.commont} {col.common(self.name)}'
+            self.name = col.common(self.name)
         elif rarity == 2:
             uncommon.append(self)
             self.rarname = f'{col.uncommont} {col.uncommon(self.name)}'
+            self.name = col.uncommon(self.name)
         elif rarity == 3:
             rare.append(self)
             self.rarname = f'{col.raret} {col.rare(self.name)}'
+            self.name = col.rare(self.name)
         elif rarity == 4:
             epic.append(self)
             self.rarname = f'{col.epict} {col.epic(self.name)}'
+            self.name = col.epic(self.name)
         elif rarity == 5:
             legendary.append(self)
             self.rarname = f'{col.legt} {col.leg(self.name)}'
+            self.name = col.leg(self.name)
 
 class Weapon(Item):
     def __init__(self, name:str, type:str, dmg:int,desc='',rarity=0, goldvalue=0,crt=0) -> None:

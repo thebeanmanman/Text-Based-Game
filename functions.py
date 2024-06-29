@@ -9,17 +9,29 @@ from dictionaries import optionDict
 #Control Variables
 ClearTerminal = True
 
+
 #Creates a text animation
 def text(toprint) -> None:
-    texttime = 0.6/(len(''.join(e for e in toprint if e.isalnum())))
-    toprint = str(toprint)
-    for char in toprint:
-        print(char,flush=True,end='')
-        if char == '.':
-            sleep(texttime*20)
-        else:
-            sleep(texttime)
-    print('\n',end='')
+    for line in str(toprint).split('\n'):
+        avoidValues = []
+        i = 0
+        while i < len(line):
+            if line[i] == '\033':
+                End = line.find('m',i)
+                for j in range(i,End+1):
+                    avoidValues.append(j)
+                i = End+1
+            else:
+                i+=1
+        texttime = 0.6/(len(line)-len(avoidValues))
+        for charNum,char in enumerate(line):
+            print(char,flush=True,end='')
+            if char == '.':
+                sleep(texttime*20)
+            else:
+                if charNum not in avoidValues:
+                    sleep(texttime)
+        print('\n',end='')
 
 # Returns a Boolean based on a chance of something happening
 def chance(percentage) -> bool:

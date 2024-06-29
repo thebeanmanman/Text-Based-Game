@@ -18,7 +18,7 @@ class Entity():
     def attack(self, target) -> None:
         if chance(self.weapon.crt):
             target.hp -= self.weapon.dmg*3
-            text(f'{self.name} dealt {col.rgb(255,0,0,self.weapon.dmg*3)} damage using their {self.weapon.name} {col.red("[Critial Hit!]")}')
+            text(f'{self.name} dealt {col.rgb(255,0,0,self.weapon.dmg*3)} damage using their {self.weapon.name}! {col.red("[Critial Hit!]")}')
         else:
             target.hp -= self.weapon.dmg
             text(f'{self.name} dealt {self.weapon.dmg} damage using their {self.weapon.name}!')
