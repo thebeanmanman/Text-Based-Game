@@ -23,11 +23,11 @@ def text(toprint) -> None:
                 i = End+1
             else:
                 i+=1
-        texttime = 0.6/(len(line)-len(avoidValues))
+        texttime = 1/(len(line)-len(avoidValues))
         for charNum,char in enumerate(line):
             print(char,flush=True,end='')
             if char == '.':
-                sleep(texttime*20)
+                sleep(0.4)
             else:
                 if charNum not in avoidValues:
                     sleep(texttime)
