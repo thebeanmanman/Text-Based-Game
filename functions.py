@@ -7,7 +7,7 @@ import os
 from dictionaries import optionDict
 
 #Control Variables
-ClearTerminal = True
+ClearTerminal = False
 
 
 #Creates a smooth text animation

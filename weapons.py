@@ -51,20 +51,20 @@ legendary = []
 
 ### Weapons ###
 # Common
-woodenSword = Weapon(name='Wooden Sword',type='Sharp',dmg=3,crt=0.01,rarity=1,desc='A sword made of wood.')
+woodenSword = Weapon(name='Wooden Sword',type='Sharp',dmg=2,crt=0.05,rarity=1,desc='A sword made of wood.')
 stick = Weapon(name='Stick',type='Blunt',dmg=1,desc='Utterly Useless',crt=0.01,rarity=1)
 
 # Uncommon
-shortBow = Weapon(name='Short Bow',type='Ranged',dmg=4,desc='A short bow',rarity=2)
+shortBow = Weapon(name='Short Bow',type='Ranged',dmg=2,crt=0.2,desc='A short bow',rarity=2)
 
 # Rare
-ironSword = Weapon(name='Iron Sword',type='Sharp',dmg=3,crt=0.5,rarity=3,desc='A sword made of iron.')
+ironSword = Weapon(name='Iron Sword',type='Sharp',dmg=4,crt=0.09,rarity=3,desc='A sword made of iron.')
 
 # Epic
-greatSword = Weapon(name='Great Sword',type='Sharp',dmg=9,crt=0.05,rarity=4,desc='A great sword.')
+greatSword = Weapon(name='Great Sword',type='Sharp',dmg=5,crt=0.05,rarity=4,desc='A great sword.')
 
 # Legendary
-diamondSword = Weapon(name='Diamond Sword',type='Sharp',dmg=3,crt=0.01,rarity=5,desc='A sword made of diamonds.')
+diamondSword = Weapon(name='Diamond Sword',type='Sharp',dmg=6,crt=0.01,rarity=5,desc='A sword made of diamonds.')
 goldenStick = Weapon(name='Golden Stick',type='Blunt',dmg=4,crt=1,rarity=5,desc='Golden, sticky and WHAAAAT 100% Crtical Hit Chance?!')
 
 # Unobtainable Weapons / Enemy Weapons

@@ -9,7 +9,7 @@ from colours import col
 from dictionaries import iconDict
 
 class Entity():
-    def __init__(self, name:str, maxhp=1) -> None:
+    def __init__(self, name='', maxhp=1) -> None:
         self.name = name
         self.maxhp = maxhp
         self.hp = maxhp
@@ -25,13 +25,34 @@ class Entity():
         target.hp = max(target.hp,0)
 
 class Player(Entity):
-    def __init__(self, name: str,DungLvl, maxhp=10) -> None:
-        super().__init__(name, maxhp)
+    def __init__(self,DungLvl, maxhp=10) -> None:
+        super().__init__(maxhp)
         self.defaultWeapon = self.weapon
         self.room = None
         self.DungLvl = DungLvl
         self.icon = iconDict['Player']
         self.gold = 0
+        self.lvl = 1
+        self.xp = 0
+
+        #Battle Menu Variables
+        self.divChar = '-'
+        self.sideDivLen = 4
+    
+    def setName(self,name):
+        self.name = name.title()
+        self.topBanner = f"{self.divChar*self.sideDivLen} {self.name} Level {self.lvl} {self.divChar*self.sideDivLen}" 
+        self.fullDiv = self.divChar*len(self.topBanner)
+
+    def printBanner(self):
+        print(self.topBanner)
+        print(f'XP: {self.xp}/20')
+        print(f'Gold: {col.gold(f"{self.gold}")}')
+        print(f'Health: {self.hp}/{self.maxhp}')
+        # print(f'{self.}')
+
+        print(self.fullDiv)
+
 
     def equip(self, weapon) -> None:
         self.weapon = weapon
