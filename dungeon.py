@@ -262,6 +262,8 @@ class TreasureRoom(Room):
         self.desc = 'You enter a room with a large treasure chest inside.'
         self.icon = iconDict['Treasure Room']
 
+        # Treasure Types C
+
         # Chances for each rarity tier
         self.commonCh = 37
         self.uncommonCh = 28
@@ -295,8 +297,8 @@ class TreasureRoom(Room):
             self.move(player)
         else:
             text('Open the chest?')
-            answer = Option(Yes=True,No=True)
-            if answer in optionDict['yes']:
+            answer = Option(Yes=True,No=True,Open=True)
+            if answer in optionDict['yes'] or answer in optionDict['open']:
                 text('Your curiousity is tempted by the chest and you approach it...')
                 self.open(player)
             elif answer in optionDict['no']:
@@ -331,19 +333,5 @@ class TreasureRoom(Room):
                 text('You leave the item in the chest and move on.')
                 self.clear()
                 self.move(player)
-
-# Start Rooms
-# startRoom = StartRoom()
-
-# # Enemy Rooms
-# goblinRoom = EnemyRoom(desc='You enter a dark room...',enemies=[Goblin()])
-# goblinRoom1 = EnemyRoom(desc='You enter a dim room...',enemies=[Goblin(),Goblin()])
-# goblinRoom2 = EnemyRoom(desc='You enter a small room...',enemies=[Goblin()])
-# goblinRoom3 = EnemyRoom(desc='You enter a room...',enemies=[Goblin(),Goblin()])
-# goblinRoom4 = EnemyRoom(desc='You enter a gloomy room...',enemies=[Goblin()])
-
-# # Treasure Rooms
-# treasureRoom = TreasureRoom(desc='You enter a room with a large treasure chest inside.')
-# treasureRoom2 = TreasureRoom(desc='dnja')
 
 Level1 = Dungeon(rooms=[TreasureRoom,EnemyRoom],roomNum=14,reqRooms=None,mapsize=9,Level=1,roomChances=[5,20])

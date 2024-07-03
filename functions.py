@@ -52,7 +52,7 @@ def randItem(list):
         return list[random.randint(0,len(list)-1)]
 
 #Returns a players choice from a list of options
-def Option(player=None,North=False,South=False,West=False,East=False,Map=False,Other=False,OtherList=[],Yes=False,No=False):
+def Option(player=None,North=False,South=False,West=False,East=False,Map=False,Other=False,OtherList=[],Yes=False,No=False,Open=False):
     choosing = True
     while choosing:
         choice = input('> ').lower()
@@ -71,6 +71,8 @@ def Option(player=None,North=False,South=False,West=False,East=False,Map=False,O
         elif Yes and choice in optionDict['yes']:
             return choice
         elif No and choice in optionDict['no']:
+            return choice
+        elif Open and choice in optionDict['open']:
             return choice
         else:
             text('Unknown action. Please try again')

@@ -14,6 +14,10 @@ class Colour():
     @staticmethod
     def red(text):
         return f"\033[38;2;{255};{0};{0}m{text}\033[0m"
+    
+    @staticmethod
+    def gold(text):
+        return f"\033[38;2;{255};{255};{0}m{text}\033[0m"    
 
     @staticmethod
     def hint(text):

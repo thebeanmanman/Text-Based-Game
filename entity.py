@@ -25,12 +25,13 @@ class Entity():
         target.hp = max(target.hp,0)
 
 class Player(Entity):
-    def __init__(self, name: str,DungLvl, maxhp=10, ) -> None:
+    def __init__(self, name: str,DungLvl, maxhp=10) -> None:
         super().__init__(name, maxhp)
         self.defaultWeapon = self.weapon
         self.room = None
         self.DungLvl = DungLvl
         self.icon = iconDict['Player']
+        self.gold = 0
 
     def equip(self, weapon) -> None:
         self.weapon = weapon
@@ -66,12 +67,14 @@ class Player(Entity):
         text(col.red('You have died... Game Over'))
 
 class Enemy(Entity):
-    def __init__(self, name: str,weapon, maxhp=1) -> None:
+    def __init__(self, name: str,weapon, maxhp=1,gold=1) -> None:
         super().__init__(name, maxhp)
         self.weapon = weapon
+        self.gold = gold
     
     def death(self,player):
-        text(f'You have slain {self.name}. Gained ____')
+        player.gold += self.gold
+        text(f'You have slain {self.name}. Gained {col.gold(f"+{self.gold} gold")} and _____ xp')
 
 class Goblin(Enemy):
     def __init__(self, weapon=goblinDagger,hp=4,) -> None:
@@ -79,6 +82,7 @@ class Goblin(Enemy):
         self.weapon = weapon
         self.maxhp = hp
         self.hp = hp
+        self.gold = 2
 
 class Mimic(Enemy):
     def __init__(self,hp=10) -> None:
@@ -86,6 +90,7 @@ class Mimic(Enemy):
         self.weapon = mimicJaws
         self.maxhp = hp
         self.hp = hp
+        self.gold = 5
 
 class Spider(Enemy):
     def __init__(self,hp=3):
@@ -93,3 +98,4 @@ class Spider(Enemy):
         self.weapon = spiderFangs
         self.maxhp = hp
         self.hp = hp
+        self.gold = 1
