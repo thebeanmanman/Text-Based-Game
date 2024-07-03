@@ -7,7 +7,7 @@ import os
 from dictionaries import optionDict
 
 #Control Variables
-ClearTerminal = False
+ClearTerminal = True
 
 
 #Creates a smooth text animation
@@ -53,6 +53,7 @@ def randItem(list):
 
 #Returns a players choice from a list of options
 def Option(player=None,North=False,South=False,West=False,East=False,Map=False,Other=False,OtherList=[],Yes=False,No=False,Open=False):
+    print()
     choosing = True
     while choosing:
         choice = input('> ').lower()

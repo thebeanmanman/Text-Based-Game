@@ -155,12 +155,17 @@ class Room():
         self.lvl = None
         self.cleared = False
 
-    #When the player enters the room
+    # Default enter method always called when the player enters the room 
+    # This then runs subclass specific onEnter methods
     def enter(self,player):
         wipe()
         self.lvl.dispMap[self.y][self.x] = player.icon
         text(self.desc)
-        self.move(player)
+        if self.cleared:
+            text('You have already cleared this room.')
+            self.move(player)
+        else:
+            self.onEnter(player)
 
     def move(self,player):
         options = self.lvl.mapDirCheck(self.x,self.y)
@@ -223,24 +228,18 @@ class EnemyRoom(Room):
             self.enemies.append(InstantiatedEnemy)
 
 
-    def enter(self,player):
-        wipe()
-        self.lvl.dispMap[self.y][self.x] = player.icon
-        text(self.desc)
-        if self.cleared:
-            text('You have already cleared this room.')
-        else:
-            text('It is filled with enemies!')
-            self.battling = True
-            enemy = self.spawnEnemy()
-            while self.battling:
-                player.battle(enemy)
-                if player.hp <= 0:
-                    self.battling = False
-                elif enemy.hp <= 0:
-                    self.enemies.pop(0)
-                    text(f'There {AreIs(len(self.enemies))} {len(self.enemies)} {Plural(len(self.enemies),"enemy")} left.')
-                    enemy = self.spawnEnemy()
+    def onEnter(self,player):
+        text('It is filled with enemies!')
+        self.battling = True
+        enemy = self.spawnEnemy()
+        while self.battling:
+            player.battle(enemy)
+            if player.hp <= 0:
+                self.battling = False
+            elif enemy.hp <= 0:
+                self.enemies.pop(0)
+                text(f'There {AreIs(len(self.enemies))} {len(self.enemies)} {Plural(len(self.enemies),"enemy")} left.')
+                enemy = self.spawnEnemy()
         if player.hp > 0:
             self.move(player)
     
@@ -288,23 +287,16 @@ class TreasureRoom(Room):
         if chance(self.mimicChance):
             self.IsMimic = True        
 
-    def enter(self,player):
-        wipe()
-        self.lvl.dispMap[self.y][self.x] = player.icon
-        text(self.desc)
-        if self.cleared:
-            text('You have already cleared this room.')
+    def onEnter(self,player):
+        text('Open the chest?')
+        answer = Option(Yes=True,No=True,Open=True)
+        if answer in optionDict['yes'] or answer in optionDict['open']:
+            text('Your curiousity is tempted by the chest and you approach it...')
+            self.open(player)
+        elif answer in optionDict['no']:
+            text('You supress the desire to see what treasure awaits you and you move on.')
+            self.clear()
             self.move(player)
-        else:
-            text('Open the chest?')
-            answer = Option(Yes=True,No=True,Open=True)
-            if answer in optionDict['yes'] or answer in optionDict['open']:
-                text('Your curiousity is tempted by the chest and you approach it...')
-                self.open(player)
-            elif answer in optionDict['no']:
-                text('You supress the desire to see what treasure awaits you and you move on.')
-                self.clear()
-                self.move(player)
         
     def open(self,player):
         text('Your hands swiftly unlock the chest, awaiting your reward...')

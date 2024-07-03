@@ -39,7 +39,6 @@ def startGame():
     wipe()
     text('What is your name?')
     hero.setName(input())
-    hero.printBanner()
     # hero.equip(ironSword)
     hero.room = Level1.startRoom
     hero.room.enter(hero)
