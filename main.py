@@ -1,7 +1,10 @@
 #Import Classes
 from entity import Player
+
+# Import Objects
 from weapons import ironSword
 from dungeon import Level1
+from system import syst
 
 #Import Functions
 from functions import text,Option,wipe
@@ -36,6 +39,7 @@ def helpMenu():
 
 def startGame():
     hero = Player(maxhp=10, DungLvl=Level1)
+    syst.setPlayer(hero)
     wipe()
     text('What is your name?')
     hero.setName(input())

@@ -1,10 +1,14 @@
+# Import external modules
 from random import choices,randint
+
+# Import System
+from system import syst
 
 # Import Enemies
 from entity import Goblin,Mimic,Spider
 
 # Import Functions
-from functions import text,randItem,Option,wipe,chance
+from functions import text,randItem,Option,chance
 
 # Import Dictionaries
 from dictionaries import iconDict,optionDict
@@ -155,21 +159,23 @@ class Room():
         self.lvl = None
         self.cleared = False
 
-    # Default enter method always called when the player enters the room 
+    # Default enter method always called when the player enters the room  (Unless overwritten)
     # This then runs subclass specific onEnter methods
     def enter(self,player):
-        wipe()
         self.lvl.dispMap[self.y][self.x] = player.icon
-        text(self.desc)
+        syst.playerStatus()
+        syst.setLocation(self.desc)
         if self.cleared:
-            text('You have already cleared this room.')
+            syst.addLocation('You have already cleared this room.')
+            syst.div()
             self.move(player)
         else:
             self.onEnter(player)
 
+    # Allows the player to move between rooms
     def move(self,player):
         options = self.lvl.mapDirCheck(self.x,self.y)
-        text(f'You can move {orChoice(options)}')
+        syst.setState(f'You can move {orChoice(options)}.')
         direction = Option(player=player,North='north' in options,South='south' in options,West='west' in options,East='east',Map=True)
         self.lvl.dispMap[self.y][self.x] = self.icon
         if direction in optionDict['north']:
@@ -199,13 +205,15 @@ class StartRoom(Room):
             self.reEnter = 'You enter the room that you started in.\nAre you sure your not lost?'
     
     def enter(self, player):
-        wipe()
         self.lvl.dispMap[self.y][self.x] = player.icon
+        syst.playerStatus()
         if self.cleared:
-            text(self.reEnter)
+            syst.setLocation(self.reEnter)
+            syst.div()
         else:
             self.cleared = True
-            text(self.desc)
+            syst.setLocation(self.desc)
+            syst.div()
         self.move(player)
 
 
@@ -229,7 +237,8 @@ class EnemyRoom(Room):
 
 
     def onEnter(self,player):
-        text('It is filled with enemies!')
+        syst.addLocation('It is filled with enemies!')
+        syst.div()
         self.battling = True
         enemy = self.spawnEnemy()
         while self.battling:
@@ -239,6 +248,7 @@ class EnemyRoom(Room):
             elif enemy.hp <= 0:
                 self.enemies.pop(0)
                 text(f'There {AreIs(len(self.enemies))} {len(self.enemies)} {Plural(len(self.enemies),"enemy")} left.')
+                input()
                 enemy = self.spawnEnemy()
         if player.hp > 0:
             self.move(player)
@@ -246,8 +256,8 @@ class EnemyRoom(Room):
     def spawnEnemy(self):
         if self.enemies:
             enemy = self.enemies[0]
-            text(f'You have encountered {enemy.name}!')
-            input()
+            syst.setState(f'You have encountered a {enemy.name}!')
+            syst.div()
             return enemy
         else:
             self.battling = False
@@ -271,7 +281,7 @@ class TreasureRoom(Room):
         self.legCh = 3
 
         # Mimic variables
-        self.mimicChance = 0.1
+        self.mimicChance = 0.2
         self.IsMimic = False
         self.Mimic = Mimic()
 
