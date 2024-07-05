@@ -19,15 +19,17 @@ class Entity():
     def attack(self, target) -> None:
         if chance(self.weapon.crt):
             target.hp -= self.weapon.dmg*3
+            target.hp = max(target.hp,0)
             target.turn(self)
-            print(f'The {self.name} dealt {col.rgb(255,0,0,self.weapon.dmg*3)} damage using their {self.weapon.name}! {col.red("[Critial Hit!]")}')
+            print(f'The {self.name} dealt {col.red(self.weapon.dmg*3)} damage using their {self.weapon.name}! {col.red("[Critial Hit!]")}')
         else:
             target.hp -= self.weapon.dmg
+            target.hp = max(target.hp,0)
             target.turn(self)
             print(f'The {self.name} dealt {self.weapon.dmg} damage using their {self.weapon.name}!')
-        target.hp = max(target.hp,0)
         if target.hp <= 0:
                 target.battling = False
+                input()
                 target.death()
         elif self.hp <= 0:
             target.battling = False
@@ -59,7 +61,7 @@ class Player(Entity):
         if chance(self.weapon.crt):
             target.hp -= self.weapon.dmg*3
             self.turn(target)
-            print(f'You dealt {col.rgb(255,0,0,self.weapon.dmg*3)} damage using your {self.weapon.name}! {col.red("[Critial Hit!]")}')
+            print(f'You dealt {col.red(self.weapon.dmg*3)} damage using your {self.weapon.name}! {col.red("[Critial Hit!]")}')
         else:
             target.hp -= self.weapon.dmg
             self.turn(target)
@@ -81,6 +83,9 @@ class Player(Entity):
 
     def battle(self,enemy):
         self.battling = True
+        input()
+        syst.printStatus()
+        text(f'You have encountered a {enemy.name}!')
         text(f"The {enemy.name}'s HP: {enemy.hp}")
         input()
         while self.battling:
@@ -93,6 +98,7 @@ class Player(Entity):
 
     def turn(self,enemy):
         syst.printStatus()
+        print(f'You have encountered a {enemy.name}!')
         print(f"The {enemy.name}'s HP: {enemy.hp}")
         print()
 
@@ -107,6 +113,7 @@ class Enemy(Entity):
     
     def death(self,player):
         player.gold += self.gold
+        syst.printStatus()
         text(f'You have slain the {self.name}. Gained {col.gold(f"+{self.gold} gold")} and _____ xp')
 
 class Goblin(Enemy):

@@ -124,10 +124,10 @@ class Dungeon():
             dirList.append('north')
         if y+1 < self.mapsize and self.map[y+1][x]:
             dirList.append('south')
-        if x-1 >= 0 and self.map[y][x-1]:
-            dirList.append('west')
         if x+1 < self.mapsize and self.map[y][x+1]:
             dirList.append('east')
+        if x-1 >= 0 and self.map[y][x-1]:
+            dirList.append('west')
         return dirList
     
     def createDispMap(self):
@@ -163,11 +163,10 @@ class Room():
     # This then runs subclass specific onEnter methods
     def enter(self,player):
         self.lvl.dispMap[self.y][self.x] = player.icon
-        syst.playerStatus()
-        syst.setLocation(self.desc)
+        syst.printStatus()
+        text(self.desc)
         if self.cleared:
-            syst.addLocation('You have already cleared this room.')
-            syst.div()
+            text('You have already cleared this room.')
             self.move(player)
         else:
             self.onEnter(player)
@@ -175,7 +174,9 @@ class Room():
     # Allows the player to move between rooms
     def move(self,player):
         options = self.lvl.mapDirCheck(self.x,self.y)
-        syst.setState(f'You can move {orChoice(options)}.')
+        input()
+        syst.printStatus()
+        text(f'You can move {orChoice(options)}.')
         direction = Option(player=player,North='north' in options,South='south' in options,West='west' in options,East='east',Map=True)
         self.lvl.dispMap[self.y][self.x] = self.icon
         if direction in optionDict['north']:
@@ -206,14 +207,12 @@ class StartRoom(Room):
     
     def enter(self, player):
         self.lvl.dispMap[self.y][self.x] = player.icon
-        syst.playerStatus()
+        syst.printStatus()
         if self.cleared:
-            syst.setLocation(self.reEnter)
-            syst.div()
+            text(self.reEnter)
         else:
             self.cleared = True
-            syst.setLocation(self.desc)
-            syst.div()
+            text(self.desc)
         self.move(player)
 
 
@@ -237,8 +236,7 @@ class EnemyRoom(Room):
 
 
     def onEnter(self,player):
-        syst.addLocation('It is filled with enemies!')
-        syst.div()
+        text('It is filled with enemies!')
         self.battling = True
         enemy = self.spawnEnemy()
         while self.battling:
@@ -248,7 +246,6 @@ class EnemyRoom(Room):
             elif enemy.hp <= 0:
                 self.enemies.pop(0)
                 text(f'There {AreIs(len(self.enemies))} {len(self.enemies)} {Plural(len(self.enemies),"enemy")} left.')
-                input()
                 enemy = self.spawnEnemy()
         if player.hp > 0:
             self.move(player)
@@ -256,8 +253,6 @@ class EnemyRoom(Room):
     def spawnEnemy(self):
         if self.enemies:
             enemy = self.enemies[0]
-            syst.setState(f'You have encountered a {enemy.name}!')
-            syst.div()
             return enemy
         else:
             self.battling = False
@@ -281,7 +276,7 @@ class TreasureRoom(Room):
         self.legCh = 3
 
         # Mimic variables
-        self.mimicChance = 0.2
+        self.mimicChance = 0.15
         self.IsMimic = False
         self.Mimic = Mimic()
 
@@ -300,6 +295,7 @@ class TreasureRoom(Room):
     def onEnter(self,player):
         text('Open the chest?')
         answer = Option(Yes=True,No=True,Open=True)
+        syst.printStatus()
         if answer in optionDict['yes'] or answer in optionDict['open']:
             text('Your curiousity is tempted by the chest and you approach it...')
             self.open(player)
@@ -312,14 +308,14 @@ class TreasureRoom(Room):
         text('Your hands swiftly unlock the chest, awaiting your reward...')
         if self.IsMimic:
             text(f'{col.red("Only to find rows upon rows of gnashing teeth.")}')
-            text(f'You have encountered a {col.red("Mimic!")}')
             player.battle(self.Mimic)
             if player.hp > 0:
                 self.clear()
                 self.move(player)
         else:
             text('You find an item lying in the bottom of the chest.')
-            print()
+            input()
+            syst.printStatus()
             text(f'You have found a {self.treasure.rarname}!')
             self.treasure.showStats()
             print()

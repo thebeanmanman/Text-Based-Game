@@ -26,7 +26,7 @@ class Colour():
     # Rarity Colours
     @staticmethod
     def common(text):
-        return f"\033[38;2;{5};{5};{5}m{text}\033[0m"
+        return f"\033[38;2;{128};{128};{128}m{text}\033[0m"
     
     @staticmethod
     def uncommon(text):

@@ -5,6 +5,7 @@ from entity import Player
 from weapons import ironSword
 from dungeon import Level1
 from system import syst
+from colours import col
 
 #Import Functions
 from functions import text,Option,wipe
@@ -41,8 +42,8 @@ def startGame():
     hero = Player(maxhp=10, DungLvl=Level1)
     syst.setPlayer(hero)
     wipe()
-    text('What is your name?')
-    hero.setName(input())
+    text(col.common('What is your name?'))
+    hero.setName('Jimmy')
     # hero.equip(ironSword)
     hero.room = Level1.startRoom
     hero.room.enter(hero)
