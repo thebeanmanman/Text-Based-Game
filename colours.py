@@ -30,15 +30,15 @@ class Colour():
     
     @staticmethod
     def uncommon(text):
-        return f"\033[38;2;{0};{185};{0}m{text}\033[0m"
+        return f"\033[38;2;{50};{185};{50}m{text}\033[0m"
     
     @staticmethod
     def rare(text):
-        return f"\033[38;2;{0};{0};{255}m{text}\033[0m"
+        return f"\033[38;2;{30};{144};{255}m{text}\033[0m"
     
     @staticmethod
     def epic(text):
-        return f"\033[38;2;{150};{0};{255}m{text}\033[0m"
+        return f"\033[38;2;{148};{0};{211}m{text}\033[0m"
     
     @staticmethod
     def leg(text):

@@ -24,7 +24,7 @@ def titleSelect():
 
 def title_screen():
     wipe()
-    print(f'---Welcome to {gameName}!---')
+    print(f'--- Welcome to {gameName}!---')
     text('- Play')
     text('- Help')
     text('- Quit')
@@ -32,7 +32,7 @@ def title_screen():
 
 def helpMenu():
     wipe()
-    print(f'---Welcome to {gameName}!---')
+    print(f'--- Welcome to {gameName}!---')
     text('Type up, down, left and right to move')
     text('Press enter to return to the menu')
     input()
@@ -42,7 +42,7 @@ def startGame():
     hero = Player(maxhp=10, DungLvl=Level1)
     syst.setPlayer(hero)
     wipe()
-    text(col.common('What is your name?'))
+    text('What is your name?')
     hero.setName('Jimmy')
     # hero.equip(ironSword)
     hero.room = Level1.startRoom
