@@ -61,13 +61,14 @@ class Player(Entity):
     def attack(self, target):
         if chance(self.weapon.crt):
             target.hp -= self.weapon.dmg*3
+            target.hp = max(target.hp,0)
             self.turn(target)
             print(f'You dealt {col.red(self.weapon.dmg*3)} damage using your {self.weapon.name}! {col.red("[Critial Hit!]")}')
         else:
             target.hp -= self.weapon.dmg
             self.turn(target)
+            target.hp = max(target.hp,0)
             print(f'You dealt {self.weapon.dmg} damage using your {self.weapon.name}!')
-        target.hp = max(target.hp,0)
         if self.hp <= 0:
             self.battling = False
             self.death()

@@ -8,7 +8,7 @@ from dictionaries import optionDict
 
 #Control Variables
 ClearTerminal = True
-
+Devmap = True
 
 #Creates a smooth text animation
 def text(toprint) -> None:
@@ -67,12 +67,15 @@ def Option(player=None,North=False,South=False,West=False,East=False,Map=False,O
         elif Other and choice in OtherList:
             return choice
         elif Map and choice in optionDict['map']:
-            player.DungLvl.printMap()
+            player.DungLvl.printHiddenMap(player)
         elif Yes and choice in optionDict['yes']:
             return choice
         elif No and choice in optionDict['no']:
             return choice
         elif Open and choice in optionDict['open']:
             return choice
+        # Developer Tools
+        elif Devmap and choice == 'devmap':
+            player.DungLvl.printMap()
         else:
             text('Unknown action. Please try again')

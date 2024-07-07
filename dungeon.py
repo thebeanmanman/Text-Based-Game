@@ -141,9 +141,39 @@ class Dungeon():
                     newrow.append(' . ')
             self.dispMap.append(newrow)
         
+    # Prints the Developer Map
     def printMap(self):
         print('')
         for row in self.dispMap:
+            print(''.join(row))
+        print('')
+        print(f'Your Location: {iconDict["Player"]}')
+        print(f'Treasure Room: {iconDict["Treasure Room"]}')
+        print(f'Start Room: {iconDict["Start Room"]}')
+        print(f'Enemy Room: {iconDict["Enemy Room"]}')
+
+    # Prints the map shown to the players
+    def printHiddenMap(self,player):
+        # Map Creation 
+        hiddenMap = []
+        for row in self.map:
+            newrow = []
+            for room in row:
+                if room:
+                    if player.room == room:
+                        newrow.append(player.icon)
+                    else:
+                        if room.cleared:
+                            newrow.append(room.icon)
+                        else:
+                            newrow.append(iconDict['Unknown Room'])
+                else:
+                    newrow.append(' . ')
+            hiddenMap.append(newrow)
+        
+        # Map Printing
+        print('')
+        for row in hiddenMap:
             print(''.join(row))
         print('')
         print(f'Your Location: {iconDict["Player"]}')

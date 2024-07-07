@@ -4,7 +4,8 @@ iconDict = {
     'Enemy Room': '[E]',
     'Start Room': '[O]',
     'Player' : f'[{col.red("X")}]',
-    'Treasure Room': '[T]'
+    'Treasure Room': '[T]',
+    'Unknown Room': '[?]'
 }
 optionDict = {
     'north': ['north','up','n'],
