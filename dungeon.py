@@ -121,13 +121,13 @@ class Dungeon():
     def mapDirCheck(self,x,y):
         dirList = []
         if y-1 >= 0 and self.map[y-1][x]:
-            dirList.append('north')
+            dirList.append(['north',self.map[y-1][x]])
         if y+1 < self.mapsize and self.map[y+1][x]:
-            dirList.append('south')
+            dirList.append(['south',self.map[y+1][x]])
         if x+1 < self.mapsize and self.map[y][x+1]:
-            dirList.append('east')
+            dirList.append(['east',self.map[y][x+1]])
         if x-1 >= 0 and self.map[y][x-1]:
-            dirList.append('west')
+            dirList.append(['west',self.map[y][x-1]])
         return dirList
     
     def createDispMap(self):
@@ -138,7 +138,7 @@ class Dungeon():
                 if room:
                     newrow.append(room.icon)
                 else:
-                    newrow.append(' . ')
+                    newrow.append(iconDict['Blank'])
             self.dispMap.append(newrow)
         
     # Prints the Developer Map
@@ -154,7 +154,7 @@ class Dungeon():
 
     # Prints the map shown to the players
     def printHiddenMap(self,player):
-        # Map Creation 
+        # Map Creation
         hiddenMap = []
         for row in self.map:
             newrow = []
@@ -165,10 +165,12 @@ class Dungeon():
                     else:
                         if room.cleared:
                             newrow.append(room.icon)
-                        else:
+                        elif room.discovered:
                             newrow.append(iconDict['Unknown Room'])
+                        else:
+                            newrow.append(iconDict['Blank'])
                 else:
-                    newrow.append(' . ')
+                    newrow.append(iconDict['Blank'])
             hiddenMap.append(newrow)
         
         # Map Printing
@@ -188,6 +190,7 @@ class Room():
         self.Level = Level
         self.lvl = None
         self.cleared = False
+        self.discovered = False
 
     # Default enter method always called when the player enters the room  (Unless overwritten)
     # This then runs subclass specific onEnter methods
@@ -203,7 +206,10 @@ class Room():
 
     # Allows the player to move between rooms
     def move(self,player):
-        options = self.lvl.mapDirCheck(self.x,self.y)
+        dirCheck = self.lvl.mapDirCheck(self.x,self.y)
+        options = [direction[0] for direction in dirCheck]
+        for Adjroom in [room[1] for room in dirCheck]:
+            Adjroom.discovered = True 
         input()
         syst.printStatus()
         text(f'You can move {orChoice(options)}.')
