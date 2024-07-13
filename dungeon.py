@@ -5,7 +5,7 @@ from random import choices,randint
 from system import syst
 
 # Import Enemies
-from entity import Goblin,Mimic,Spider
+from entity import Mimic,Goblin,Spider
 
 # Import Functions
 from functions import text,randItem,Option,chance
@@ -48,22 +48,26 @@ class Dungeon():
         y = center
         currRoom = self.startRoom
         i = 0
-        while i <= self.roomNum and Generate:
+        while i <= self.roomNum or self.reqRooms:
             self.map[y][x] = currRoom
             currRoom.x = x
             currRoom.y = y
             currRoom.lvl = self
-            x = center
-            y = center
+            x,y = center,center
             while self.map[y][x]:
                 dirList = self.NewDirList(x,y)
                 if dirList:
                     direction = randItem(dirList)
                     x,y = direction[1],direction[0]
                 else:
-                    Generate = False
-            currRoom = self.rollRooms()
-            i += 1
+                    x,y = center,center
+            if i <= self.roomNum:
+                currRoom = self.rollRooms()
+                i += 1
+            else:
+                currRoom = randItem(self.reqRooms)
+                self.reqRooms.remove(currRoom)
+
         self.createDispMap()
 
     def NewDirList(self,x,y):
@@ -142,15 +146,17 @@ class Dungeon():
             self.dispMap.append(newrow)
         
     # Prints the Developer Map
-    def printMap(self):
+    def printMap(self,map):
         print('')
-        for row in self.dispMap:
+        for row in map:
             print(''.join(row))
         print('')
         print(f'Your Location: {iconDict["Player"]}')
         print(f'Treasure Room: {iconDict["Treasure Room"]}')
+        print(f'Unknown Room: {iconDict["Unknown Room"]}')
         print(f'Start Room: {iconDict["Start Room"]}')
         print(f'Enemy Room: {iconDict["Enemy Room"]}')
+        print(f'Stair Room: {iconDict["Stair Room"]}')
 
     # Prints the map shown to the players
     def printHiddenMap(self,player):
@@ -174,14 +180,7 @@ class Dungeon():
             hiddenMap.append(newrow)
         
         # Map Printing
-        print('')
-        for row in hiddenMap:
-            print(''.join(row))
-        print('')
-        print(f'Your Location: {iconDict["Player"]}')
-        print(f'Treasure Room: {iconDict["Treasure Room"]}')
-        print(f'Start Room: {iconDict["Start Room"]}')
-        print(f'Enemy Room: {iconDict["Enemy Room"]}')
+        self.printMap(hiddenMap)
 
 class Room():
     def __init__(self,Level) -> None:
@@ -251,6 +250,23 @@ class StartRoom(Room):
             text(self.desc)
         self.move(player)
 
+class Level1Exit(Room):
+    def __init__(self, Level) -> None:
+        super().__init__(Level)
+        self.icon = iconDict['Stair Room']
+        self.desc = 'You enter the dungeon...'
+        self.reEnter = 'You enter the room that you started in.\nAre you sure your not lost?'
+    
+    def enter(self, player):
+        self.lvl.dispMap[self.y][self.x] = player.icon
+        syst.printStatus()
+        if self.cleared:
+            text(self.reEnter)
+        else:
+            self.cleared = True
+            text(self.desc)
+        self.move(player)
+
 
 class EnemyRoom(Room):
     def __init__(self,Level) -> None:
@@ -301,8 +317,6 @@ class TreasureRoom(Room):
         # Visual Variables:
         self.desc = 'You enter a room with a large treasure chest inside.'
         self.icon = iconDict['Treasure Room']
-
-        # Treasure Types C
 
         # Chances for each rarity tier
         self.commonCh = 37
@@ -367,5 +381,3 @@ class TreasureRoom(Room):
                 text('You leave the item in the chest and move on.')
                 self.clear()
                 self.move(player)
-
-Level1 = Dungeon(rooms=[TreasureRoom,EnemyRoom],roomNum=14,reqRooms=None,mapsize=9,Level=1,roomChances=[5,20])

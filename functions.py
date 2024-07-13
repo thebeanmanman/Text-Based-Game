@@ -76,6 +76,6 @@ def Option(player=None,North=False,South=False,West=False,East=False,Map=False,O
             return choice
         # Developer Tools
         elif Devmap and choice == 'devmap':
-            player.DungLvl.printMap()
+            player.DungLvl.printMap(player.DungLvl.dispMap)
         else:
             text('Unknown action. Please try again')

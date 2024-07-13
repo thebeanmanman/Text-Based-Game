@@ -1,9 +1,31 @@
 from colours import col
 from functions import text
+from entity import *
 
 class Item():
-    def __init__(self,rarity:int,name:str,desc:str) -> None:
+    def __init__(self,name:str) -> None:
         self.name = name
+
+class Weapon(Item):
+    def __init__(self,name:str,dmg:int,crtch=0,poisonCh=0,poisonDmg=0,poisonDur=0) -> None:
+        super().__init__(name)
+        self.dmg = dmg
+        self.crtch = crtch
+        self.poisonCh = poisonCh
+        self.poisonDmg = poisonDmg
+        self.poisonDur = poisonDur
+
+class EnemyWeapon(Weapon):
+    def __init__(self, name: str, dmg: int,enemyClass,chance, crtch=0, stealch=0, steal=0,poisonCh=0,poisonDmg=0,poisonDur=0) -> None:
+        super().__init__(name,dmg,crtch,poisonCh,poisonDmg,poisonDur)
+        self.stealch = stealch
+        self.steal = steal
+        enemyClass.attacks.append(self)
+        enemyClass.attacksch.append(chance)
+
+class PlayerWeapon(Weapon):
+    def __init__(self, name: str, dmg: int, desc='', rarity=0, crtch=0, poisonCh=0,poisonDmg=0,poisonDur=0) -> None:
+        super().__init__(name, dmg,crtch,poisonCh,poisonDmg,poisonDur)
         self.desc = desc
         self.assignRarity(rarity)
 
@@ -29,19 +51,11 @@ class Item():
             self.rarname = f'{col.legt} {col.leg(self.name)}'
             self.name = col.leg(self.name)
 
-class Weapon(Item):
-    def __init__(self, name:str, type:str, dmg:int,desc='',rarity=0, goldvalue=0,crt=0) -> None:
-        super().__init__(name=name,desc=desc,rarity=rarity)
-        self.type = type
-        self.dmg = dmg
-        self.goldvalue = goldvalue
-        self.crt = crt
-    
     def showStats(self):
         text(f'Description: {self.desc}')
         text(f'Damage: {self.dmg}')
-        if self.crt > 0:
-            text(f'Critical Hit Chance: {int(self.crt*100)}%')
+        if self.crtch > 0:
+            text(f'Critical Hit Chance: {int(self.crtch*100)}%')
 
 common = []
 uncommon = []
@@ -49,26 +63,38 @@ rare = []
 epic = []
 legendary = []
 
-### Weapons ###
+### Player Weapons ###
 # Common
-woodenSword = Weapon(name='Wooden Sword',type='Sharp',dmg=2,crt=0.05,rarity=1,desc='A sword made of wood.')
-stick = Weapon(name='Stick',type='Blunt',dmg=1,desc='Utterly Useless',crt=0.01,rarity=1)
+woodenSword = PlayerWeapon(name='Wooden Sword',dmg=2,crtch=0.05,rarity=1,desc='A sword made of wood.')
+stick = PlayerWeapon(name='Stick',dmg=1,desc='Utterly Useless',crtch=0.01,rarity=1)
 
 # Uncommon
-shortBow = Weapon(name='Short Bow',type='Ranged',dmg=2,crt=0.2,desc='A short bow',rarity=2)
+shortBow = PlayerWeapon(name='Short Bow',dmg=2,crtch=0.2,desc='A short bow',rarity=2)
 
 # Rare
-ironSword = Weapon(name='Iron Sword',type='Sharp',dmg=4,crt=0.09,rarity=3,desc='A sword made of iron.')
+ironSword = PlayerWeapon(name='Iron Sword',dmg=4,crtch=0.09,rarity=3,desc='A sword made of iron.')
 
 # Epic
-greatSword = Weapon(name='Great Sword',type='Sharp',dmg=5,crt=0.05,rarity=4,desc='A great sword.')
+greatSword = PlayerWeapon(name='Great Sword',dmg=5,crtch=0.05,rarity=4,desc='A great sword.')
 
 # Legendary
-diamondSword = Weapon(name='Diamond Sword',type='Sharp',dmg=6,crt=0.01,rarity=5,desc='A sword made of diamonds.')
-goldenStick = Weapon(name='Golden Stick',type='Blunt',dmg=4,crt=1,rarity=5,desc='Golden, sticky and WHAAAAT 100% Crtical Hit Chance?!')
+diamondSword = PlayerWeapon(name='Diamond Sword',dmg=6,crtch=0.01,rarity=5,desc='A sword made of diamonds.')
+goldenStick = PlayerWeapon(name='Golden Stick',dmg=4,crtch=1,rarity=5,desc='Golden, sticky and WHAAAAT 100% Crtical Hit Chance?!')
 
-# Unobtainable Weapons / Enemy Weapons
-fists = Weapon(name='Fists',type='Blunt',dmg=1,desc='Punchy Punchy',rarity=0)
-goblinDagger = Weapon(name='Dagger',type='Sharp',dmg=2,crt=0.1,rarity=0)
-mimicJaws = Weapon(name='Jaws',type='Sharp',dmg=5,crt=0.15,rarity=0)
-spiderFangs = Weapon(name='Fangs',type='Sharp',dmg=1,rarity=0) # Add Poison Chance
+### Unobtainable Weapons
+fists = PlayerWeapon(name='Fists',dmg=1,desc='Punchy Punchy')
+Entity.fists = fists
+
+
+### Enemy Attacks ###
+# Goblin Weapons
+goblinStab = EnemyWeapon(name='Stab',dmg=2,crtch=0.1,enemyClass=Goblin,chance=2)
+goblinSteal = EnemyWeapon(name='Steal',dmg=0,steal=1,stealch=1,enemyClass=Goblin,chance=1)
+
+# Mimic Weapons
+mimicJaws = EnemyWeapon(name='Chomp',dmg=5,crtch=0.15,enemyClass=Mimic, chance=2)
+mimicLunge = EnemyWeapon(name='Lunge',dmg=6,enemyClass=Mimic, chance=1)
+
+# Spider Weapons
+spiderFangs = EnemyWeapon(name='Bite',dmg=1,crtch=0.05,enemyClass=Spider,chance=2)
+spiderPoison = EnemyWeapon(name='Poisonous Bite',dmg=0,poisonCh=1,poisonDmg=1,poisonDur=2,enemyClass=Spider,chance=1)

@@ -6,14 +6,15 @@ iconDict = {
     'Player' : f'[{col.red("X")}]',
     'Treasure Room': '[T]',
     'Unknown Room': '[?]',
-    'Blank': '   '
+    'Blank': '   ',
+    'Stair Room': '[S]'
 }
 optionDict = {
     'north': ['north','up','n'],
     'south': ['south','down','s'],
     'west': ['west','left','w'],
     'east': ['east','right','e'],
-    'yes': ['yes','y','yeah','yea'],
+    'yes': ['yes','y','yeah','yea','heck yeah','definitely','sure'],
     'open': ['open','open chest'],
     'no': ['no','n','nah','never'],
     'map': ['map','m','dungeon','rooms']

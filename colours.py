@@ -19,9 +19,14 @@ class Colour():
     def gold(text):
         return f"\033[38;2;{255};{255};{0}m{text}\033[0m"    
 
-    @staticmethod
-    def hint(text):
+    @staticmethod # Narrator Text
+    def nar(text):
         return f"\033[38;2;{0};{100};{220}m{text}\033[0m"
+    
+    ### Status Effect Colours
+    @staticmethod
+    def poison(text):
+        return f"\033[38;2;{60};{179};{113}m{text}\033[0m"
     
     # Rarity Colours
     @staticmethod

@@ -3,7 +3,7 @@ from entity import Player
 
 # Import Objects
 from weapons import ironSword
-from dungeon import Level1
+from dungeon import *
 from system import syst
 from colours import col
 
@@ -39,11 +39,13 @@ def helpMenu():
     title_screen()
 
 def startGame():
+    Level1 = Dungeon(rooms=[TreasureRoom,EnemyRoom],roomNum=13,reqRooms=None,mapsize=9,Level=1,roomChances=[6,20])
     hero = Player(maxhp=10, DungLvl=Level1)
     syst.setPlayer(hero)
     wipe()
     text('What is your name?')
     hero.setName('Jimmy')
+    # text(col.nar(randItem(['What a strange name.\nYour definitley going to be bullied for that.'])))
     # hero.equip(ironSword)
     hero.room = Level1.startRoom
     hero.room.enter(hero)
