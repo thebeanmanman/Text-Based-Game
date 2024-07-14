@@ -15,11 +15,12 @@ class System():
         self.player = player
 
     def playerStatus(self):
+        self.player.healthbar.update()
         topBanner = f"{self.divChar*self.sideDivLen} {self.player.name} Level {self.player.lvl} {self.divChar*self.sideDivLen}"
         print(topBanner)
-        print(f'XP: {self.player.xp}/20')
+        print(f'Experience: {self.player.xp}/20')
         print(f'Gold: {col.gold(f"{self.player.gold}")}')
-        print(f'Health: {self.player.hp}/{self.player.maxhp}')
+        print(f'Health: {self.player.healthbar.getBar()}')
         print(f'Weapon: {self.player.weapon.name}')
         self.fullDiv = self.divChar*len(topBanner)
         print(self.fullDiv)

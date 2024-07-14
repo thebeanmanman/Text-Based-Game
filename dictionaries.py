@@ -10,10 +10,10 @@ iconDict = {
     'Stair Room': '[S]'
 }
 optionDict = {
-    'north': ['north','up','n'],
-    'south': ['south','down','s'],
-    'west': ['west','left','w'],
-    'east': ['east','right','e'],
+    'north': ['north','up','n','u'],
+    'south': ['south','down','s','d'],
+    'west': ['west','left','w','l'],
+    'east': ['east','right','e','r'],
     'yes': ['yes','y','yeah','yea','heck yeah','definitely','sure'],
     'open': ['open','open chest'],
     'no': ['no','n','nah','never'],

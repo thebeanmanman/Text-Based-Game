@@ -7,25 +7,27 @@ class Item():
         self.name = name
 
 class Weapon(Item):
-    def __init__(self,name:str,dmg:int,crtch=0,poisonCh=0,poisonDmg=0,poisonDur=0) -> None:
+    def __init__(self,name:str,dmg:int,crtch=0,poisonCh=0,poisonDmg=0,poisonDur=0,heal=0,healCh=0) -> None:
         super().__init__(name)
         self.dmg = dmg
         self.crtch = crtch
         self.poisonCh = poisonCh
         self.poisonDmg = poisonDmg
         self.poisonDur = poisonDur
+        self.heal = heal
+        self.healCh = healCh
 
 class EnemyWeapon(Weapon):
-    def __init__(self, name: str, dmg: int,enemyClass,chance, crtch=0, stealch=0, steal=0,poisonCh=0,poisonDmg=0,poisonDur=0) -> None:
-        super().__init__(name,dmg,crtch,poisonCh,poisonDmg,poisonDur)
+    def __init__(self, name: str, dmg: int,enemyClass,chance, crtch=0, stealch=0, steal=0,poisonCh=0,poisonDmg=0,poisonDur=0,heal=0,healCh=0) -> None:
+        super().__init__(name,dmg,crtch,poisonCh,poisonDmg,poisonDur,heal,healCh)
         self.stealch = stealch
         self.steal = steal
         enemyClass.attacks.append(self)
         enemyClass.attacksch.append(chance)
 
 class PlayerWeapon(Weapon):
-    def __init__(self, name: str, dmg: int, desc='', rarity=0, crtch=0, poisonCh=0,poisonDmg=0,poisonDur=0) -> None:
-        super().__init__(name, dmg,crtch,poisonCh,poisonDmg,poisonDur)
+    def __init__(self, name: str, dmg: int, desc='', rarity=0, crtch=0, poisonCh=0,poisonDmg=0,poisonDur=0,heal=0,healCh=0) -> None:
+        super().__init__(name, dmg,crtch,poisonCh,poisonDmg,poisonDur,heal,healCh)
         self.desc = desc
         self.assignRarity(rarity)
 
@@ -95,6 +97,10 @@ goblinSteal = EnemyWeapon(name='Steal',dmg=0,steal=1,stealch=1,enemyClass=Goblin
 mimicJaws = EnemyWeapon(name='Chomp',dmg=5,crtch=0.15,enemyClass=Mimic, chance=2)
 mimicLunge = EnemyWeapon(name='Lunge',dmg=6,enemyClass=Mimic, chance=1)
 
-# Spider Weapons
-spiderFangs = EnemyWeapon(name='Bite',dmg=1,crtch=0.05,enemyClass=Spider,chance=2)
-spiderPoison = EnemyWeapon(name='Poisonous Bite',dmg=0,poisonCh=1,poisonDmg=1,poisonDur=2,enemyClass=Spider,chance=1)
+# Baby Spider Weapons
+babyspiderFangs = EnemyWeapon(name='Bite',dmg=1,crtch=0.05,enemyClass=BabySpider,chance=3)
+babyspiderPoison = EnemyWeapon(name='Poisonous Bite',dmg=0,poisonCh=1,poisonDmg=1,poisonDur=3,enemyClass=BabySpider,chance=1)
+
+# Slime Weapons
+slimeRoll = EnemyWeapon(name='Roll',dmg=1,enemyClass=Slime, chance=3)
+slimeHeal = EnemyWeapon(name='Reshape',dmg=0,enemyClass=Slime,chance=2,heal=1,healCh=0.5)

@@ -5,7 +5,7 @@ from random import choices,randint
 from system import syst
 
 # Import Enemies
-from entity import Mimic,Goblin,Spider
+from entity import Enemy,Mimic
 
 # Import Functions
 from functions import text,randItem,Option,chance
@@ -151,12 +151,12 @@ class Dungeon():
         for row in map:
             print(''.join(row))
         print('')
-        print(f'Your Location: {iconDict["Player"]}')
-        print(f'Treasure Room: {iconDict["Treasure Room"]}')
-        print(f'Unknown Room: {iconDict["Unknown Room"]}')
-        print(f'Start Room: {iconDict["Start Room"]}')
-        print(f'Enemy Room: {iconDict["Enemy Room"]}')
-        print(f'Stair Room: {iconDict["Stair Room"]}')
+        # print(f'Your Location: {iconDict["Player"]}')
+        # print(f'Treasure Room: {iconDict["Treasure Room"]}')
+        # print(f'Unknown Room: {iconDict["Unknown Room"]}')
+        # print(f'Start Room: {iconDict["Start Room"]}')
+        # print(f'Enemy Room: {iconDict["Enemy Room"]}')
+        # print(f'Stair Room: {iconDict["Stair Room"]}')
 
     # Prints the map shown to the players
     def printHiddenMap(self,player):
@@ -275,14 +275,15 @@ class EnemyRoom(Room):
         self.icon = iconDict['Enemy Room']
         self.enemies = []
         if self.Level == 1:
-            self.EnemyTypes = [Goblin,Spider]
+            self.EnemyTypes = [cls for cls in Enemy.__subclasses__() if 1 in cls.Levels]
+            self.EnemyChances = [cls.Chance for cls in self.EnemyTypes]
         
         self.rollEnemy()
 
     def rollEnemy(self):
         enemyNum  = randint(1,3)
         for i in range(enemyNum):
-            enemyType = randItem(self.EnemyTypes)
+            enemyType = choices(self.EnemyTypes,weights=self.EnemyChances,k=1)[0]
             InstantiatedEnemy = enemyType()
             self.enemies.append(InstantiatedEnemy)
 
@@ -326,7 +327,7 @@ class TreasureRoom(Room):
         self.legCh = 3
 
         # Mimic variables
-        self.mimicChance = 0.15
+        self.mimicChance = 0.1
         self.IsMimic = False
         self.Mimic = Mimic()
 

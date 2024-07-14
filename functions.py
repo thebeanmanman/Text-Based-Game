@@ -11,7 +11,7 @@ ClearTerminal = True
 Devmap = True
 
 #Creates a smooth text animation
-def text(toprint) -> None:
+def text(toprint,end='\n') -> None:
     for line in str(toprint).split('\n'):
         avoidValues = []
         i = 0
@@ -31,7 +31,7 @@ def text(toprint) -> None:
             else:
                 if charNum not in avoidValues:
                     sleep(texttime)
-        print('\n',end='')
+        print(end,end='')
 
 # Returns a Boolean based on a chance of something happening
 def chance(percentage) -> bool:

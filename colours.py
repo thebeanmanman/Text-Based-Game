@@ -26,8 +26,11 @@ class Colour():
     ### Status Effect Colours
     @staticmethod
     def poison(text):
-        return f"\033[38;2;{60};{179};{113}m{text}\033[0m"
+        return f"\033[38;2;{0};{128};{0}m{text}\033[0m"
     
+    @staticmethod
+    def heal(text):
+        return f"\033[38;2;{60};{245};{113}m{text}\033[0m"
     # Rarity Colours
     @staticmethod
     def common(text):
