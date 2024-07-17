@@ -74,10 +74,10 @@ stick = PlayerWeapon(name='Stick',dmg=1,desc='Utterly Useless',crtch=0.01,rarity
 shortBow = PlayerWeapon(name='Short Bow',dmg=2,crtch=0.2,desc='A short bow',rarity=2)
 
 # Rare
-ironSword = PlayerWeapon(name='Iron Sword',dmg=4,crtch=0.09,rarity=3,desc='A sword made of iron.')
+ironSword = PlayerWeapon(name='Iron Sword',dmg=3,crtch=0.09,rarity=3,desc='A sword made of iron.')
 
 # Epic
-greatSword = PlayerWeapon(name='Great Sword',dmg=5,crtch=0.05,rarity=4,desc='A great sword.')
+greatSword = PlayerWeapon(name='Great Sword',dmg=4,crtch=0.05,rarity=4,desc='A great sword.')
 
 # Legendary
 diamondSword = PlayerWeapon(name='Diamond Sword',dmg=6,crtch=0.01,rarity=5,desc='A sword made of diamonds.')

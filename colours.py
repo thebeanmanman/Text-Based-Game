@@ -16,12 +16,20 @@ class Colour():
         return f"\033[38;2;{255};{0};{0}m{text}\033[0m"
     
     @staticmethod
+    def lightred(text):
+        return f"\033[38;2;{250};{95};{85}m{text}\033[0m"
+    
+    @staticmethod
     def gold(text):
         return f"\033[38;2;{255};{255};{0}m{text}\033[0m"    
 
     @staticmethod # Narrator Text
     def nar(text):
-        return f"\033[38;2;{0};{100};{220}m{text}\033[0m"
+        return f"\033[38;2;{0};{191};{255}m{text}\033[0m"
+    
+    @staticmethod # Hint Text
+    def hint(text):
+        return f"\033[38;2;{255};{255};{255}m{text}\033[0m"
     
     ### Status Effect Colours
     @staticmethod

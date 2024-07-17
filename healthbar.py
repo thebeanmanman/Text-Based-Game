@@ -1,8 +1,10 @@
 from colours import col
+
 class HealthBar():
     remaininghp = '█'
-    losthp = '─'
+    losthp = '█'
     end = '│'
+    death = '─'
 
     def __init__(self,
                  entity,
@@ -17,13 +19,23 @@ class HealthBar():
 
     def update(self):
         self.currvalue = self.entity.hp
+        self.maxvalue = self.entity.maxhp
 
     def getBar(self):
         remaining = round(self.currvalue/self.maxvalue*self.length)
         lost = self.length - remaining
-        if self.type == 'player':
-            return f'{self.end}{col.heal(f"{remaining*self.remaininghp}")}{lost*self.losthp}{self.end} {self.entity.hp}/{self.entity.maxhp}'
-        elif self.type == 'enemy':
-            return f'{self.end}{col.red(f"{remaining*self.remaininghp}")}{lost*self.losthp}{self.end} {self.entity.hp}/{self.entity.maxhp}'
+        if self.currvalue:
+            if self.type == 'player':
+                bar = f'{self.end}{col.heal(f"{remaining*self.remaininghp}")}{col.lightred(lost*self.losthp)}{self.end} {self.entity.hp}/{self.entity.maxhp}'
+            elif self.type == 'enemy':
+                bar = f'{self.end}{col.red(f"{remaining*self.remaininghp}")}{col.lightred(lost*self.losthp)}{self.end} {self.entity.hp}/{self.entity.maxhp}'
+            else:
+                bar = f'{self.end}{remaining*self.remaininghp}{lost*self.losthp}{self.end} {self.entity.hp}/{self.entity.maxhp}'
+            
+            if self.entity.poisonDur:
+                bar += f' {col.poison("[Poisoned]")}'
+
         else:
-            return f'{self.end}{remaining*self.remaininghp}{lost*self.losthp}{self.end} {self.entity.hp}/{self.entity.maxhp}'
+            bar = f'{self.end}{self.death*self.length}{self.end} {self.entity.hp}/{self.entity.maxhp}'
+
+        return bar

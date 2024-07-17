@@ -8,7 +8,7 @@ from system import syst
 from entity import Enemy,Mimic
 
 # Import Functions
-from functions import text,randItem,Option,chance
+from functions import text,randItem,chance
 
 # Import Dictionaries
 from dictionaries import iconDict,optionDict
@@ -196,11 +196,11 @@ class Room():
     def enter(self,player):
         self.lvl.dispMap[self.y][self.x] = player.icon
         syst.printStatus()
-        text(self.desc)
         if self.cleared:
             text('You have already cleared this room.')
             self.move(player)
         else:
+            text(self.desc)
             self.onEnter(player)
 
     # Allows the player to move between rooms
@@ -209,10 +209,9 @@ class Room():
         options = [direction[0] for direction in dirCheck]
         for Adjroom in [room[1] for room in dirCheck]:
             Adjroom.discovered = True 
-        input()
+        syst.enterHint()
         syst.printStatus()
-        text(f'You can move {orChoice(options)}.')
-        direction = Option(player=player,North='north' in options,South='south' in options,West='west' in options,East='east',Map=True)
+        direction = syst.Option(player=player,North='north' in options,South='south' in options,West='west' in options,East='east',Map=True,prompt=f'You can move {orChoice(options)}.')
         self.lvl.dispMap[self.y][self.x] = self.icon
         if direction in optionDict['north']:
             player.room = self.lvl.map[self.y-1][self.x]
@@ -269,14 +268,16 @@ class Level1Exit(Room):
 
 
 class EnemyRoom(Room):
+    icon = iconDict['Enemy Room']
     def __init__(self,Level) -> None:
         super().__init__(Level)
-        self.desc = 'You enter a dimly lit room.' 
-        self.icon = iconDict['Enemy Room']
         self.enemies = []
         if self.Level == 1:
+            self.desc = 'You enter a dimly lit room.\nA sense of unease fills you as you step further in the room.' 
             self.EnemyTypes = [cls for cls in Enemy.__subclasses__() if 1 in cls.Levels]
-            self.EnemyChances = [cls.Chance for cls in self.EnemyTypes]
+            self.EnemyChances = [cls.Chances[0] for cls in self.EnemyTypes]
+            for enemy in self.EnemyTypes:
+                enemy.desc = enemy.Descs[0]
         
         self.rollEnemy()
 
@@ -289,7 +290,6 @@ class EnemyRoom(Room):
 
 
     def onEnter(self,player):
-        text('It is filled with enemies!')
         self.battling = True
         enemy = self.spawnEnemy()
         while self.battling:
@@ -298,7 +298,7 @@ class EnemyRoom(Room):
                 self.battling = False
             elif enemy.hp <= 0:
                 self.enemies.pop(0)
-                text(f'There {AreIs(len(self.enemies))} {len(self.enemies)} {Plural(len(self.enemies),"enemy")} left.')
+                # text(f'There {AreIs(len(self.enemies))} {len(self.enemies)} {Plural(len(self.enemies),"enemy")} left.')
                 enemy = self.spawnEnemy()
         if player.hp > 0:
             self.move(player)
@@ -306,6 +306,7 @@ class EnemyRoom(Room):
     def spawnEnemy(self):
         if self.enemies:
             enemy = self.enemies[0]
+            text(enemy.desc)
             return enemy
         else:
             self.battling = False
@@ -345,7 +346,7 @@ class TreasureRoom(Room):
 
     def onEnter(self,player):
         text('Open the chest?')
-        answer = Option(Yes=True,No=True,Open=True)
+        answer = syst.Option(Yes=True,No=True,Open=True)
         syst.printStatus()
         if answer in optionDict['yes'] or answer in optionDict['open']:
             text('Your curiousity is tempted by the chest and you approach it...')
@@ -365,7 +366,7 @@ class TreasureRoom(Room):
                 self.move(player)
         else:
             text('You find an item lying in the bottom of the chest.')
-            input()
+            syst.enterHint()
             syst.printStatus()
             text(f'You have found a {self.treasure.rarname}!')
             self.treasure.showStats()
@@ -373,7 +374,7 @@ class TreasureRoom(Room):
             player.currentWeaponStats()
             print()
             text(f'Would you like to equip the {self.treasure.rarname}?')
-            answer = Option(Yes=True,No=True)
+            answer = syst.Option(Yes=True,No=True)
             if answer in optionDict['yes']:
                 player.equip(self.treasure)
                 self.clear()
