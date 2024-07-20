@@ -32,6 +32,7 @@ class PlayerWeapon(Weapon):
         self.assignRarity(rarity)
 
     def assignRarity(self, rarity):
+        self.rawname = self.name.lower()
         if rarity == 1:
             common.append(self)
             self.rarname = f'{col.commont} {col.common(self.name)}'

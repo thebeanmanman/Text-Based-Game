@@ -3,7 +3,7 @@ from time import sleep
 import random
 
 #Creates a smooth text animation
-def text(toprint,end='\n') -> None:
+def text(toprint,end='\n',time=0) -> None:
     for line in str(toprint).split('\n'):
         avoidValues = []
         i = 0
@@ -15,7 +15,10 @@ def text(toprint,end='\n') -> None:
                 i = End+1
             else:
                 i+=1
-        texttime = 1/(len(line)-len(avoidValues))
+        if not time:
+            texttime = 1/(len(line)-len(avoidValues))
+        else:
+            texttime = time
         for charNum,char in enumerate(line):
             print(char,flush=True,end='')
             if char == '.':

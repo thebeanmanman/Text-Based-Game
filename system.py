@@ -8,6 +8,7 @@ class System():
     ClearTerminal = True
     Devmap = True
     Hints = True
+    NarSpeed = 0.075
 
     def __init__(self):
         #Player Status Variables
@@ -53,7 +54,7 @@ class System():
             input()
 
     #Returns a players choice from a list of options
-    def Option(self,player=None,North=False,South=False,West=False,East=False,Map=False,Other=False,OtherList=[],Yes=False,No=False,Open=False,prompt=''):
+    def Option(self,player=None,North=False,South=False,West=False,East=False,Map=False,Other=False,OtherList=[],Yes=False,No=False,Open=False,Exit=False,prompt=''):
         choosing = True
         if prompt:
             text(prompt)
@@ -68,6 +69,8 @@ class System():
             elif East and choice in optionDict['east']:
                 return choice
             elif Other and choice in OtherList:
+                return choice
+            elif Exit and choice in optionDict['exit']:
                 return choice
             elif Map and choice in optionDict['map']:
                 player.DungLvl.printHiddenMap(player)

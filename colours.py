@@ -27,6 +27,10 @@ class Colour():
     def nar(text):
         return f"\033[38;2;{0};{191};{255}m{text}\033[0m"
     
+    @staticmethod # NPC Text
+    def npc(text):
+        return f"\033[38;2;{210};{180};{140}m{text}\033[0m"
+    
     @staticmethod # Hint Text
     def hint(text):
         return f"\033[38;2;{255};{255};{255}m{text}\033[0m"

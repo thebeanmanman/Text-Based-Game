@@ -22,7 +22,9 @@ optionDict = {
     'hintsoff': ['hints off','hint off','no hints','disable hints'],
     'hintson': ['hints on','hint on','enable hints'],
     'drop': ['drop','drop weapon','equip fists'],
-    'weaponinfo' : ['weapon info','weaponinfo','wi','weapon damage','weapon dmg','weapon name','weapon crit','equip info']
+    'weaponinfo' : ['weapon info','weaponinfo','wi','weapon damage','weapon dmg','weapon name','weapon crit','equip info'],
+    'exit': ['exit','leave'],
+    'buy': ['purchase','buy']
 }
 
 def levelStat(maxhp=0,fistdmg=0,fistcrt=0):

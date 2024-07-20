@@ -33,11 +33,10 @@ class Entity():
         self.hp = min(self.hp,self.maxhp)
 
 class Player(Entity):
-    def __init__(self,DungLvl, maxhp=10) -> None:
+    def __init__(self, maxhp=10) -> None:
         super().__init__(maxhp)
         self.defaultWeapon = Entity.fists
         self.room = None
-        self.DungLvl = DungLvl
         self.icon = iconDict['Player']
         self.gold = 0
         self.lvl = 1
@@ -48,6 +47,9 @@ class Player(Entity):
     
     def setName(self,name):
         self.name = name.title()
+        
+    def setDungeonLevel(self,dungeonLvl):
+        self.DungLvl = dungeonLvl
 
     def equip(self, weapon) -> None:
         self.weapon = weapon
@@ -152,9 +154,22 @@ class Player(Entity):
                 syst.enterHint()
                 syst.printStatus()
 
+    def buy(self,gold):
+        if self.gold >= gold:
+            self.gold -= gold
+            return True
+        else:
+            return False
 
     def death(self):
+        syst.printStatus()
         text(col.red('You have died... Game Over'))
+        syst.enterHint()
+
+    def deathReset(self):
+        self.hp = self.maxhp
+        self.weapon = self.defaultWeapon
+
 
 class Enemy(Entity):
     def __init__(self, name, maxhp,gold,xp) -> None:
