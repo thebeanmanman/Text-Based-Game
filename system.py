@@ -73,7 +73,7 @@ class System():
             elif Exit and choice in optionDict['exit']:
                 return choice
             elif Map and choice in optionDict['map']:
-                player.DungLvl.printHiddenMap(player)
+                player.dungeonFloor.printPlayerMap(player)
             elif Yes and choice in optionDict['yes']:
                 return choice
             elif No and choice in optionDict['no']:
@@ -111,7 +111,7 @@ class System():
 
             # Developer Tools
             elif self.Devmap and choice == 'devmap':
-                player.DungLvl.printMap(player.DungLvl.dispMap)
+                player.dungeonFloor.printMap(player.dungeonFloor.dispMap)
             else:
                 print('Unknown action. Please try again')
 

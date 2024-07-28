@@ -1,34 +1,35 @@
 # Import external modules
 from random import choices,randint
+import copy
 
 # Import System
 from system import syst
 
 # Import Enemies
-from entity import Enemy,Mimic
+from entity import Enemy
 
 # Import Functions
 from functions import text,randItem,chance
 
 # Import Dictionaries
-from dictionaries import iconDict,optionDict
+from dictionaries import iconDict,optionDict,roomDescDict
 
 # Import Grammar
 from grammar import orChoice,AreIs,Plural
 
 # Import Weapons
-from weapons import common,uncommon,rare,epic,legendary
+from weapons import common,uncommon,rare,epic,legendary,enemyDict
 
 #Import Colours
 from colours import col
 
 class Dungeon():
-    def __init__(self,reqRooms:list,rooms:list,roomNum:int,mapsize:int,Level:int,roomChances:list) -> None:
+    def __init__(self,reqRooms:list,rooms:list,roomNum:int,mapsize:int,Floor:int,roomChances:list) -> None:
         self.reqRooms = reqRooms
         self.rooms = rooms
         self.roomNum = roomNum
-        self.startRoom = StartRoom(Level)
-        self.Level = Level
+        self.startRoom = StartRoom(Floor)
+        self.Floor = Floor
         self.roomChances = roomChances
 
         self.mapsize = mapsize
@@ -107,7 +108,7 @@ class Dungeon():
 
     def rollRooms(self):
         room = choices(self.rooms,weights=self.roomChances,k=1)[0]
-        return room(self.Level)
+        return room(self.Floor)
 
     def mapNoDirCheck(self,x,y):
         dirList = []
@@ -145,7 +146,7 @@ class Dungeon():
                     newrow.append(iconDict['Blank'])
             self.dispMap.append(newrow)
         
-    # Prints the Developer Map
+    # Prints the Map 
     def printMap(self,map):
         print('')
         for row in map:
@@ -159,7 +160,7 @@ class Dungeon():
         # print(f'Stair Room: {iconDict["Stair Room"]}')
 
     # Prints the map shown to the players
-    def printHiddenMap(self,player):
+    def printPlayerMap(self,player):
         # Map Creation
         hiddenMap = []
         for row in self.map:
@@ -183,13 +184,15 @@ class Dungeon():
         self.printMap(hiddenMap)
 
 class Room():
-    def __init__(self,Level) -> None:
+    def __init__(self,Floor) -> None:
         self.x = 0
         self.y = 0
-        self.Level = Level
+        self.Floor = Floor
         self.lvl = None
         self.cleared = False
         self.discovered = False
+        self.roomName = self.__class__.__name__
+        self.desc = roomDescDict[self.Floor][self.roomName]
 
     # Default enter method always called when the player enters the room  (Unless overwritten)
     # This then runs subclass specific onEnter methods
@@ -211,7 +214,7 @@ class Room():
             Adjroom.discovered = True 
         syst.enterHint()
         syst.printStatus()
-        direction = syst.Option(player=player,North='north' in options,South='south' in options,West='west' in options,East='east',Map=True,prompt=f'You can move {orChoice(options)}.')
+        direction = syst.Option(player=player,North='north' in options,South='south' in options,West='west' in options,East='east' in options,Map=True,prompt=f'You can move {orChoice(options)}.')
         self.lvl.dispMap[self.y][self.x] = self.icon
         if direction in optionDict['north']:
             player.room = self.lvl.map[self.y-1][self.x]
@@ -231,13 +234,10 @@ class Room():
         text('You have cleared this room.')
     
 class StartRoom(Room):
-    def __init__(self, Level) -> None:
-        super().__init__(Level)
-        self.icon = iconDict['Start Room']
-
-        if Level == 1:
-            self.desc = 'You enter the dungeon...'
-            self.reEnter = 'You enter the room that you started in.\nAre you sure your not lost?'
+    def __init__(self, Floor) -> None:
+        super().__init__(Floor)
+        self.icon = iconDict[self.roomName]
+        self.reEnter = roomDescDict[self.Floor]['ReEnterStartRoom']
     
     def enter(self, player):
         self.lvl.dispMap[self.y][self.x] = player.icon
@@ -249,9 +249,9 @@ class StartRoom(Room):
             text(self.desc)
         self.move(player)
 
-class Level1Exit(Room):
-    def __init__(self, Level) -> None:
-        super().__init__(Level)
+class Floor1Exit(Room):
+    def __init__(self, Floor) -> None:
+        super().__init__(Floor)
         self.icon = iconDict['Stair Room']
         self.desc = 'You enter the dungeon...'
         self.reEnter = 'You enter the room that you started in.\nAre you sure your not lost?'
@@ -268,24 +268,20 @@ class Level1Exit(Room):
 
 
 class EnemyRoom(Room):
-    icon = iconDict['Enemy Room']
-    def __init__(self,Level) -> None:
-        super().__init__(Level)
+    def __init__(self,Floor) -> None:
+        super().__init__(Floor)
         self.enemies = []
-        if self.Level == 1:
-            self.desc = 'You enter a dimly lit room.\nA sense of unease fills you as you step further in the room.' 
-            self.EnemyTypes = [cls for cls in Enemy.__subclasses__() if 1 in cls.Levels]
-            self.EnemyChances = [cls.Chances[0] for cls in self.EnemyTypes]
-            for enemy in self.EnemyTypes:
-                enemy.desc = enemy.Descs[0]
+        self.icon = iconDict[self.roomName]
         
         self.rollEnemy()
 
     def rollEnemy(self):
         enemyNum  = randint(1,3)
+        enemyTypes = list(enemyDict[self.Floor])
+        enemyChances = [enemyDict[self.Floor][enemy]['spawnch'] for enemy in enemyTypes]
         for i in range(enemyNum):
-            enemyType = choices(self.EnemyTypes,weights=self.EnemyChances,k=1)[0]
-            InstantiatedEnemy = enemyType()
+            enemyName = choices(enemyTypes,weights=enemyChances,k=1)[0]
+            InstantiatedEnemy = Enemy(enemyName,**enemyDict[1][enemyName])
             self.enemies.append(InstantiatedEnemy)
 
 
@@ -313,12 +309,11 @@ class EnemyRoom(Room):
             self.clear()
     
 class TreasureRoom(Room):
-    def __init__(self,Level):
-        super().__init__(Level)
+    def __init__(self,Floor):
+        super().__init__(Floor)
 
         # Visual Variables:
-        self.desc = 'You enter a room with a large treasure chest inside.'
-        self.icon = iconDict['Treasure Room']
+        self.icon = iconDict[self.roomName]
 
         # Chances for each rarity tier
         self.commonCh = 37
@@ -330,7 +325,7 @@ class TreasureRoom(Room):
         # Mimic variables
         self.mimicChance = 0.1
         self.IsMimic = False
-        self.Mimic = Mimic()
+        self.Mimic = Enemy('Mimic',**enemyDict['misc']['Mimic'])
 
         # Rolls for loot and mimic chances
         self.rollTreasure()
@@ -383,3 +378,5 @@ class TreasureRoom(Room):
                 text('You leave the item in the chest and move on.')
                 self.clear()
                 self.move(player)
+
+a = EnemyRoom(1)

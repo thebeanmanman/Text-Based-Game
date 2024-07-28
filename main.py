@@ -47,14 +47,14 @@ def startGame():
     while syst.playing:
         if rounds == 1:
             syst.wipe()
-            text(toprint=col.nar("You awake in field of long flowing grass, gradually opening your eyes,\nThey slowly adjust to the warm sunlight splashing on your face,\nTaking in the electric blue of the sky above you,\nSlowly, your body begins to wake up and you summon enough strength to stand.\nYou feel a sense of confidence wash over you, wanting everyone to know the name of...\n \nHang on... What is your name?"),time=syst.NarSpeed)
+            # text(toprint=col.nar("You awake in field of long flowing grass, gradually opening your eyes,\nThey slowly adjust to the warm sunlight splashing on your face,\nTaking in the electric blue of the sky above you,\nSlowly, your body begins to wake up and you summon enough strength to stand.\nYou feel a sense of confidence wash over you, wanting everyone to know the name of...\n \nHang on... What is your name?"),time=syst.NarSpeed)
             name = input('> ')
-            player.setName(name)
+            player.setName(name),
             syst.wipe()
-            text(toprint=col.nar(f"Oh of course! I knew that...\nWell anyways as I was saying...\nYou feel a sense of confidence wash over you, wanting everyone to know the name of... {player.name}.\nHang on... I'm sorry is that your actual name?\nBecause it really doesn't roll off the tongue all that well...\nNarrating is a very difficult job as it is, and you choosing a name such as {player.name} really doesn't help."),time=syst.NarSpeed)
-            # Add more later...
+            # text(toprint=col.nar(f"Oh of course! I knew that...\nWell anyways as I was saying...\nYou feel a sense of confidence wash over you, wanting everyone to know the name of... {player.name}.\nHang on... I'm sorry is that your actual name?\nBecause it really doesn't roll off the tongue all that well...\nNarrating is a very difficult job as it is, and you choosing a name such as {player.name} really doesn't help."),time=syst.NarSpeed)
+            # # Add more later...
 
-            text(col.nar(f'You encounter a humble shopkeeper selling his wares in the village.'))
+            # text(col.nar(f'You encounter a humble shopkeeper selling his wares in the village.'))
             shopEncounter()
         else:
             player.deathReset()
@@ -75,10 +75,10 @@ def shopEncounter():
         enterDungeon()
     
 def enterDungeon():
-    Level1 = Dungeon(rooms=[TreasureRoom,EnemyRoom],roomNum=13,reqRooms=None,mapsize=9,Level=1,roomChances=[6,20])
-    player.setDungeonLevel(Level1)
+    Floor1 = Dungeon(rooms=[TreasureRoom,EnemyRoom],roomNum=13,reqRooms=None,mapsize=9,Floor=1,roomChances=[6,20])
+    player.setDungeonFloor(Floor1)
     syst.wipe()
-    player.room = Level1.startRoom
+    player.room = Floor1.startRoom
     player.room.enter(player)
 
 player = Player(maxhp=10)

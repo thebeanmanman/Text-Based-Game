@@ -44,12 +44,17 @@ class Player(Entity):
         self.maxxp = 4
         self.maxlvl = 20
         self.healthbar = HealthBar(self,type='player')
+        self.potions = []
     
     def setName(self,name):
         self.name = name.title()
+
+    def printPotions(self):
+        for potion in self.potions:
+            pass
         
-    def setDungeonLevel(self,dungeonLvl):
-        self.DungLvl = dungeonLvl
+    def setDungeonFloor(self,dungeonFloor):
+        self.dungeonFloor = dungeonFloor
 
     def equip(self, weapon) -> None:
         self.weapon = weapon
@@ -169,14 +174,23 @@ class Player(Entity):
     def deathReset(self):
         self.hp = self.maxhp
         self.weapon = self.defaultWeapon
+        self.poisonDur = 0
 
 
 class Enemy(Entity):
-    def __init__(self, name, maxhp,gold,xp) -> None:
+    enemyList = []
+    def __init__(self, name, maxhp,gold,xp,attacks,attacksch,desc='',spawnch=0) -> None:
         super().__init__(name=name, maxhp=maxhp)
         self.gold = gold
         self.xp = xp
         self.healthbar = HealthBar(self,type='enemy')
+        self.attacks = attacks
+        self.attacksch = attacksch
+        self.spawnch = spawnch
+        self.desc = desc
+
+        # Adding the created enemy into the list of enemies
+        self.enemyList.append(self)
     
     def death(self,player):
         syst.enterHint()
@@ -253,55 +267,3 @@ class Enemy(Entity):
         if self.hp <= 0:
             self.battling = False
             self.death(player)
-
-class Goblin(Enemy):
-    attacks = []
-    attacksch = []
-    Levels = [1]
-    Chances = [1]
-    Descs = ['You hear a mischievous snicker from behind you.\nYou quickly turn around to see a small green creature brandishing a crudely crafted knife staring intensly at your gold pouch.']
-    def __init__(self,
-                 hp=4,
-                 name='Goblin',
-                 gold=2,
-                 xp=1) -> None:
-        super().__init__(name=name,maxhp=hp,gold=gold,xp=xp)
-
-class Mimic(Enemy):
-    attacks = []
-    attacksch = []
-    Levels = []
-    def __init__(self,
-                 hp=10,
-                 name='Mimic',
-                 gold=10,
-                 xp=4) -> None:
-        super().__init__(name=name,maxhp=hp,gold=gold,xp=xp)
-
-class BabySpider(Enemy):
-    attacks = []
-    attacksch = []
-    Levels = [1]
-    Chances = [1]
-    Descs = ['You suddenly run into a thick spider web, which blocks your vision.\nAs you hastily remove it, you see a spider the size of a wolf standing before you.']
-    def __init__(self,
-                 hp=3,
-                 name = 'Baby Spider',
-                 gold=1,
-                 xp=1
-                 ):
-        super().__init__(name=name,maxhp=hp,gold=gold,xp=xp)
-
-class Slime(Enemy):
-    attacks = []
-    attacksch = []
-    Levels = [1]
-    Chances = [1]
-    Descs = ["Standing before you, there is a green gelatinous blob.\nThrough its translucent skin, you can see partially digested bones floating in what seems to be it's stomach."]
-    def __init__(self,
-                 hp=4,
-                 name='Slime',
-                 gold=1,
-                 xp=2
-                 ):
-        super().__init__(name=name,maxhp=hp,gold=gold,xp=xp)
