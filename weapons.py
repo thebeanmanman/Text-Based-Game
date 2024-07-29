@@ -54,24 +54,24 @@ class PlayerWeapon(Weapon):
         self.rawname = self.name.lower()
         if rarity == 1:
             common.append(self)
-            self.rarname = f'{col.commont} {col.common(self.name)}'
-            self.name = col.common(self.name)
+            self.rarname = f'{col.commont} {col.name("common",self.name)}'
+            self.name = col.name('common',self.name)
         elif rarity == 2:
             uncommon.append(self)
-            self.rarname = f'{col.uncommont} {col.uncommon(self.name)}'
-            self.name = col.uncommon(self.name)
+            self.rarname = f'{col.uncommont} {col.name("uncommon",self.name)}'
+            self.name = col.name('uncommon',self.name)
         elif rarity == 3:
             rare.append(self)
-            self.rarname = f'{col.raret} {col.rare(self.name)}'
-            self.name = col.rare(self.name)
+            self.rarname = f'{col.raret} {col.name("rare",self.name)}'
+            self.name = col.name('rare',self.name)
         elif rarity == 4:
             epic.append(self)
-            self.rarname = f'{col.epict} {col.epic(self.name)}'
-            self.name = col.epic(self.name)
+            self.rarname = f'{col.epict} {col.name("epic",self.name)}'
+            self.name = col.name('epic',self.name)
         elif rarity == 5:
             legendary.append(self)
-            self.rarname = f'{col.legt} {col.leg(self.name)}'
-            self.name = col.leg(self.name)
+            self.rarname = f'{col.legt} {col.name("leg",self.name)}'
+            self.name = col.name('leg',self.name)
 
     def showStats(self):
         text(f'Description: {self.desc}')

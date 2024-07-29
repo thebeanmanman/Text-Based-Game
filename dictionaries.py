@@ -3,7 +3,7 @@ from colours import col
 iconDict = {
     'EnemyRoom': '[E]',
     'StartRoom': '[O]',
-    'Player' : f'[{col.red("X")}]',
+    'Player' : f'[{col.name("red","X")}]',
     'TreasureRoom': '[T]',
     'Unknown Room': '[?]',
     'Blank': '   ',

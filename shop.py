@@ -26,7 +26,7 @@ class Shop():
         if self.sellWeapons:
             print('> Weapons <')
             for weaponnum,weapon in enumerate(self.weapons):
-                print(f'{chr(8226)} {weapon.rarname}: {col.gold(f"{self.weaponPrices[weaponnum]} Gold")}')
+                print(f'{chr(8226)} {weapon.rarname}: {col.name("gold",f"{self.weaponPrices[weaponnum]} Gold")}')
             print()
 
     def enterShop(self,player):
@@ -39,7 +39,7 @@ class Shop():
             choice = syst.Option(Other=True,OtherList=optionList,Exit=True)
             if choice in self.weaponNames:
                 index = self.weaponNames.index(choice)
-                text(f"Are you sure you want to buy a {self.weapons[index].name} for {col.gold(f'{self.weaponPrices[index]} gold')}?")
+                text(f"Are you sure you want to buy a {self.weapons[index].name} for {col.name('gold',f'{self.weaponPrices[index]} gold')}?")
                 self.weapons[index].showStats()
                 confirm = syst.Option(Yes=True,No=True,OtherList=optionDict['buy'])
                 if confirm in optionDict['yes'] or confirm in optionDict['buy']:

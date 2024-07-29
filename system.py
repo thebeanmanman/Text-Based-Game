@@ -29,12 +29,12 @@ class System():
         topBanner = f"{self.divChar*self.sideDivLen} {self.player.name} Level {self.player.lvl} {self.divChar*self.sideDivLen}"
         print(topBanner)
         if self.player.lvl >= self.player.maxlvl:
-            print(f'Experience: {col.heal("Max Level")}')
+            print(f'Experience: {col.name("heal","Max Level")}')
         elif self.player.xp >= self.player.maxxp:
-            print(f'Experience: {col.heal(self.player.xp)}/{self.player.maxxp}')
+            print(f'Experience: {col.name("heal",self.player.xp)}/{self.player.maxxp}')
         else:
             print(f'Experience: {self.player.xp}/{self.player.maxxp}')
-        print(f'Gold: {col.gold(f"{self.player.gold}")}')
+        print(f'Gold: {col.name("gold",f"{self.player.gold}")}')
         print(f'Health: {self.player.healthbar.getBar()}')
         print(f'Weapon: {self.player.weapon.name}')
         self.fullDiv = self.divChar*len(topBanner)
@@ -49,7 +49,7 @@ class System():
     def enterHint(self,text='Press enter to continue...'):
         if self.Hints:
             print()
-            input(col.hint(text))
+            input(col.name('hint',text))
         else:
             input()
 
@@ -110,7 +110,7 @@ class System():
                 player.currentWeaponStats()
 
             # Developer Tools
-            elif self.Devmap and choice == 'devmap':
+            elif self.Devmap and choice == 'devmap' and Map:
                 player.dungeonFloor.printMap(player.dungeonFloor.dispMap)
             else:
                 print('Unknown action. Please try again')

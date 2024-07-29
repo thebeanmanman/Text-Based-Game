@@ -354,7 +354,7 @@ class TreasureRoom(Room):
     def open(self,player):
         text('Your hands swiftly unlock the chest, awaiting your reward...')
         if self.IsMimic:
-            text(f'{col.red("Only to find rows upon rows of gnashing teeth.")}')
+            text(f'{col.name("red","Only to find rows upon rows of gnashing teeth.")}')
             player.battle(self.Mimic)
             if player.hp > 0:
                 self.clear()

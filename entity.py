@@ -69,7 +69,7 @@ class Player(Entity):
         if chance(self.weapon.crtch):
             target.takeDamage(self.weapon.dmg*2)
             self.turn(target)
-            print(f'You dealt {col.red(self.weapon.dmg*2)} damage using your {self.weapon.name}! {col.red("[Critial Hit!]")}')
+            print(f'You dealt {col.name("red",self.weapon.dmg*2)} damage using your {self.weapon.name}! {col.name("red","[Critial Hit!]")}')
         else:
             target.takeDamage(self.weapon.dmg)
             self.turn(target)
@@ -120,7 +120,7 @@ class Player(Entity):
             self.poisonDur -= 1
             self.takeDamage(self.poisonDmg)
             self.turn(enemy)
-            print(f'You take {col.poison(self.poisonDmg)} poison damage.')
+            print(f'You take {col.name("poison",self.poisonDmg)} poison damage.')
             syst.enterHint()
 
         if self.hp <= 0:
@@ -152,7 +152,7 @@ class Player(Entity):
                     self.fists.crtch += fistCrtGain
                     
                 if self.lvl == self.maxlvl:
-                    lvltext += f'\n{col.heal("You have reached the max level!")}'
+                    lvltext += f'\n{col.name("heal","You have reached the max level!")}'
 
                 syst.printStatus()
                 text(lvltext)
@@ -168,7 +168,7 @@ class Player(Entity):
 
     def death(self):
         syst.printStatus()
-        text(col.red('You have died... Game Over'))
+        text(col.name('red','You have died... Game Over'))
         syst.enterHint()
 
     def deathReset(self):
@@ -197,7 +197,7 @@ class Enemy(Entity):
         player.gold += self.gold
         player.xp += self.xp
         syst.printStatus()
-        text(f'You have slain the {self.name}. Gained {col.gold(f"+{self.gold} gold")} and +{self.xp} experience.')
+        text(f'You have slain the {self.name}. Gained {col.name("gold",f"+{self.gold} gold")} and +{self.xp} experience.')
         syst.enterHint()
         syst.printStatus()
 
@@ -210,7 +210,7 @@ class Enemy(Entity):
             if chance(attack.crtch):
                 player.takeDamage(attack.dmg*2)
                 player.turn(self)
-                print(f'You took {col.red(attack.dmg*2)} damage. {col.red("[Critical Hit!]")}')
+                print(f'You took {col.name("red",attack.dmg*2)} damage. {col.name("red","[Critical Hit!]")}')
             else:
                 player.takeDamage(attack.dmg)
                 player.turn(self)
@@ -221,7 +221,7 @@ class Enemy(Entity):
                 if player.gold > 0:
                     player.gold = max(player.gold-attack.steal,0)
                     player.turn(self)
-                    print(f'The {self.name} stole {col.gold(f"{attack.steal} gold")}!')
+                    print(f'The {self.name} stole {col.name("gold",f"{attack.steal} gold")}!')
                 else:
                     player.turn(self)
                     print(f'You had no gold for the {self.name} to steal.')
@@ -234,7 +234,7 @@ class Enemy(Entity):
                 player.poisonDmg = attack.poisonDmg
                 player.poisonDur = attack.poisonDur
                 player.turn(self)
-                print(col.poison(f'You have been poisoned for {attack.poisonDur} turns.'))
+                print(col.name('poison',f'You have been poisoned for {attack.poisonDur} turns.'))
             else:
                 player.turn(self)
                 print('The attack missed.')
@@ -243,7 +243,7 @@ class Enemy(Entity):
             if chance(attack.healCh):
                 self.heal(attack.heal)
                 player.turn(self)
-                print(col.heal(f'The {self.name} healed for {attack.heal} hp!'))
+                print(col.name('heal',f'The {self.name} healed for {attack.heal} hp!'))
             else:
                 player.turn(self)
                 print(f"The {self.name} didn't heal.")
@@ -261,7 +261,7 @@ class Enemy(Entity):
             self.poisonDur -= 1
             self.takeDamage(self.poisonDmg)
             player.turn(self)
-            print(f'The {self.name} takes {col.poison(self.poisonDmg)} poison damage.')
+            print(f'The {self.name} takes {col.name("poison",self.poisonDmg)} poison damage.')
             syst.enterHint()
         
         if self.hp <= 0:
