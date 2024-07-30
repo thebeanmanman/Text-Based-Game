@@ -1,4 +1,4 @@
-from weapons import common,uncommon,rare,epic,legendary
+from weapons import common,uncommon,rare,epic,legendary,itemDict
 from functions import randItem,text
 from colours import col
 from system import syst
@@ -32,15 +32,20 @@ class Shop():
     def enterShop(self,player):
         buying = True
         optionList = []
+        itemList = []
         if self.sellWeapons:
             optionList += self.weaponNames
+        for item in list(itemDict['heal']):
+            print(item)
+            optionList.append(item)
+            itemList.append(item)
 
         while buying:
             choice = syst.Option(Other=True,OtherList=optionList,Exit=True)
             if choice in self.weaponNames:
                 index = self.weaponNames.index(choice)
                 text(f"Are you sure you want to buy a {self.weapons[index].name} for {col.name('gold',f'{self.weaponPrices[index]} gold')}?")
-                self.weapons[index].showStats()
+                self.weapons[index].showInfo()
                 confirm = syst.Option(Yes=True,No=True,OtherList=optionDict['buy'])
                 if confirm in optionDict['yes'] or confirm in optionDict['buy']:
                     if player.buy(self.weaponPrices[index]):

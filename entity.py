@@ -38,7 +38,7 @@ class Player(Entity):
         self.defaultWeapon = Entity.fists
         self.room = None
         self.icon = iconDict['Player']
-        self.gold = 0
+        self.gold = 2
         self.lvl = 1
         self.xp = 0
         self.maxxp = 4
@@ -86,7 +86,7 @@ class Player(Entity):
             text(f'Your current weapon is your fists.')
         else:
             text(f'Your current weapon is a {self.weapon.rarname}')
-        self.weapon.showStats()
+        self.weapon.showInfo()
 
     def battle(self,enemy):
         self.battling = True

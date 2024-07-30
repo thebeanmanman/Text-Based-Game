@@ -364,7 +364,7 @@ class TreasureRoom(Room):
             syst.enterHint()
             syst.printStatus()
             text(f'You have found a {self.treasure.rarname}!')
-            self.treasure.showStats()
+            self.treasure.showInfo()
             print()
             player.currentWeaponStats()
             print()

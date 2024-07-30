@@ -5,31 +5,41 @@ from system import syst
 from dictionaries import enemyDescDict
 
 class Item():
-    def __init__(self,name:str) -> None:
+    def __init__(self,name:str,desc:str) -> None:
         self.name = name
+        self.desc = desc
 
-class Potion(Item):
-    def __init__(self, name: str, desc:str) -> None:
+class UsableItem(Item):
+    def __init__(self, name: str, desc:str,useText:str,price:int) -> None:
         super().__init__(name)
         self.desc = desc
+        self.useText = useText
+        self.price = price
     
-    def drink(self,player):
-        print(f'You drink the {self.name}!')
-        self.onDrink(player)
+    def use(self,player):
+        print(self.useText)
+        self.onUse(player)
 
-class HealthPotion(Potion):
-    def __init__(self, name: str, desc:str, healAmt:int) -> None:
-        super().__init__(name,desc)
+    def showInfo(self):
+        text(f'Description: {self.desc}')
+        self.onInfo()
+
+class HealItem(UsableItem):
+    def __init__(self, name: str, desc:str, useText:str,healAmt:int,price:int) -> None:
+        super().__init__(name,desc,useText,price)
         self.healAmt = healAmt
     
-    def onDrink(self,player):
+    def onUse(self,player):
         player.heal(self.healAmt)
         syst.printStatus()
-        print(f'You healed {self.healAmt} health!')
+        print(col.name('heal',f'You healed {self.healAmt} health!'))
+
+    def onInfo(self):
+        text(f'Heals {self.healAmt} health.')
 
 class Weapon(Item):
-    def __init__(self,name:str,dmg:int,crtch=0,poisonCh=0,poisonDmg=0,poisonDur=0,heal=0,healCh=0) -> None:
-        super().__init__(name)
+    def __init__(self,name:str,desc:str,dmg:int,crtch=0,poisonCh=0,poisonDmg=0,poisonDur=0,heal=0,healCh=0) -> None:
+        super().__init__(name,desc)
         self.dmg = dmg
         self.crtch = crtch
         self.poisonCh = poisonCh
@@ -39,15 +49,14 @@ class Weapon(Item):
         self.healCh = healCh
 
 class EnemyWeapon(Weapon):
-    def __init__(self, name: str, dmg: int, crtch=0, stealch=0, steal=0,poisonCh=0,poisonDmg=0,poisonDur=0,heal=0,healCh=0) -> None:
-        super().__init__(name,dmg,crtch,poisonCh,poisonDmg,poisonDur,heal,healCh)
+    def __init__(self, name: str,dmg: int, crtch=0, stealch=0, steal=0,poisonCh=0,poisonDmg=0,poisonDur=0,heal=0,healCh=0) -> None:
+        super().__init__(name,'',dmg,crtch,poisonCh,poisonDmg,poisonDur,heal,healCh)
         self.stealch = stealch
         self.steal = steal
 
 class PlayerWeapon(Weapon):
     def __init__(self, name: str, dmg: int, desc='', rarity=0, crtch=0, poisonCh=0,poisonDmg=0,poisonDur=0,heal=0,healCh=0) -> None:
-        super().__init__(name, dmg,crtch,poisonCh,poisonDmg,poisonDur,heal,healCh)
-        self.desc = desc
+        super().__init__(name, desc,dmg,crtch,poisonCh,poisonDmg,poisonDur,heal,healCh)
         self.assignRarity(rarity)
 
     def assignRarity(self, rarity):
@@ -73,8 +82,7 @@ class PlayerWeapon(Weapon):
             self.rarname = f'{col.legt} {col.name("leg",self.name)}'
             self.name = col.name('leg',self.name)
 
-    def showStats(self):
-        text(f'Description: {self.desc}')
+    def onInfo(self):
         text(f'Damage: {self.dmg}')
         if self.crtch > 0:
             text(f'Critical Hit Chance: {int(self.crtch*100)}%')
@@ -125,6 +133,13 @@ babyspiderPoison = EnemyWeapon(name='Poisonous Bite',dmg=0,poisonCh=1,poisonDmg=
 slimeRoll = EnemyWeapon(name='Roll',dmg=1)
 slimeHeal = EnemyWeapon(name='Reshape',dmg=0,heal=1,healCh=0.5)
 
+
+### Item Dictionary ###
+itemDict = {
+    'heal': {
+        'Apple': {'desc':'A red juicy apple','useText':'You eat the apple.','healAmt': 2,'price':3}
+    }
+}
 
 ### Enemy Dictionary ###
 
