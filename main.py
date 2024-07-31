@@ -3,7 +3,7 @@ from entity import Player
 from shop import Shop
 
 # Import Objects
-from weapons import ironSword
+from items import ironSword
 from dungeon import *
 from system import syst
 from colours import col
@@ -25,11 +25,14 @@ def titleSelect():
         quit()
 
 def title_screen():
+    header = f'--- Welcome to {gameName}!---'
     syst.wipe()
-    print(f'--- Welcome to {gameName}!---')
-    text('- Play')
-    text('- Help')
-    text('- Quit')
+    print(header)
+    print()
+    print('▸ Play ◂'.center(len(header)))
+    print('▸ Help ◂'.center(len(header)))
+    print('▸ Quit ◂'.center(len(header)))
+    print()
     titleSelect()
 
 def helpMenu():

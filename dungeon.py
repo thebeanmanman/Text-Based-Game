@@ -17,8 +17,8 @@ from dictionaries import iconDict,optionDict,roomDescDict
 # Import Grammar
 from grammar import orChoice,AreIs,Plural
 
-# Import Weapons
-from weapons import common,uncommon,rare,epic,legendary,enemyDict
+# Import Weapon Rarity Tiers
+from items import common,uncommon,rare,epic,legendary,enemyDict
 
 #Import Colours
 from colours import col
@@ -281,7 +281,7 @@ class EnemyRoom(Room):
         enemyChances = [enemyDict[self.Floor][enemy]['spawnch'] for enemy in enemyTypes]
         for i in range(enemyNum):
             enemyName = choices(enemyTypes,weights=enemyChances,k=1)[0]
-            InstantiatedEnemy = Enemy(enemyName,**enemyDict[1][enemyName])
+            InstantiatedEnemy = Enemy(enemyName,**enemyDict[self.Floor][enemyName])
             self.enemies.append(InstantiatedEnemy)
 
 

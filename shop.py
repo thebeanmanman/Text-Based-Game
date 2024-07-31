@@ -1,4 +1,4 @@
-from weapons import common,uncommon,rare,epic,legendary,itemDict
+from items import common,uncommon,rare,epic,legendary,itemDict,HealItem
 from functions import randItem,text
 from colours import col
 from system import syst
@@ -22,39 +22,64 @@ class Shop():
             self.weaponNames.append(weapon.rawname)
 
     def printItems(self):
-        print(f'----- {self.name} -----')
+        header = f'----- {self.name} -----'
+        print(header)
         if self.sellWeapons:
-            print('> Weapons <')
+            print('> Weapons <'.center(len(header)))
             for weaponnum,weapon in enumerate(self.weapons):
                 print(f'{chr(8226)} {weapon.rarname}: {col.name("gold",f"{self.weaponPrices[weaponnum]} Gold")}')
             print()
+        print('> Items <'.center(len(header)))
+        for type in itemDict:
+            for item in itemDict[type]:
+                itemprice = itemDict[type][item]['price']
+                print(f'{chr(8226)} {item.title()}: {col.name("gold",f"{itemprice} Gold")}')
+            print()
+        
 
     def enterShop(self,player):
         buying = True
         optionList = []
+        priceList = []
         itemList = []
         if self.sellWeapons:
             optionList += self.weaponNames
-        for item in list(itemDict['heal']):
-            print(item)
-            optionList.append(item)
-            itemList.append(item)
+            priceList += self.weaponPrices
+        for type in itemDict:
+            for item in itemDict[type]:
+                optionList.append(item)
+                itemList.append(item)
+                priceList.append(itemDict[type][item]['price'])
 
         while buying:
             choice = syst.Option(Other=True,OtherList=optionList,Exit=True)
-            if choice in self.weaponNames:
-                index = self.weaponNames.index(choice)
-                text(f"Are you sure you want to buy a {self.weapons[index].name} for {col.name('gold',f'{self.weaponPrices[index]} gold')}?")
-                self.weapons[index].showInfo()
+            if choice in optionList:
+                index = optionList.index(choice)  
+                text(f"Are you sure you want to buy a {optionList[index]} for {col.name('gold',f'{priceList[index]} gold')}?")
+                if choice in self.weaponNames:
+                    item = self.weapons[index]
+                elif choice in itemList:
+                    if choice in itemDict['heal']:
+                        item = HealItem(optionList[index], **itemDict['heal'][optionList[index]])
+                item.showInfo()
                 confirm = syst.Option(Yes=True,No=True,OtherList=optionDict['buy'])
                 if confirm in optionDict['yes'] or confirm in optionDict['buy']:
-                    if player.buy(self.weaponPrices[index]):
-                        player.weapon = self.weapons[index]
-                        syst.printStatus()
-                        text(f'You have purchased and equipped a {self.weapons[index].name}!')
-                        syst.enterHint(text='Press enter to return to the shop...')
-                        syst.printStatus()
-                        self.printItems()
+                    if player.buy(priceList[index]):
+                        if item.__class__.__name__ == 'PlayerWeapon':
+                            player.weapon = item
+                            syst.printStatus()
+                            text(f'You have purchased and equipped a {self.weapons[index].name}!')
+                            syst.enterHint(text='Press enter to return to the shop...')
+                            syst.printStatus()
+                            self.printItems()
+                        elif item.__class__.__base__.__name__ == 'UsableItem':
+                            player.items.append(item)
+                            syst.printStatus()
+                            text(f'You have purchased a {item.name}!')
+                            player.printItems()
+                            syst.enterHint(text='Press enter to return to the shop...')
+                            syst.printStatus()
+                            self.printItems()
                     else:
                         text('You do not have enough funds to buy this.')
                 elif confirm in optionDict['no']:

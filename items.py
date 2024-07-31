@@ -1,18 +1,22 @@
 from colours import col
 from functions import text
-from entity import Enemy,Entity
+from entity import Entity
 from system import syst
 from dictionaries import enemyDescDict
 
 class Item():
     def __init__(self,name:str,desc:str) -> None:
-        self.name = name
+        self.name = name.title()
+        self.rawname = name.lower()
         self.desc = desc
+
+    def showInfo(self):
+        text(f'Description: {self.desc}')
+        self.onInfo()
 
 class UsableItem(Item):
     def __init__(self, name: str, desc:str,useText:str,price:int) -> None:
-        super().__init__(name)
-        self.desc = desc
+        super().__init__(name,desc)
         self.useText = useText
         self.price = price
     
@@ -20,9 +24,6 @@ class UsableItem(Item):
         print(self.useText)
         self.onUse(player)
 
-    def showInfo(self):
-        text(f'Description: {self.desc}')
-        self.onInfo()
 
 class HealItem(UsableItem):
     def __init__(self, name: str, desc:str, useText:str,healAmt:int,price:int) -> None:
@@ -35,7 +36,7 @@ class HealItem(UsableItem):
         print(col.name('heal',f'You healed {self.healAmt} health!'))
 
     def onInfo(self):
-        text(f'Heals {self.healAmt} health.')
+        text(col.name('heal',f'Heals {self.healAmt} health.'))
 
 class Weapon(Item):
     def __init__(self,name:str,desc:str,dmg:int,crtch=0,poisonCh=0,poisonDmg=0,poisonDur=0,heal=0,healCh=0) -> None:
@@ -60,7 +61,6 @@ class PlayerWeapon(Weapon):
         self.assignRarity(rarity)
 
     def assignRarity(self, rarity):
-        self.rawname = self.name.lower()
         if rarity == 1:
             common.append(self)
             self.rarname = f'{col.commont} {col.name("common",self.name)}'
@@ -116,45 +116,28 @@ fists = PlayerWeapon(name='Fists',dmg=1,desc='Punchy Punchy')
 Entity.fists = fists
 
 
-### Enemy Attacks ###
-# Goblin Weapons
-goblinStab = EnemyWeapon(name='Stab',dmg=2,crtch=0.1)
-goblinSteal = EnemyWeapon(name='Steal',dmg=0,steal=1,stealch=1)
-
-# Mimic Weapons
-mimicJaws = EnemyWeapon(name='Chomp',dmg=5,crtch=0.15)
-mimicLunge = EnemyWeapon(name='Lunge',dmg=6)
-
-# Baby Spider Weapons
-babyspiderFangs = EnemyWeapon(name='Bite',dmg=1,crtch=0.05)
-babyspiderPoison = EnemyWeapon(name='Poisonous Bite',dmg=0,poisonCh=1,poisonDmg=1,poisonDur=3)
-
-# Slime Weapons
-slimeRoll = EnemyWeapon(name='Roll',dmg=1)
-slimeHeal = EnemyWeapon(name='Reshape',dmg=0,heal=1,healCh=0.5)
-
-
 ### Item Dictionary ###
+# '': {'desc':'','useText':'','healAmt': ,'price':}
 itemDict = {
     'heal': {
-        'Apple': {'desc':'A red juicy apple','useText':'You eat the apple.','healAmt': 2,'price':3}
+        'apple': {'desc':'A red juicy apple','useText':'You eat the apple.','healAmt': 2,'price':3},
+        'golden apple': {'desc':'A apple coated in gold','useText':'You lose a tooth as you bite into the apple.\nWho even came up with the idea of golden apples in the first place?','healAmt': 6,'price':10}
     }
 }
 
-### Enemy Dictionary ###
-
+### Enemy Types ###
 # '': {'maxhp': , 'gold': , 'xp': , 'attacks': [], 'attacksch': [],  'desc': enemyDescDict[''], 'spawnch': 1},
 enemyDict = {
     'misc':
     {
-        'Mimic': {'maxhp': 10, 'gold': 6, 'xp': 6, 'attacks': [mimicJaws,mimicLunge], 'attacksch': [2,1]},
+        'Mimic': {'maxhp': 10, 'gold': 6, 'xp': 6, 'attacks': [EnemyWeapon(name='Chomp',dmg=5,crtch=0.15),EnemyWeapon(name='Lunge',dmg=6)], 'attacksch': [2,1]},
     },
 
     # Floors
     1:
     {
-        'Goblin': {'maxhp':4, 'gold':2, 'xp':1, 'attacks':[goblinStab,goblinSteal], 'attacksch':[2,1],  'desc': enemyDescDict['Goblin'], 'spawnch': 1},
-        'Slime': {'maxhp': 5, 'gold': 1, 'xp': 2, 'attacks': [slimeRoll,slimeHeal], 'attacksch': [3,2], 'desc': enemyDescDict['Slime'], 'spawnch': 1},
-        'Baby Spider': {'maxhp': 3, 'gold': 1, 'xp': 1, 'attacks': [babyspiderFangs,babyspiderPoison], 'attacksch': [2,1],  'desc': enemyDescDict['Baby Spider'], 'spawnch': 1},
+        'Goblin': {'maxhp':4, 'gold':2, 'xp':1, 'attacks':[EnemyWeapon(name='Stab',dmg=2,crtch=0.1),EnemyWeapon(name='Steal',dmg=0,steal=1,stealch=1)], 'attacksch':[2,1],  'desc': enemyDescDict['Goblin'], 'spawnch': 1},
+        'Slime': {'maxhp': 5, 'gold': 1, 'xp': 2, 'attacks': [EnemyWeapon(name='Roll',dmg=1),EnemyWeapon(name='Reshape',dmg=0,heal=1,healCh=0.5)], 'attacksch': [3,2], 'desc': enemyDescDict['Slime'], 'spawnch': 1},
+        'Baby Spider': {'maxhp': 3, 'gold': 1, 'xp': 1, 'attacks': [EnemyWeapon(name='Bite',dmg=1,crtch=0.05),EnemyWeapon(name='Poisonous Bite',dmg=0,poisonCh=1,poisonDmg=1,poisonDur=3)], 'attacksch': [2,1],  'desc': enemyDescDict['Baby Spider'], 'spawnch': 1},
     }
 }

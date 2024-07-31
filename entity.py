@@ -38,20 +38,28 @@ class Player(Entity):
         self.defaultWeapon = Entity.fists
         self.room = None
         self.icon = iconDict['Player']
-        self.gold = 2
+        self.gold = 10
         self.lvl = 1
         self.xp = 0
         self.maxxp = 4
         self.maxlvl = 20
         self.healthbar = HealthBar(self,type='player')
-        self.potions = []
+        self.items = []
     
     def setName(self,name):
         self.name = name.title()
 
-    def printPotions(self):
-        for potion in self.potions:
-            pass
+    def printItems(self):
+        if self.items:
+            itemDict = {}
+            for item in self.items:
+                itemDict[item.name] = itemDict.get(item.name, 0)+1
+
+            print('Your items:')
+            for item in itemDict:
+                print(f'{chr(8226)} {item} x{itemDict[item]}')
+        else:
+            print('You currently have no items.')
         
     def setDungeonFloor(self,dungeonFloor):
         self.dungeonFloor = dungeonFloor
