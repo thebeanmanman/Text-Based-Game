@@ -9,7 +9,7 @@ from functions import text,chance
 from colours import col
 
 # Import Dictionaries
-from dictionaries import iconDict,LevelDict
+from dictionaries import iconDict,LevelDict,optionDict
 
 # Import Classes
 from healthbar import HealthBar
@@ -55,11 +55,40 @@ class Player(Entity):
             for item in self.items:
                 itemDict[item.name] = itemDict.get(item.name, 0)+1
 
-            print('Your items:')
+            text('Your items:')
             for item in itemDict:
                 print(f'{chr(8226)} {item} x{itemDict[item]}')
+            print()
         else:
             print('You currently have no items.')
+
+    def chooseItems(self):
+        if self.items:
+            choosing = True
+            print('Choose an item to use:')
+            while choosing:
+                choice = input('> ').lower()
+                if choice in [item.name.lower() for item in self.items]:
+                    choosing = False
+                    for item in self.items:
+                        if choice == item.name.lower():
+                            self.items.remove(item)
+                            item.use(self)
+                            syst.enterHint(text='Press enter to return to your inventory.')
+                            syst.printStatus()
+                            self.printItems()
+                            self.chooseItems()
+                            break
+
+                elif choice in optionDict['close inventory']:
+                    choosing = False
+                    print('You have closed your inventory.')
+                    syst.enterHint(text='Press enter to return to the battle.')
+
+                else:
+                    print('Unknown item. Please try again.')
+        else:
+            syst.enterHint(text='Press enter to return to the battle.')
         
     def setDungeonFloor(self,dungeonFloor):
         self.dungeonFloor = dungeonFloor
@@ -89,6 +118,26 @@ class Player(Entity):
             self.battling = False
             target.death(self)
 
+    def battleChoice(self, target):
+        self.turn(target)
+        print(col.name('hint','Press enter to attack, or type "items" to use your items'))
+        choosing = True
+        while choosing:
+            choice = input('> ')
+            if choice in optionDict['open inventory']:
+                syst.printStatus()
+                self.printItems()
+                self.chooseItems()
+                self.turn(target)
+                print(col.name('hint','Press enter to attack, or type "items" to use your items'))
+
+            elif choice == '' or 'attack' in choice or 'kill' in choice:
+                choosing = False
+                self.attack(target)
+
+            else:
+                print('Unknown action. Please try again')
+
     def currentWeaponStats(self):
         if self.weapon == self.defaultWeapon:
             text(f'Your current weapon is your fists.')
@@ -104,9 +153,8 @@ class Player(Entity):
         text(f'You have encountered a {enemy.name}!')
         text(f"The {enemy.name}'s Health:",end='')
         print(f' {enemy.healthbar.getBar()}')
-        syst.enterHint()
         while self.battling:
-            self.attack(enemy)
+            self.battleChoice(enemy)
             if self.battling:
                 syst.enterHint()
                 enemy.attack(self)
@@ -240,7 +288,7 @@ class Enemy(Entity):
         if attack.poisonCh:
             if chance(attack.poisonCh):
                 player.poisonDmg = attack.poisonDmg
-                player.poisonDur = attack.poisonDur
+                player.poisonDur += attack.poisonDur
                 player.turn(self)
                 print(col.name('poison',f'You have been poisoned for {attack.poisonDur} turns.'))
             else:

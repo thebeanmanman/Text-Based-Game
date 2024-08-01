@@ -21,7 +21,9 @@ class UsableItem(Item):
         self.price = price
     
     def use(self,player):
-        print(self.useText)
+        syst.printStatus()
+        text(self.useText)
+        syst.enterHint()
         self.onUse(player)
 
 

@@ -37,6 +37,7 @@ class System():
         print(f'Gold: {col.name("gold",f"{self.player.gold}")}')
         print(f'Health: {self.player.healthbar.getBar()}')
         print(f'Weapon: {self.player.weapon.name}')
+        print(f'Items: {len(self.player.items)}')
         self.fullDiv = self.divChar*len(topBanner)
         print(self.fullDiv)
 
@@ -46,9 +47,10 @@ class System():
         self.playerStatus()
 
     # Waits for the player to press enter, and then prints status
-    def enterHint(self,text='Press enter to continue...'):
+    def enterHint(self,text='Press enter to continue...',space=True):
         if self.Hints:
-            print()
+            if space:
+                print()
             input(col.name('hint',text))
         else:
             input()

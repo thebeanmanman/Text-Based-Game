@@ -54,8 +54,9 @@ class Shop():
         while buying:
             choice = syst.Option(Other=True,OtherList=optionList,Exit=True)
             if choice in optionList:
-                index = optionList.index(choice)  
-                text(f"Are you sure you want to buy a {optionList[index]} for {col.name('gold',f'{priceList[index]} gold')}?")
+                index = optionList.index(choice)
+                syst.printStatus()
+                text(f"Are you sure you want to buy the {optionList[index]} for {col.name('gold',f'{priceList[index]} gold')}?")
                 if choice in self.weaponNames:
                     item = self.weapons[index]
                 elif choice in itemList:
@@ -68,22 +69,28 @@ class Shop():
                         if item.__class__.__name__ == 'PlayerWeapon':
                             player.weapon = item
                             syst.printStatus()
-                            text(f'You have purchased and equipped a {self.weapons[index].name}!')
+                            text(f'You have purchased and equipped the {self.weapons[index].name}!')
                             syst.enterHint(text='Press enter to return to the shop...')
                             syst.printStatus()
                             self.printItems()
                         elif item.__class__.__base__.__name__ == 'UsableItem':
                             player.items.append(item)
                             syst.printStatus()
-                            text(f'You have purchased a {item.name}!')
+                            text(f'You have purchased the {item.name}!')
                             player.printItems()
-                            syst.enterHint(text='Press enter to return to the shop...')
+                            syst.enterHint(text='Press enter to return to the shop...',space=False)
                             syst.printStatus()
                             self.printItems()
                     else:
                         text('You do not have enough funds to buy this.')
+                        syst.enterHint(text='Press enter to return to the shop...')
+                        syst.printStatus()
+                        self.printItems()
                 elif confirm in optionDict['no']:
                     text('You decide not to buy this.')
+                    syst.enterHint(text='Press enter to return to the shop...')
+                    syst.printStatus()
+                    self.printItems()
 
-            elif choice in optionDict['exit']:
+            elif choice in optionDict['exit shop']:
                 buying = False
