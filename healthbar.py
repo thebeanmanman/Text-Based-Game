@@ -1,4 +1,5 @@
 from colours import col
+from grammar import Plural
 
 class HealthBar():
     remaininghp = '█'
@@ -33,7 +34,10 @@ class HealthBar():
                 bar = f'{self.end}{remaining*self.remaininghp}{lost*self.losthp}{self.end} {self.entity.hp}/{self.entity.maxhp}'
             
             if self.entity.poisonDur:
-                bar += f' {col.name("poison",f"[Poisoned for {self.entity.poisonDur} turns]")}'
+                bar += f""" {col.name("poison",f"[Poisoned for {self.entity.poisonDur} {Plural(self.entity.poisonDur, 'turn')}]")}"""
+            
+            if self.entity.defenceDur:
+                bar += f""" {col.name("defence",f"[+{self.entity.defence} defence for {self.entity.defenceDur} {Plural(self.entity.defenceDur,'turn')}]")} """
 
         else:
             bar = f'{self.end}{self.death*self.length}{self.end} {self.entity.hp}/{self.entity.maxhp}'

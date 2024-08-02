@@ -52,10 +52,13 @@ class Weapon(Item):
         self.healCh = healCh
 
 class EnemyWeapon(Weapon):
-    def __init__(self, name: str,dmg: int, crtch=0, stealch=0, steal=0,poisonCh=0,poisonDmg=0,poisonDur=0,heal=0,healCh=0) -> None:
+    def __init__(self, name: str,dmg: int, crtch=0, stealch=0, steal=0,poisonCh=0,poisonDmg=0,poisonDur=0,heal=0,healCh=0,defence=0,defencech=0,defenceDur=0) -> None:
         super().__init__(name,'',dmg,crtch,poisonCh,poisonDmg,poisonDur,heal,healCh)
         self.stealch = stealch
         self.steal = steal
+        self.defencech = defencech
+        self.defence = defence
+        self.defenceDur = defenceDur
 
 class PlayerWeapon(Weapon):
     def __init__(self, name: str, dmg: int, desc='', rarity=0, crtch=0, poisonCh=0,poisonDmg=0,poisonDur=0,heal=0,healCh=0) -> None:
@@ -123,12 +126,12 @@ Entity.fists = fists
 itemDict = {
     'heal': {
         'apple': {'desc':'A red juicy apple','useText':'You eat the apple.','healAmt': 2,'price':3},
-        'golden apple': {'desc':'A apple coated in gold','useText':'You lose a tooth as you bite into the apple.\nWho even came up with the idea of golden apples in the first place?','healAmt': 6,'price':10}
+        'golden apple': {'desc':'A apple coated in gold','useText':'You lose a tooth as you bite into the apple.\nWho even came up with the idea of golden apples in the first place?','healAmt': 8,'price':10}
     }
 }
 
 ### Enemy Types ###
-# '': {'maxhp': , 'gold': , 'xp': , 'attacks': [], 'attacksch': [],  'desc': enemyDescDict[''], 'spawnch': 1},
+# '': {'maxhp': , 'gold': , 'xp': , 'attacks': [], 'attacksch': [], 'spawnch': 1},
 enemyDict = {
     'misc':
     {
@@ -138,8 +141,9 @@ enemyDict = {
     # Floors
     1:
     {
-        'Goblin': {'maxhp':4, 'gold':2, 'xp':1, 'attacks':[EnemyWeapon(name='Stab',dmg=2,crtch=0.1),EnemyWeapon(name='Steal',dmg=0,steal=1,stealch=1)], 'attacksch':[2,1],  'desc': enemyDescDict['Goblin'], 'spawnch': 1},
-        'Slime': {'maxhp': 5, 'gold': 1, 'xp': 2, 'attacks': [EnemyWeapon(name='Roll',dmg=1),EnemyWeapon(name='Reshape',dmg=0,heal=1,healCh=0.5)], 'attacksch': [3,2], 'desc': enemyDescDict['Slime'], 'spawnch': 1},
-        'Baby Spider': {'maxhp': 3, 'gold': 1, 'xp': 1, 'attacks': [EnemyWeapon(name='Bite',dmg=1,crtch=0.05),EnemyWeapon(name='Poisonous Bite',dmg=0,poisonCh=1,poisonDmg=1,poisonDur=3)], 'attacksch': [2,1],  'desc': enemyDescDict['Baby Spider'], 'spawnch': 1},
+        'Goblin': {'maxhp':4, 'gold':2, 'xp':1, 'attacks':[EnemyWeapon(name='Stab',dmg=2,crtch=0.1),EnemyWeapon(name='Steal',dmg=0,steal=1,stealch=1)], 'attacksch':[2,1], 'spawnch': 1},
+        'Slime': {'maxhp': 5, 'gold': 1, 'xp': 2, 'attacks': [EnemyWeapon(name='Roll',dmg=1),EnemyWeapon(name='Reshape',dmg=0,heal=1,healCh=0.5)], 'attacksch': [3,2], 'spawnch': 1},
+        'Baby Spider': {'maxhp': 3, 'gold': 1, 'xp': 1, 'attacks': [EnemyWeapon(name='Bite',dmg=1,crtch=0.05),EnemyWeapon(name='Poisonous Bite',dmg=0,poisonCh=1,poisonDmg=1,poisonDur=3)], 'attacksch': [2,1], 'spawnch': 1},
+        'Skeleton' : {'maxhp': 6, 'gold': 2, 'xp': 2, 'attacks': [EnemyWeapon(name='Slash',dmg=1,crtch=0.5),EnemyWeapon(name='Milk',dmg=0,defence=1,defencech=1,defenceDur=2)], 'attacksch': [3,2], 'spawnch': 1},
     }
 }

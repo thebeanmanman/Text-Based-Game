@@ -12,6 +12,7 @@ class Colour():
             # Status Effects
             'poison' : (0,128,0),
             'heal' : (60,245,113),
+            'defence' : (137,207,240),
 
             # Rarity Colours
             'common' : (128,128,128),

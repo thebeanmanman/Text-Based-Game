@@ -7,9 +7,10 @@ from system import syst
 #Import Functions
 from functions import text,chance
 from colours import col
+from grammar import Plural
 
 # Import Dictionaries
-from dictionaries import iconDict,LevelDict,optionDict
+from dictionaries import iconDict,LevelDict,optionDict,enemyDescDict
 
 # Import Classes
 from healthbar import HealthBar
@@ -23,6 +24,8 @@ class Entity():
         self.weapon = Entity.fists
         self.poisonDur = 0
         self.poisonDmg = 0
+        self.defence = 0
+        self.defenceDur = 0
 
     def takeDamage(self,dmg):
         self.hp -= dmg
@@ -38,11 +41,15 @@ class Player(Entity):
         self.defaultWeapon = Entity.fists
         self.room = None
         self.icon = iconDict['Player']
-        self.gold = 10
+        self.gold = 0
+        # Level Variables
         self.lvl = 1
         self.xp = 0
         self.maxxp = 4
         self.maxlvl = 20
+        self.weaponDmg = 0
+        self.weaponCrit = 0
+
         self.healthbar = HealthBar(self,type='player')
         self.items = []
     
@@ -103,14 +110,20 @@ class Player(Entity):
         self.weapon = self.defaultWeapon
 
     def attack(self, target):
-        if chance(self.weapon.crtch):
-            target.takeDamage(self.weapon.dmg*2)
-            self.turn(target)
-            print(f'You dealt {col.name("red",self.weapon.dmg*2)} damage using your {self.weapon.name}! {col.name("red","[Critial Hit!]")}')
+        if chance(self.weapon.crtch+self.weaponCrit):
+            dmgDealt = 2*(self.weapon.dmg+self.weaponDmg) -target.defence
+            dmgMessage = f'You dealt {col.name("red",dmgDealt)} damage using your {self.weapon.name}! {col.name("red","[Critial Hit!]")}'
         else:
-            target.takeDamage(self.weapon.dmg)
-            self.turn(target)
-            print(f'You dealt {self.weapon.dmg} damage using your {self.weapon.name}!')
+            dmgDealt = self.weapon.dmg+self.weaponDmg-target.defence
+            dmgMessage = f'You dealt {dmgDealt} damage using your {self.weapon.name}!'
+
+        if target.defence:
+            dmgMessage += col.name('defence',f'[-{target.defence}]')
+
+        target.takeDamage(dmgDealt)
+        self.turn(target)
+        print(dmgMessage)
+
         if self.hp <= 0:
             self.battling = False
             self.death()
@@ -154,14 +167,14 @@ class Player(Entity):
         text(f"The {enemy.name}'s Health:",end='')
         print(f' {enemy.healthbar.getBar()}')
         while self.battling:
+            self.round(enemy)
             self.battleChoice(enemy)
             if self.battling:
                 syst.enterHint()
+                enemy.round(self)
                 enemy.attack(self)
                 if self.battling:
                     syst.enterHint()
-                    enemy.round(self)
-                    self.round(enemy)
         self.levelCheck()
 
     def turn(self,enemy):
@@ -179,6 +192,11 @@ class Player(Entity):
             print(f'You take {col.name("poison",self.poisonDmg)} poison damage.')
             syst.enterHint()
 
+        if self.defenceDur:
+            self.defenceDur -= 1
+            if self.defenceDur == 0:
+                self.defence = 0
+
         if self.hp <= 0:
             self.battling = False
             self.death()
@@ -191,21 +209,21 @@ class Player(Entity):
             if self.lvl <= self.maxlvl:
                 gains = LevelDict[self.lvl]
                 hpGain = gains[0]
-                fistDmgGain = gains[1]
-                fistCrtGain = gains[2]
+                weaponDmgGain = gains[1]
+                weaponCrtGain = gains[2]
                 lvltext = f'You leveled up to level {self.lvl}! You gained:'
                 if hpGain:
                     lvltext += f'\n{chr(8226)} +{hpGain} Max Health!'
                     self.maxhp += hpGain
                     self.heal(hpGain)
 
-                if fistDmgGain:
-                    lvltext += f'\n{chr(8226)} +{fistDmgGain} Fist Damage!'
-                    self.fists.dmg += fistDmgGain
+                if weaponDmgGain:
+                    lvltext += f'\n{chr(8226)} +{weaponDmgGain} Weapon Damage!'
+                    self.weaponDmg += weaponDmgGain
 
-                if fistCrtGain:
-                    lvltext += f'\n{chr(8226)} +{int(fistCrtGain*100)}% Fist Critical Chance!'
-                    self.fists.crtch += fistCrtGain
+                if weaponCrtGain:
+                    lvltext += f'\n{chr(8226)} +{int(weaponCrtGain*100)}% Weapon Critical Chance!'
+                    self.fists.crtch += weaponCrtGain
                     
                 if self.lvl == self.maxlvl:
                     lvltext += f'\n{col.name("heal","You have reached the max level!")}'
@@ -234,8 +252,7 @@ class Player(Entity):
 
 
 class Enemy(Entity):
-    enemyList = []
-    def __init__(self, name, maxhp,gold,xp,attacks,attacksch,desc='',spawnch=0) -> None:
+    def __init__(self, name, maxhp,gold,xp,attacks,attacksch,spawnch=0) -> None:
         super().__init__(name=name, maxhp=maxhp)
         self.gold = gold
         self.xp = xp
@@ -243,10 +260,7 @@ class Enemy(Entity):
         self.attacks = attacks
         self.attacksch = attacksch
         self.spawnch = spawnch
-        self.desc = desc
-
-        # Adding the created enemy into the list of enemies
-        self.enemyList.append(self)
+        self.desc = enemyDescDict[name]
     
     def death(self,player):
         syst.enterHint()
@@ -264,13 +278,18 @@ class Enemy(Entity):
         syst.enterHint()
         if attack.dmg:
             if chance(attack.crtch):
-                player.takeDamage(attack.dmg*2)
-                player.turn(self)
-                print(f'You took {col.name("red",attack.dmg*2)} damage. {col.name("red","[Critical Hit!]")}')
+                dmgDealt = (attack.dmg*2) - player.defence
+                dmgMessage = (f'You took {col.name("red",dmgDealt)} damage. {col.name("red","[Critical Hit!]")}')
             else:
-                player.takeDamage(attack.dmg)
-                player.turn(self)
-                print(f'You took {attack.dmg} damage.')
+                dmgDealt = attack.dmg - player.defence
+                dmgMessage = (f'You took {dmgDealt} damage.')
+
+            if player.defence:
+                dmgMessage += col.name('defence',f' [-{player.defence}]')
+
+            player.takeDamage(dmgDealt)
+            player.turn(self)
+            print(dmgMessage)
 
         if attack.steal:
             if chance(attack.stealch):
@@ -290,7 +309,7 @@ class Enemy(Entity):
                 player.poisonDmg = attack.poisonDmg
                 player.poisonDur += attack.poisonDur
                 player.turn(self)
-                print(col.name('poison',f'You have been poisoned for {attack.poisonDur} turns.'))
+                print(col.name('poison',f'You have been poisoned for {attack.poisonDur} {Plural(attack.poisonDur, "turn")}].'))
             else:
                 player.turn(self)
                 print('The attack missed.')
@@ -303,16 +322,33 @@ class Enemy(Entity):
             else:
                 player.turn(self)
                 print(f"The {self.name} didn't heal.")
+
+        if attack.defencech:
+            if chance(attack.defencech):
+                self.defence = attack.defence
+                self.defenceDur = attack.defenceDur
+                player.turn(self)
+                print(col.name('defence',f'The {self.name} gained +{attack.defence} defence for {attack.defenceDur} {Plural(attack.defenceDur,"turn")}.'))
+            else:
+                player.turn(self)
+                print('The attack missed.')
             
         if player.hp <= 0:
                 player.battling = False
                 syst.enterHint()
                 player.death()
+
         elif self.hp <= 0:
             player.battling = False
             self.death(player)
 
     def round(self,player):
+
+        if self.defenceDur:
+            self.defenceDur -= 1
+            if self.defenceDur == 0:
+                self.defence = 0
+
         if self.poisonDur:
             self.poisonDur -= 1
             self.takeDamage(self.poisonDmg)

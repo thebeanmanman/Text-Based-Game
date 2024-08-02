@@ -23,5 +23,9 @@ def Plural(num,word):
     if num == 1:
         return word
     elif num > 1 or num == 0:
-        if word == 'enemy':
-            return 'enemies'
+        return pluralDict[word]
+
+pluralDict = {
+    'enemy' : 'enemies',
+    'turn' : 'turns'
+}

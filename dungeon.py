@@ -378,5 +378,3 @@ class TreasureRoom(Room):
                 text('You leave the item in the chest and move on.')
                 self.clear()
                 self.move(player)
-
-a = EnemyRoom(1)

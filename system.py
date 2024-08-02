@@ -6,7 +6,7 @@ from dictionaries import optionDict
 class System():
     #Control Variables
     ClearTerminal = True
-    Devmap = True
+    Devmap = False
     Hints = True
     NarSpeed = 0.075
 

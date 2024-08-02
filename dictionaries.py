@@ -2,9 +2,14 @@ from colours import col
 
 # Enemy Descriptions
 enemyDescDict = {
+    # Misc Ememies
+    'Mimic' : '',
+
+    # Floor 1 Enemies
     'Goblin' : 'You hear a mischievous snicker from behind you.\nYou quickly turn around to see a small green creature brandishing a crudely crafted knife staring intensly at your gold pouch.',
     'Baby Spider' : 'You suddenly run into a thick spider web, which blocks your vision.\nAs you hastily remove it, you see a spider the size of a wolf standing before you.',
     'Slime': "Standing before you, there is a green gelatinous blob.\nThrough its translucent skin, you can see partially digested bones floating in what seems to be it's stomach.",
+    'Skeleton' : 'Cold, dead, animate eyes stare directly into your soul'
 }
 
 iconDict = {
