@@ -28,6 +28,7 @@ class Entity():
         self.defenceDur = 0
 
     def takeDamage(self,dmg):
+        dmg = max(dmg,0)
         self.hp -= dmg
         self.hp = max(self.hp,0)
 
@@ -41,7 +42,7 @@ class Player(Entity):
         self.defaultWeapon = Entity.fists
         self.room = None
         self.icon = iconDict['Player']
-        self.gold = 0
+        self.gold = 30
         # Level Variables
         self.lvl = 1
         self.xp = 0
@@ -72,20 +73,28 @@ class Player(Entity):
     def chooseItems(self):
         if self.items:
             choosing = True
-            print('Choose an item to use:')
+            print('Choose an item to use or type "close" if you want to close your inventory:')
             while choosing:
                 choice = input('> ').lower()
                 if choice in [item.name.lower() for item in self.items]:
                     choosing = False
                     for item in self.items:
                         if choice == item.name.lower():
-                            self.items.remove(item)
-                            item.use(self)
-                            syst.enterHint(text='Press enter to return to your inventory.')
-                            syst.printStatus()
-                            self.printItems()
-                            self.chooseItems()
-                            break
+                            if item.dmg >= self.hp:
+                                print()
+                                text('This item will kill you if you use it.')
+                                syst.enterHint('Press enter to choose a different item.')
+                                syst.printStatus()
+                                self.printItems()
+                                self.chooseItems()
+                                break
+                            else:
+                                self.items.remove(item)
+                                item.use(self)
+                                syst.printStatus()
+                                self.printItems()
+                                self.chooseItems()
+                                break
 
                 elif choice in optionDict['close inventory']:
                     choosing = False
@@ -111,10 +120,10 @@ class Player(Entity):
 
     def attack(self, target):
         if chance(self.weapon.crtch+self.weaponCrit):
-            dmgDealt = 2*(self.weapon.dmg+self.weaponDmg) -target.defence
+            dmgDealt = max(2*(self.weapon.dmg+self.weaponDmg) -target.defence,0)
             dmgMessage = f'You dealt {col.name("red",dmgDealt)} damage using your {self.weapon.name}! {col.name("red","[Critial Hit!]")}'
         else:
-            dmgDealt = self.weapon.dmg+self.weaponDmg-target.defence
+            dmgDealt = max(self.weapon.dmg+self.weaponDmg-target.defence,0)
             dmgMessage = f'You dealt {dmgDealt} damage using your {self.weapon.name}!'
 
         if target.defence:
@@ -168,13 +177,15 @@ class Player(Entity):
         print(f' {enemy.healthbar.getBar()}')
         while self.battling:
             self.round(enemy)
-            self.battleChoice(enemy)
             if self.battling:
-                syst.enterHint()
-                enemy.round(self)
-                enemy.attack(self)
+                self.battleChoice(enemy)
                 if self.battling:
                     syst.enterHint()
+                    enemy.round(self)
+                    if self.battling:
+                        enemy.attack(self)
+                        if self.battling:
+                            syst.enterHint()
         self.levelCheck()
 
     def turn(self,enemy):
@@ -278,16 +289,16 @@ class Enemy(Entity):
         syst.enterHint()
         if attack.dmg:
             if chance(attack.crtch):
-                dmgDealt = (attack.dmg*2) - player.defence
+                dmgDealt = max((attack.dmg*2) - player.defence,0)
                 dmgMessage = (f'You took {col.name("red",dmgDealt)} damage. {col.name("red","[Critical Hit!]")}')
             else:
-                dmgDealt = attack.dmg - player.defence
+                dmgDealt = max(attack.dmg - player.defence,0)
                 dmgMessage = (f'You took {dmgDealt} damage.')
 
             if player.defence:
                 dmgMessage += col.name('defence',f' [-{player.defence}]')
 
-            player.takeDamage(dmgDealt)
+            player.takeDamage(max(dmgDealt,0))
             player.turn(self)
             print(dmgMessage)
 

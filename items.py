@@ -2,7 +2,7 @@ from colours import col
 from functions import text
 from entity import Entity
 from system import syst
-from dictionaries import enemyDescDict
+from grammar import Plural
 
 class Item():
     def __init__(self,name:str,desc:str) -> None:
@@ -15,30 +15,48 @@ class Item():
         self.onInfo()
 
 class UsableItem(Item):
-    def __init__(self, name: str, desc:str,useText:str,price:int) -> None:
+    def __init__(self, name: str, desc:str,useText:str,price:int,healAmt=0,dmg=0,defence=0,defenceDur=0) -> None:
         super().__init__(name,desc)
         self.useText = useText
         self.price = price
+        self.healAmt = healAmt
+        self.dmg = dmg
+        self.defence = defence
+        self.defenceDur = defenceDur
     
     def use(self,player):
         syst.printStatus()
         text(self.useText)
         syst.enterHint()
-        self.onUse(player)
+        
+        if self.healAmt:
+            player.heal(self.healAmt)
+            syst.printStatus()
+            text(col.name('heal',f'You healed {self.healAmt} health!'))
+            syst.enterHint()
 
+        if self.dmg:
+            player.takeDamage(self.dmg)
+            syst.printStatus()
+            text(col.name('red',f'You took {self.dmg} damage!'))
+            syst.enterHint()
 
-class HealItem(UsableItem):
-    def __init__(self, name: str, desc:str, useText:str,healAmt:int,price:int) -> None:
-        super().__init__(name,desc,useText,price)
-        self.healAmt = healAmt
-    
-    def onUse(self,player):
-        player.heal(self.healAmt)
-        syst.printStatus()
-        print(col.name('heal',f'You healed {self.healAmt} health!'))
+        if self.defence:
+            player.defence = self.defence
+            player.defenceDur = self.defenceDur
+            syst.printStatus()
+            text(col.name('defence',f'You gained +{self.defence} defence for {self.defenceDur} {Plural(self.defenceDur,"turn")}!'))
+            syst.enterHint()
 
     def onInfo(self):
-        text(col.name('heal',f'Heals {self.healAmt} health.'))
+        if self.healAmt:
+            text(col.name('heal',f'Heals {self.healAmt} health.'))
+
+        if self.dmg:
+            text(col.name('red',f'Deals {self.dmg} damage to you when used.'))
+
+        if self.defence:
+            text(col.name('defence',f'Gives you +{self.defence} defence for {self.defenceDur} {Plural(self.defenceDur,"turn")}.'))
 
 class Weapon(Item):
     def __init__(self,name:str,desc:str,dmg:int,crtch=0,poisonCh=0,poisonDmg=0,poisonDur=0,heal=0,healCh=0) -> None:
@@ -122,12 +140,33 @@ Entity.fists = fists
 
 
 ### Item Dictionary ###
-# '': {'desc':'','useText':'','healAmt': ,'price':}
+# '': {'desc':'','useText':'','price':}
 itemDict = {
-    'heal': {
-        'apple': {'desc':'A red juicy apple','useText':'You eat the apple.','healAmt': 2,'price':3},
-        'golden apple': {'desc':'A apple coated in gold','useText':'You lose a tooth as you bite into the apple.\nWho even came up with the idea of golden apples in the first place?','healAmt': 8,'price':10}
+    'apple': {'desc':'A red juicy apple',
+              'useText':'You eat the apple.',
+              'healAmt': 2,
+              'price':3},
+
+    'golden apple': {'desc':'A apple coated in gold',
+                     'useText':'You lose a tooth as you bite into the apple.\nWho even came up with the idea of golden apples in the first place?',
+                     'healAmt': 8,
+                     'dmg' : 1,
+                     'price':10},
+
+    'milk' : {'desc':'High in calcium for big strong bones',
+              'useText':'You drink the milk.',
+              'defence':1,
+              'defenceDur':2,
+              'price':4},
+
+    'steel ingot' : {'desc':"This doesn't seem very edible...",
+                     'useText':'You hesitantly bite into the chunk of steel... Ouch...',
+                     'dmg':3,
+                     'defence':2,
+                     'defenceDur':2,
+                     'price':7
     }
+
 }
 
 ### Enemy Types ###
@@ -135,15 +174,42 @@ itemDict = {
 enemyDict = {
     'misc':
     {
-        'Mimic': {'maxhp': 10, 'gold': 6, 'xp': 6, 'attacks': [EnemyWeapon(name='Chomp',dmg=5,crtch=0.15),EnemyWeapon(name='Lunge',dmg=6)], 'attacksch': [2,1]},
+        'Mimic': {'maxhp': 10,
+                  'gold': 6,
+                  'xp': 6,
+                  'attacks': [EnemyWeapon(name='Chomp',dmg=5,crtch=0.15),EnemyWeapon(name='Lunge',dmg=6)],
+                  'attacksch': [2,1]},
     },
 
     # Floors
     1:
     {
-        'Goblin': {'maxhp':4, 'gold':2, 'xp':1, 'attacks':[EnemyWeapon(name='Stab',dmg=2,crtch=0.1),EnemyWeapon(name='Steal',dmg=0,steal=1,stealch=1)], 'attacksch':[2,1], 'spawnch': 1},
-        'Slime': {'maxhp': 5, 'gold': 1, 'xp': 2, 'attacks': [EnemyWeapon(name='Roll',dmg=1),EnemyWeapon(name='Reshape',dmg=0,heal=1,healCh=0.5)], 'attacksch': [3,2], 'spawnch': 1},
-        'Baby Spider': {'maxhp': 3, 'gold': 1, 'xp': 1, 'attacks': [EnemyWeapon(name='Bite',dmg=1,crtch=0.05),EnemyWeapon(name='Poisonous Bite',dmg=0,poisonCh=1,poisonDmg=1,poisonDur=3)], 'attacksch': [2,1], 'spawnch': 1},
-        'Skeleton' : {'maxhp': 6, 'gold': 2, 'xp': 2, 'attacks': [EnemyWeapon(name='Slash',dmg=1,crtch=0.5),EnemyWeapon(name='Milk',dmg=0,defence=1,defencech=1,defenceDur=2)], 'attacksch': [3,2], 'spawnch': 1},
+        'Goblin': {'maxhp':4,
+                   'gold':2,
+                   'xp':1,
+                   'attacks':[EnemyWeapon(name='Stab',dmg=2,crtch=0.1),EnemyWeapon(name='Steal',dmg=0,steal=1,stealch=1)],
+                   'attacksch':[2,1],
+                   'spawnch': 1},
+
+        'Slime': {'maxhp': 5,
+                  'gold': 1,
+                  'xp': 2,
+                  'attacks': [EnemyWeapon(name='Roll',dmg=1),EnemyWeapon(name='Reshape',dmg=0,heal=1,healCh=0.5)],
+                  'attacksch': [3,2],
+                  'spawnch': 1},
+
+        'Baby Spider': {'maxhp': 3,
+                        'gold': 1,
+                        'xp': 1,
+                        'attacks': [EnemyWeapon(name='Bite',dmg=1,crtch=0.05),EnemyWeapon(name='Poisonous Bite',dmg=0,poisonCh=1,poisonDmg=1,poisonDur=3)],
+                        'attacksch': [2,1],
+                        'spawnch': 1},
+
+        'Skeleton' : {'maxhp': 6,
+                      'gold': 2,
+                      'xp': 2,
+                      'attacks': [EnemyWeapon(name='Slash',dmg=1,crtch=0.25),EnemyWeapon(name='Milk',dmg=0,defence=1,defencech=1,defenceDur=2)],
+                      'attacksch': [3,1],
+                      'spawnch': 1},
     }
 }

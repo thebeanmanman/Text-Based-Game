@@ -1,4 +1,4 @@
-from items import common,uncommon,rare,epic,legendary,itemDict,HealItem
+from items import common,uncommon,rare,epic,legendary,itemDict,UsableItem
 from functions import randItem,text
 from colours import col
 from system import syst
@@ -30,11 +30,10 @@ class Shop():
                 print(f'{chr(8226)} {weapon.rarname}: {col.name("gold",f"{self.weaponPrices[weaponnum]} Gold")}')
             print()
         print('> Items <'.center(len(header)))
-        for type in itemDict:
-            for item in itemDict[type]:
-                itemprice = itemDict[type][item]['price']
-                print(f'{chr(8226)} {item.title()}: {col.name("gold",f"{itemprice} Gold")}')
-            print()
+        for item in itemDict:
+            itemprice = itemDict[item]['price']
+            print(f'{chr(8226)} {item.title()}: {col.name("gold",f"{itemprice} Gold")}')
+        print()
         
 
     def enterShop(self,player):
@@ -45,11 +44,11 @@ class Shop():
         if self.sellWeapons:
             optionList += self.weaponNames
             priceList += self.weaponPrices
-        for type in itemDict:
-            for item in itemDict[type]:
-                optionList.append(item)
-                itemList.append(item)
-                priceList.append(itemDict[type][item]['price'])
+
+        for item in itemDict:
+            optionList.append(item)
+            itemList.append(item)
+            priceList.append(itemDict[item]['price'])
 
         while buying:
             choice = syst.Option(Other=True,OtherList=optionList,Exit=True)
@@ -60,8 +59,7 @@ class Shop():
                 if choice in self.weaponNames:
                     item = self.weapons[index]
                 elif choice in itemList:
-                    if choice in itemDict['heal']:
-                        item = HealItem(optionList[index], **itemDict['heal'][optionList[index]])
+                    item = UsableItem(optionList[index], **itemDict[optionList[index]])
                 item.showInfo()
                 confirm = syst.Option(Yes=True,No=True,OtherList=optionDict['buy'])
                 if confirm in optionDict['yes'] or confirm in optionDict['buy']:
@@ -73,7 +71,7 @@ class Shop():
                             syst.enterHint(text='Press enter to return to the shop...')
                             syst.printStatus()
                             self.printItems()
-                        elif item.__class__.__base__.__name__ == 'UsableItem':
+                        elif item.__class__.__name__ == 'UsableItem':
                             player.items.append(item)
                             syst.printStatus()
                             text(f'You have purchased the {item.name}!')
