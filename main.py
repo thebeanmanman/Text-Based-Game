@@ -55,6 +55,7 @@ def startGame():
             player.setName(name),
             syst.wipe()
             # text(toprint=col.name('nar',f"Oh of course! I knew that...\nWell anyways as I was saying...\nYou feel a sense of confidence wash over you, wanting everyone to know the name of... {player.name}.\nHang on... I'm sorry is that your actual name?\nBecause it really doesn't roll off the tongue all that well...\nNarrating is a very difficult job as it is, and you choosing a name such as {player.name} really doesn't help."),time=syst.NarSpeed)
+            # text(toprint=col.name)
             # # Add more later...
 
             # text(col.name('nar',f'You encounter a humble shopkeeper selling his wares in the village.'))

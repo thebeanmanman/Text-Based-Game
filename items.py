@@ -174,10 +174,10 @@ itemDict = {
 enemyDict = {
     'misc':
     {
-        'Mimic': {'maxhp': 10,
+        'Mimic': {'maxhp': 6,
                   'gold': 6,
                   'xp': 6,
-                  'attacks': [EnemyWeapon(name='Chomp',dmg=5,crtch=0.15),EnemyWeapon(name='Lunge',dmg=6)],
+                  'attacks': [EnemyWeapon(name='Chomp',dmg=2,crtch=0.15),EnemyWeapon(name='Lunge',dmg=3)],
                   'attacksch': [2,1]},
     },
 
@@ -205,11 +205,21 @@ enemyDict = {
                         'attacksch': [2,1],
                         'spawnch': 1},
 
-        'Skeleton' : {'maxhp': 6,
+        'Skeleton' : {'maxhp': 5,
                       'gold': 2,
                       'xp': 2,
                       'attacks': [EnemyWeapon(name='Slash',dmg=1,crtch=0.25),EnemyWeapon(name='Milk',dmg=0,defence=1,defencech=1,defenceDur=2)],
                       'attacksch': [3,1],
                       'spawnch': 1},
+    }
+}
+
+bossDict = {
+    1: {
+        'Goblin King' : {'maxhp':12,
+                         'gold':4,
+                         'xp':5,
+                         'attacks':[],
+                         'attacksch':[]}
     }
 }

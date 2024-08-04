@@ -15,10 +15,10 @@ from functions import text,randItem,chance
 from dictionaries import iconDict,optionDict,roomDescDict
 
 # Import Grammar
-from grammar import orChoice,AreIs,Plural
+from grammar import orChoice
 
 # Import Weapon Rarity Tiers
-from items import common,uncommon,rare,epic,legendary,enemyDict
+from items import common,uncommon,rare,epic,legendary,enemyDict,bossDict
 
 #Import Colours
 from colours import col
@@ -249,23 +249,16 @@ class StartRoom(Room):
             text(self.desc)
         self.move(player)
 
-class Floor1Exit(Room):
+class BossRoom(Room):
     def __init__(self, Floor) -> None:
         super().__init__(Floor)
-        self.icon = iconDict['Stair Room']
-        self.desc = 'You enter the dungeon...'
-        self.reEnter = 'You enter the room that you started in.\nAre you sure your not lost?'
-    
-    def enter(self, player):
-        self.lvl.dispMap[self.y][self.x] = player.icon
-        syst.printStatus()
-        if self.cleared:
-            text(self.reEnter)
-        else:
-            self.cleared = True
-            text(self.desc)
-        self.move(player)
+        bossName = bossDict[self.Floor]
+        self.boss = Enemy(bossName, **bossDict[self.Floor][bossName])
 
+    def onEnter(self,player):
+        player.battle(self.boss)
+        if player.hp > 0:
+            player
 
 class EnemyRoom(Room):
     def __init__(self,Floor) -> None:
@@ -378,3 +371,14 @@ class TreasureRoom(Room):
                 text('You leave the item in the chest and move on.')
                 self.clear()
                 self.move(player)
+
+
+floorDict = {
+    'Floor1':{
+        'rooms':[TreasureRoom,EnemyRoom],
+        'roomNum':13,
+        'reqRooms':None,
+        'mapsize':9,
+        'Floor':1,
+        'roomChances':[6,20]},
+}
