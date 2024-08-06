@@ -4,7 +4,7 @@ from shop import Shop
 
 # Import Objects
 from items import ironSword
-from dungeon import *
+from dungeon import Dungeon,floorStatDict,floorDict
 from system import syst
 from colours import col
 
@@ -15,7 +15,7 @@ from functions import text
 gameName = 'Dungeon Runner'
 
 def titleSelect():
-    choice = syst.Option(Other=True,OtherList=['play','help','quit'])
+    choice = syst.Option(options=[['play'],['help'],['quit'],['settings']])
     if choice == 'play':
         startGame()
     elif choice == 'help':
@@ -23,6 +23,8 @@ def titleSelect():
     elif choice == 'quit':
         text('Thanks for playing!')
         quit()
+    elif choice == 'settings':
+        settingsMenu()
 
 def title_screen():
     header = f'--- Welcome to {gameName}!---'
@@ -30,6 +32,7 @@ def title_screen():
     print(header)
     print()
     print('▸ Play ◂'.center(len(header)))
+    print('▸ Settings ◂'.center(len(header)))
     print('▸ Help ◂'.center(len(header)))
     print('▸ Quit ◂'.center(len(header)))
     print()
@@ -39,10 +42,19 @@ def helpMenu():
     syst.wipe()
     print(f'--- Welcome to {gameName}!---')
     text('Type up, down, left and right to move')
-    text('Press enter to return to the menu')
+    text('Press enter to return to the main menu')
     input()
     title_screen()
 
+def settingsMenu():
+    syst.wipe()
+    header = '--- Your Current Settings ---'
+    print(header)
+    print(f'Hints: {"On" if syst.Hints else "Off"}'.center(len(header)))
+    print()
+    text('Press enter to return to the main menu')
+    input()
+    title_screen()
 
 def startGame():
     syst.playing = True
@@ -77,12 +89,16 @@ def shopEncounter():
     else:
         text(f"Shopkeeper: {col.name('npc','Hello there young traveller, please come back to my store when your pockets are full of gold.')}")
         enterDungeon()
+
+def generateFloors():
+    for floornum,floor in enumerate(floorStatDict,start=1):
+        floorDict[floornum] = Dungeon(**floorStatDict[floor],Floor=floornum)
     
 def enterDungeon():
-    Floor1 = Dungeon(rooms=[TreasureRoom,EnemyRoom],roomNum=13,reqRooms=None,mapsize=9,Floor=1,roomChances=[6,20])
-    player.setDungeonFloor(Floor1)
+    generateFloors()
+    player.setDungeonFloor(floorDict[1])
     syst.wipe()
-    player.room = Floor1.startRoom
+    player.room = floorDict[1].startRoom
     player.room.enter(player)
 
 player = Player(maxhp=10)

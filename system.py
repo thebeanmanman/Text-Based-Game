@@ -6,7 +6,7 @@ from dictionaries import optionDict
 class System():
     #Control Variables
     ClearTerminal = True
-    Devmap = False
+    Devmap = True
     Hints = True
     NarSpeed = 0.075
 
@@ -56,34 +56,18 @@ class System():
             input()
 
     #Returns a players choice from a list of options
-    def Option(self,player=None,North=False,South=False,West=False,East=False,Map=False,Other=False,OtherList=[],Yes=False,No=False,Open=False,Exit=False,prompt=''):
+    def Option(self,options,player=None,prompt='',Map=False,Drop=False,WeaponInfo=False):
         choosing = True
         if prompt:
             text(prompt)
         while choosing:
             choice = input('> ').lower()
-            if North and choice in optionDict['north']:
-                return choice
-            elif South and choice in optionDict['south']:
-                return choice
-            elif West and choice in optionDict['west']:
-                return choice
-            elif East and choice in optionDict['east']:
-                return choice
-            elif Other and choice in OtherList:
-                return choice
-            elif Exit and choice in optionDict['exit']:
-                return choice
-            elif Map and choice in optionDict['map']:
-                player.dungeonFloor.printPlayerMap(player)
-            elif Yes and choice in optionDict['yes']:
-                return choice
-            elif No and choice in optionDict['no']:
-                return choice
-            elif Open and choice in optionDict['open']:
-                return choice
+            for option in options:
+                if choice in option:
+                    return choice
+
             # Constant Options
-            elif choice in optionDict['hintsoff']:
+            if choice in optionDict['hintsoff']:
                 self.Hints = False
                 text('Hints have been turned off.\nType "hints on" anytime to turn them on.')
             elif choice in optionDict['hintson']:
@@ -94,26 +78,29 @@ class System():
                 quit()
             
             # Player Choices
-            elif player and choice in optionDict['drop']:
-                if player.weapon == player.defaultWeapon:
+            elif Map and choice in optionDict['map']:
+                self.player.dungeonFloor.printPlayerMap(self.player)
+
+            elif Drop and choice in optionDict['drop']:
+                if self.player.weapon == self.player.defaultWeapon:
                     text("You can't drop your fists...")
                 else:
-                    text(f'Are you sure you want to drop your {player.weapon.name}?')
-                    option = self.Option(Yes=True,No=True,Other=True,OtherList=optionDict['drop'])
+                    text(f'Are you sure you want to drop your {self.player.weapon.name}?')
+                    option = self.Option(options=[optionDict['drop'],optionDict['yes'],optionDict['no']])
                     if option in optionDict['yes'] or option in optionDict['drop']:
-                        player.drop()
+                        self.player.drop()
                         syst.enterHint()
                         syst.printStatus()
                         text(prompt)
                     elif option in optionDict['no']:
-                        text(f"You choose to not drop your {player.weapon.name}.")
+                        text(f"You choose to not drop your {self.player.weapon.name}.")
 
-            elif player and choice in optionDict['weaponinfo']:
-                player.currentWeaponStats()
+            elif WeaponInfo and choice in optionDict['weaponinfo']:
+                self.player.currentWeaponStats()
 
             # Developer Tools
             elif self.Devmap and choice == 'devmap' and Map:
-                player.dungeonFloor.printMap(player.dungeonFloor.dispMap)
+                self.player.dungeonFloor.printMap(self.player.dungeonFloor.devmap)
             else:
                 print('Unknown action. Please try again')
 

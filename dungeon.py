@@ -24,13 +24,11 @@ from items import common,uncommon,rare,epic,legendary,enemyDict,bossDict
 from colours import col
 
 class Dungeon():
-    def __init__(self,reqRooms:list,rooms:list,roomNum:int,mapsize:int,Floor:int,roomChances:list) -> None:
-        self.reqRooms = reqRooms
-        self.rooms = rooms
-        self.roomNum = roomNum
+    def __init__(self,roomTypes:list,roomAmts:list,mapsize:int,Floor:int) -> None:
         self.startRoom = StartRoom(Floor)
         self.Floor = Floor
-        self.roomChances = roomChances
+        self.roomTypes = roomTypes
+        self.roomAmts = roomAmts
 
         self.mapsize = mapsize
         self.map = []
@@ -40,38 +38,41 @@ class Dungeon():
                 row.append('')
             self.map.append(row)
 
-        self.NewGen()
+        self.generateDungeon()
 
-    def NewGen(self):
-        Generate = True
+    def generateDungeon(self):
+        instantiatedRooms = []
+        for index,roomType in enumerate(self.roomTypes):
+            for i in range(self.roomAmts[index]):
+                room = roomType(self.Floor)
+                instantiatedRooms.append(room)
+
+        rooms = 1
         center = self.mapsize//2
         x = center
         y = center
         currRoom = self.startRoom
-        i = 0
-        while i <= self.roomNum or self.reqRooms:
+        while instantiatedRooms and rooms <= self.mapsize**2:
             self.map[y][x] = currRoom
             currRoom.x = x
             currRoom.y = y
-            currRoom.lvl = self
-            x,y = center,center
-            while self.map[y][x]:
-                dirList = self.NewDirList(x,y)
-                if dirList:
-                    direction = randItem(dirList)
-                    x,y = direction[1],direction[0]
-                else:
-                    x,y = center,center
-            if i <= self.roomNum:
-                currRoom = self.rollRooms()
-                i += 1
-            else:
-                currRoom = randItem(self.reqRooms)
-                self.reqRooms.remove(currRoom)
+            currRoom.floorObject = self
+            rooms += 1
+            if rooms <= self.mapsize**2:
+                x,y = center,center
+                while self.map[y][x]:
+                    dirList = self.DirList(x,y)
+                    if dirList:
+                        direction = randItem(dirList)
+                        x,y = direction[1],direction[0]
+                    else:
+                        x,y = center,center
+                if currRoom.roomName != 'StartRoom':
+                    instantiatedRooms.remove(currRoom)
+                currRoom = randItem(instantiatedRooms)
+        self.createDevmap()
 
-        self.createDispMap()
-
-    def NewDirList(self,x,y):
+    def DirList(self,x,y):
         dirList = []
         if y-1 >= 0:
             dirList.append([y-1,x])
@@ -82,33 +83,6 @@ class Dungeon():
         if x+1 < self.mapsize:
             dirList.append([y,x+1])
         return dirList
-
-    def GenerateMap(self):
-        Generate = True
-        x = (self.mapsize//2)
-        y = x
-        currRoom = self.startRoom
-        i = 0
-        while i <= self.roomNum and Generate:
-            self.map[y][x] = currRoom
-            currRoom.x = x
-            currRoom.y = y
-            currRoom.lvl = self
-            dirList = self.mapNoDirCheck(x,y)
-            if dirList:
-                direction = randItem(dirList)
-                nextRoom = self.rollRooms()
-                x = direction[1]
-                y = direction[0]
-                currRoom = nextRoom
-                i += 1
-            else:
-                Generate = False
-        self.createDispMap()
-
-    def rollRooms(self):
-        room = choices(self.rooms,weights=self.roomChances,k=1)[0]
-        return room(self.Floor)
 
     def mapNoDirCheck(self,x,y):
         dirList = []
@@ -126,17 +100,29 @@ class Dungeon():
     def mapDirCheck(self,x,y):
         dirList = []
         if y-1 >= 0 and self.map[y-1][x]:
-            dirList.append(['north',self.map[y-1][x]])
+            dirList.append(optionDict['north'])
         if y+1 < self.mapsize and self.map[y+1][x]:
-            dirList.append(['south',self.map[y+1][x]])
+            dirList.append(optionDict['south'])
         if x+1 < self.mapsize and self.map[y][x+1]:
-            dirList.append(['east',self.map[y][x+1]])
+            dirList.append(optionDict['east'])
         if x-1 >= 0 and self.map[y][x-1]:
-            dirList.append(['west',self.map[y][x-1]])
+            dirList.append(optionDict['west'])
         return dirList
     
-    def createDispMap(self):
-        self.dispMap = []
+    def mapRoomCheck(self,x,y):
+        roomList = []
+        if y-1 >= 0 and self.map[y-1][x]:
+            roomList.append(self.map[y-1][x])
+        if y+1 < self.mapsize and self.map[y+1][x]:
+            roomList.append(self.map[y+1][x])
+        if x+1 < self.mapsize and self.map[y][x+1]:
+            roomList.append(self.map[y][x+1])
+        if x-1 >= 0 and self.map[y][x-1]:
+            roomList.append(self.map[y][x-1])
+        return roomList
+    
+    def createDevmap(self):
+        self.devmap = []
         for row in self.map:
             newrow = []
             for room in row:
@@ -144,7 +130,7 @@ class Dungeon():
                     newrow.append(room.icon)
                 else:
                     newrow.append(iconDict['Blank'])
-            self.dispMap.append(newrow)
+            self.devmap.append(newrow)
         
     # Prints the Map 
     def printMap(self,map):
@@ -188,16 +174,17 @@ class Room():
         self.x = 0
         self.y = 0
         self.Floor = Floor
-        self.lvl = None
+        self.floorObject = None
         self.cleared = False
         self.discovered = False
         self.roomName = self.__class__.__name__
         self.desc = roomDescDict[self.Floor][self.roomName]
+        self.icon = iconDict['Default']
 
     # Default enter method always called when the player enters the room  (Unless overwritten)
     # This then runs subclass specific onEnter methods
     def enter(self,player):
-        self.lvl.dispMap[self.y][self.x] = player.icon
+        self.floorObject.devmap[self.y][self.x] = player.icon
         syst.printStatus()
         if self.cleared:
             text('You have already cleared this room.')
@@ -208,27 +195,35 @@ class Room():
 
     # Allows the player to move between rooms
     def move(self,player):
-        dirCheck = self.lvl.mapDirCheck(self.x,self.y)
-        options = [direction[0] for direction in dirCheck]
-        for Adjroom in [room[1] for room in dirCheck]:
-            Adjroom.discovered = True 
+        directions = self.floorObject.mapDirCheck(self.x,self.y)
+
+        roomList = self.floorObject.mapRoomCheck(self.x,self.y)
+        for Adjroom in roomList:
+            Adjroom.discovered = True
         syst.enterHint()
         syst.printStatus()
-        direction = syst.Option(player=player,North='north' in options,South='south' in options,West='west' in options,East='east' in options,Map=True,prompt=f'You can move {orChoice(options)}.')
-        self.lvl.dispMap[self.y][self.x] = self.icon
+        direction = syst.Option(options=directions,Map=True,Drop=True,WeaponInfo=True,prompt=f'You can move {orChoice([direction[0] for direction in directions])}.')
         if direction in optionDict['north']:
-            player.room = self.lvl.map[self.y-1][self.x]
-            player.room.enter(player)
-        if direction in optionDict['south']:
-            player.room = self.lvl.map[self.y+1][self.x]
-            player.room.enter(player)
-        if direction in optionDict['west']:
-            player.room = self.lvl.map[self.y][self.x-1]
-            player.room.enter(player)
-        if direction in optionDict['east']:
-            player.room = self.lvl.map[self.y][self.x+1]
-            player.room.enter(player)
-        
+            chosenRoom = self.floorObject.map[self.y-1][self.x]
+        elif direction in optionDict['south']:
+            chosenRoom = self.floorObject.map[self.y+1][self.x]
+        elif direction in optionDict['west']:
+            chosenRoom = self.floorObject.map[self.y][self.x-1]
+        elif direction in optionDict['east']:
+            chosenRoom = self.floorObject.map[self.y][self.x+1]
+
+        if chosenRoom.__class__.__name__ == 'BossRoom':
+            text('You feel an ominous presence coming from that direction...\nAre you sure you want to continue in that direction?')
+            confirm = syst.Option(options=[optionDict['yes'],optionDict['no']])
+            if confirm in optionDict['no']:
+                text('You decide not to go in that direction...')
+                self.move(player)
+                return
+
+        self.floorObject.devmap[self.y][self.x] = self.icon
+        player.room = chosenRoom
+        player.room.enter(player)
+
     def clear(self):
         self.cleared = True
         text('You have cleared this room.')
@@ -240,7 +235,7 @@ class StartRoom(Room):
         self.reEnter = roomDescDict[self.Floor]['ReEnterStartRoom']
     
     def enter(self, player):
-        self.lvl.dispMap[self.y][self.x] = player.icon
+        self.floorObject.devmap[self.y][self.x] = player.icon
         syst.printStatus()
         if self.cleared:
             text(self.reEnter)
@@ -252,13 +247,35 @@ class StartRoom(Room):
 class BossRoom(Room):
     def __init__(self, Floor) -> None:
         super().__init__(Floor)
-        bossName = bossDict[self.Floor]
+        bossName = list(bossDict[self.Floor])[0]
         self.boss = Enemy(bossName, **bossDict[self.Floor][bossName])
+        self.icon = iconDict[self.roomName]
 
     def onEnter(self,player):
-        player.battle(self.boss)
-        if player.hp > 0:
-            player
+        if not self.cleared:
+            player.battle(self.boss)
+            if player.hp > 0:
+                self.cleared = True
+                text("A mysterious portal appears before you, seemingly out of thin air.\nThe portals shimmering texture intrigues you, almost inviting you step into it.")
+                self.portalChoice(player)
+        else:
+            text('The portal still remains, inviting you to step inside it...')
+            self.portalChoice(player)
+
+    def portalChoice(self,player):
+        text('Do you want to enter the portal?')
+        choice = syst.Option(options=[optionDict['yes'],optionDict['no']])
+        if choice in optionDict['yes']:
+            text('You decide to step into the portal...')
+            syst.enterHint()
+            syst.wipe()
+            player.setDungeonFloor(floorDict[self.Floor+1])
+            player.room = floorDict[self.Floor+1].startRoom
+            player.room.enter(player)
+        elif choice in optionDict['no']:
+            text('You decide not to step into the portal...')
+            syst.enterHint()
+            self.move(player)
 
 class EnemyRoom(Room):
     def __init__(self,Floor) -> None:
@@ -334,7 +351,7 @@ class TreasureRoom(Room):
 
     def onEnter(self,player):
         text('Open the chest?')
-        answer = syst.Option(Yes=True,No=True,Open=True)
+        answer = syst.Option(options=[optionDict['yes'],optionDict['open'],optionDict['no']])
         syst.printStatus()
         if answer in optionDict['yes'] or answer in optionDict['open']:
             text('Your curiousity is tempted by the chest and you approach it...')
@@ -362,7 +379,7 @@ class TreasureRoom(Room):
             player.currentWeaponStats()
             print()
             text(f'Would you like to equip the {self.treasure.rarname}?')
-            answer = syst.Option(Yes=True,No=True)
+            answer = syst.Option(options=[optionDict['no'],optionDict['yes']])
             if answer in optionDict['yes']:
                 player.equip(self.treasure)
                 self.clear()
@@ -373,12 +390,11 @@ class TreasureRoom(Room):
                 self.move(player)
 
 
-floorDict = {
-    'Floor1':{
-        'rooms':[TreasureRoom,EnemyRoom],
-        'roomNum':13,
-        'reqRooms':None,
-        'mapsize':9,
-        'Floor':1,
-        'roomChances':[6,20]},
+# Specifies the attributes of each floor
+floorStatDict = {
+    'Floor 1' : {'roomTypes':[TreasureRoom,EnemyRoom,BossRoom],'roomAmts':[2,7,1],'mapsize':5},
+    'Floor 2' : {'roomTypes':[TreasureRoom,EnemyRoom],'roomAmts':[2,10],'mapsize':7}
 }
+
+# Contains instantianted objects of each floor
+floorDict = {}

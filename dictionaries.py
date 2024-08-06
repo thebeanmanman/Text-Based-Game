@@ -5,11 +5,17 @@ enemyDescDict = {
     # Misc Ememies
     'Mimic' : '',
 
+    # Bosses 
+    'Cyclops' : "A grotesque pale blue creature towers above you, it's singular eye gleaming at you with a gross discontent.",
+
     # Floor 1 Enemies
     'Goblin' : 'You hear a mischievous snicker from behind you.\nYou quickly turn around to see a small green creature brandishing a crudely crafted knife staring intensly at your gold pouch.',
     'Baby Spider' : 'You suddenly run into a thick spider web, which blocks your vision.\nAs you hastily remove it, you see a spider the size of a wolf standing before you.',
     'Slime': "Standing before you, there is a green gelatinous blob.\nThrough its translucent skin, you can see partially digested bones floating in what seems to be it's stomach.",
-    'Skeleton' : 'Cold, dead, inanimate eyes stare directly into your soul'
+    'Skeleton' : 'Cold, dead, inanimate eyes stare directly into your soul',
+
+    # Floor 2 Enemies
+    'Treant' : 'BIG MAN TREE'
 }
 
 iconDict = {
@@ -19,15 +25,23 @@ iconDict = {
     'TreasureRoom': '[T]',
     'Unknown Room': '[?]',
     'Blank': '   ',
-    'StairRoom': '[S]'
+    'BossRoom': '[B]',
+    'Default' : '[*]'
 }
 
 roomDescDict = {
     1: {'EnemyRoom' : 'You enter a dimly lit room.\nA sense of unease fills you as you step further in the room.',
         'TreasureRoom' : 'You enter a room with a large treasure chest inside.',
         'StartRoom': 'You enter the dungeon...',
-        'ReEnterStartRoom' : 'You enter the room that you started in.\nAre you sure your not lost?'
-        }
+        'ReEnterStartRoom' : 'You enter the room that you started in.\nAre you sure your not lost?',
+        'BossRoom' : 'You cautiously enter the room before you...'
+    },
+    2: {
+        'EnemyRoom' : 'You enter a dimly lit room.\nA sense of unease fills you as you step further in the room.',
+        'TreasureRoom' : 'You enter a room with a large treasure chest inside.',
+        'StartRoom': 'You find yourself in a dark forest, surrounded by pine trees looming over you...',
+        'ReEnterStartRoom' : 'This place feels familiar...\nAre you sure your not lost?'
+    }
 }
 
 optionDict = {

@@ -208,18 +208,32 @@ enemyDict = {
         'Skeleton' : {'maxhp': 5,
                       'gold': 2,
                       'xp': 2,
-                      'attacks': [EnemyWeapon(name='Slash',dmg=1,crtch=0.25),EnemyWeapon(name='Milk',dmg=0,defence=1,defencech=1,defenceDur=2)],
+                      'attacks': [EnemyWeapon(name='Slash',dmg=1,crtch=0.25),EnemyWeapon(name='Drink Milk',dmg=0,defence=1,defencech=1,defenceDur=2)],
                       'attacksch': [3,1],
                       'spawnch': 1},
+    },
+    2:
+    {
+        'Treant' : {
+            'maxhp':6,
+            'gold':1,
+            'xp':3,
+            'attacks':[EnemyWeapon(name='Slam',dmg=2),EnemyWeapon(name='Grow Bark',dmg=0,defence=2,defencech=0.5,defenceDur=2)],
+            'attacksch':[2,1],
+            'spawnch':1
+        }
     }
 }
 
 bossDict = {
-    1: {
-        'Goblin King' : {'maxhp':12,
-                         'gold':4,
-                         'xp':5,
-                         'attacks':[],
-                         'attacksch':[]}
+    1:
+    {
+        'Cyclops' : {
+            'maxhp':12,
+            'gold':4,
+            'xp':5,
+            'attacks':[EnemyWeapon(name='Stomp',dmg=4),EnemyWeapon(name='Rock Toss',dmg=2,crtch=0.1),EnemyWeapon(name='Roar',dmg=0)],
+            'attacksch':[2,3,1]
+        }
     }
 }

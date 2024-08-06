@@ -42,7 +42,7 @@ class Player(Entity):
         self.defaultWeapon = Entity.fists
         self.room = None
         self.icon = iconDict['Player']
-        self.gold = 0
+        self.gold = 20000
         # Level Variables
         self.lvl = 1
         self.xp = 0
@@ -222,7 +222,7 @@ class Player(Entity):
                 hpGain = gains[0]
                 weaponDmgGain = gains[1]
                 weaponCrtGain = gains[2]
-                lvltext = f'You leveled up to level {self.lvl}! You gained:'
+                lvltext = col.name('heal',f'You leveled up to level {self.lvl}! You gained:')
                 if hpGain:
                     lvltext += f'\n{chr(8226)} +{hpGain} Max Health!'
                     self.maxhp += hpGain

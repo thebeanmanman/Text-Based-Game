@@ -51,7 +51,7 @@ class Shop():
             priceList.append(itemDict[item]['price'])
 
         while buying:
-            choice = syst.Option(Other=True,OtherList=optionList,Exit=True)
+            choice = syst.Option(options=[optionList,optionDict['exit shop']])
             if choice in optionList:
                 index = optionList.index(choice)
                 syst.printStatus()
@@ -61,7 +61,7 @@ class Shop():
                 elif choice in itemList:
                     item = UsableItem(optionList[index], **itemDict[optionList[index]])
                 item.showInfo()
-                confirm = syst.Option(Yes=True,No=True,OtherList=optionDict['buy'])
+                confirm = syst.Option(options=[optionDict['buy'],optionDict['yes'],optionDict['no']])
                 if confirm in optionDict['yes'] or confirm in optionDict['buy']:
                     if player.buy(priceList[index]):
                         if item.__class__.__name__ == 'PlayerWeapon':
