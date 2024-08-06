@@ -313,7 +313,7 @@ class Enemy(Entity):
                     print(f'You had no gold for the {self.name} to steal.')
             else:
                 player.turn(self)
-                print('The attack missed.')
+                print('The attack failed.')
 
         if attack.poisonCh:
             if chance(attack.poisonCh):
@@ -323,7 +323,7 @@ class Enemy(Entity):
                 print(col.name('poison',f'You have been poisoned for {attack.poisonDur} {Plural(attack.poisonDur, "turn")}].'))
             else:
                 player.turn(self)
-                print('The attack missed.')
+                print('The attack failed.')
 
         if attack.heal:
             if chance(attack.healCh):
@@ -342,7 +342,7 @@ class Enemy(Entity):
                 print(col.name('defence',f'The {self.name} gained +{attack.defence} defence for {attack.defenceDur} {Plural(attack.defenceDur,"turn")}.'))
             else:
                 player.turn(self)
-                print('The attack missed.')
+                print('The attack failed.')
             
         if player.hp <= 0:
                 player.battling = False

@@ -212,7 +212,7 @@ class Room():
         elif direction in optionDict['east']:
             chosenRoom = self.floorObject.map[self.y][self.x+1]
 
-        if chosenRoom.__class__.__name__ == 'BossRoom':
+        if chosenRoom.__class__.__name__ == 'BossRoom' and not chosenRoom.cleared:
             text('You feel an ominous presence coming from that direction...\nAre you sure you want to continue in that direction?')
             confirm = syst.Option(options=[optionDict['yes'],optionDict['no']])
             if confirm in optionDict['no']:
@@ -251,7 +251,10 @@ class BossRoom(Room):
         self.boss = Enemy(bossName, **bossDict[self.Floor][bossName])
         self.icon = iconDict[self.roomName]
 
-    def onEnter(self,player):
+    def enter(self,player):
+        self.floorObject.devmap[self.y][self.x] = player.icon
+        syst.printStatus()
+        text(self.desc)
         if not self.cleared:
             player.battle(self.boss)
             if player.hp > 0:
@@ -274,7 +277,6 @@ class BossRoom(Room):
             player.room.enter(player)
         elif choice in optionDict['no']:
             text('You decide not to step into the portal...')
-            syst.enterHint()
             self.move(player)
 
 class EnemyRoom(Room):

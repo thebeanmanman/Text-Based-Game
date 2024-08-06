@@ -222,6 +222,8 @@ enemyDict = {
             'attacksch':[2,1],
             'spawnch':1
         }
+        # Giant Spider --> Webs, Poison, Bite
+        # Minotaur
     }
 }
 
