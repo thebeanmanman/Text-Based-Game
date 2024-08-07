@@ -6,37 +6,51 @@ from dictionaries import optionDict
 
 class Shop():
     weaponList = [common,uncommon,rare,epic,legendary]
-    def __init__(self,sellWeapons:bool,weaponPrices=[5,10,15,20,25],name='Store') -> None:
+    def __init__(self,sellWeapons:bool,itemNumber,dialogue='',weaponPrices=[5,10,15,20,25],name='Store') -> None:
         self.weapons = []
         self.weaponNames = []
         self.weaponPrices = weaponPrices
         self.sellWeapons = sellWeapons
         self.name = name
-        if sellWeapons:
-            self.rollWeapons()
+        self.itemNumber = itemNumber
+        self.dialogue = dialogue
 
     def rollWeapons(self):
+        self.weapons = []
+        self.weaponNames = []
         for rarity in self.weaponList:
             self.weapons.append(randItem(rarity))
         for weapon in self.weapons:
             self.weaponNames.append(weapon.rawname)
 
+    def rollItems(self):
+        allItems = list(itemDict)
+        self.items = []
+        for i in range(self.itemNumber):
+            item = randItem(allItems)
+            self.items.append(item)
+            allItems.remove(item)
+
     def printItems(self):
         header = f'----- {self.name} -----'
         print(header)
+        print()
         if self.sellWeapons:
             print('> Weapons <'.center(len(header)))
             for weaponnum,weapon in enumerate(self.weapons):
                 print(f'{chr(8226)} {weapon.rarname}: {col.name("gold",f"{self.weaponPrices[weaponnum]} Gold")}')
             print()
         print('> Items <'.center(len(header)))
-        for item in itemDict:
+        for item in self.items:
             itemprice = itemDict[item]['price']
             print(f'{chr(8226)} {item.title()}: {col.name("gold",f"{itemprice} Gold")}')
         print()
         
 
     def enterShop(self,player):
+        self.rollItems()
+        if self.sellWeapons:
+            self.rollWeapons()
         buying = True
         optionList = []
         priceList = []
@@ -45,12 +59,17 @@ class Shop():
             optionList += self.weaponNames
             priceList += self.weaponPrices
 
-        for item in itemDict:
+        for item in self.items:
             optionList.append(item)
             itemList.append(item)
             priceList.append(itemDict[item]['price'])
 
         while buying:
+            syst.printStatus()
+            if self.dialogue:
+                text(self.dialogue)
+                print()
+            self.printItems()
             choice = syst.Option(options=[optionList,optionDict['exit shop']])
             if choice in optionList:
                 index = optionList.index(choice)
@@ -66,29 +85,19 @@ class Shop():
                     if player.buy(priceList[index]):
                         if item.__class__.__name__ == 'PlayerWeapon':
                             player.weapon = item
-                            syst.printStatus()
                             text(f'You have purchased and equipped the {self.weapons[index].name}!')
                             syst.enterHint(text='Press enter to return to the shop...')
-                            syst.printStatus()
-                            self.printItems()
                         elif item.__class__.__name__ == 'UsableItem':
                             player.items.append(item)
-                            syst.printStatus()
                             text(f'You have purchased the {item.name}!')
                             player.printItems()
                             syst.enterHint(text='Press enter to return to the shop...',space=False)
-                            syst.printStatus()
-                            self.printItems()
                     else:
                         text('You do not have enough funds to buy this.')
                         syst.enterHint(text='Press enter to return to the shop...')
-                        syst.printStatus()
-                        self.printItems()
                 elif confirm in optionDict['no']:
                     text('You decide not to buy this.')
                     syst.enterHint(text='Press enter to return to the shop...')
-                    syst.printStatus()
-                    self.printItems()
 
             elif choice in optionDict['exit shop']:
                 buying = False

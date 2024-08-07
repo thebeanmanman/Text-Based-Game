@@ -81,9 +81,7 @@ def startGame():
 
 def shopEncounter():
     if player.gold > 0:
-        text(f"Shopkeeper: {col.name('npc','Hello there young traveller, take a look at my fine wares.')}")
-        shop = Shop(sellWeapons=True,name="Shopkeeper's Store")
-        shop.printItems()
+        shop = Shop(sellWeapons=True,itemNumber=3,dialogue=f"Shopkeeper: {col.name('npc','Hello there young traveller, take a look at my fine wares.')}",name="Shopkeeper's Store")
         shop.enterShop(player)
         enterDungeon()
     else:

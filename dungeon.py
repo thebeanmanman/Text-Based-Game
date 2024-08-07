@@ -213,7 +213,7 @@ class Room():
             chosenRoom = self.floorObject.map[self.y][self.x+1]
 
         if chosenRoom.__class__.__name__ == 'BossRoom' and not chosenRoom.cleared:
-            text('You feel an ominous presence coming from that direction...\nAre you sure you want to continue in that direction?')
+            text('You feel an ominous presence coming from that direction...\nAre you sure you want to continue?')
             confirm = syst.Option(options=[optionDict['yes'],optionDict['no']])
             if confirm in optionDict['no']:
                 text('You decide not to go in that direction...')

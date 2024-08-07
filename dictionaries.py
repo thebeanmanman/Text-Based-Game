@@ -15,7 +15,7 @@ enemyDescDict = {
     'Skeleton' : 'Cold, dead, inanimate eyes stare directly into your soul',
 
     # Floor 2 Enemies
-    'Treant' : 'BIG MAN TREE'
+    'Ent' : 'BIG MAN TREE'
 }
 
 iconDict = {

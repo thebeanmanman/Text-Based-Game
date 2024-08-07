@@ -214,7 +214,7 @@ enemyDict = {
     },
     2:
     {
-        'Treant' : {
+        'Ent' : {
             'maxhp':6,
             'gold':1,
             'xp':3,
@@ -224,6 +224,7 @@ enemyDict = {
         }
         # Giant Spider --> Webs, Poison, Bite
         # Minotaur
+        # Earth Golem
     }
 }
 
@@ -237,5 +238,6 @@ bossDict = {
             'attacks':[EnemyWeapon(name='Stomp',dmg=4),EnemyWeapon(name='Rock Toss',dmg=2,crtch=0.1),EnemyWeapon(name='Roar',dmg=0)],
             'attacksch':[2,3,1]
         }
+        # Dragon
     }
 }
