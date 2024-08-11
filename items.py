@@ -168,7 +168,6 @@ itemDict = {
     }
 
 }
-
 ### Enemy Types ###
 # '': {'maxhp': , 'gold': , 'xp': , 'attacks': [], 'attacksch': [], 'spawnch': 1},
 enemyDict = {
@@ -178,7 +177,10 @@ enemyDict = {
                   'gold': 6,
                   'xp': 6,
                   'attacks': [EnemyWeapon(name='Chomp',dmg=2,crtch=0.15),EnemyWeapon(name='Lunge',dmg=3)],
-                  'attacksch': [2,1]},
+                  'attacksch': [2,1],
+                  'desc' : '',
+        }
+
     },
 
     # Floors
@@ -189,28 +191,36 @@ enemyDict = {
                    'xp':1,
                    'attacks':[EnemyWeapon(name='Stab',dmg=2,crtch=0.1),EnemyWeapon(name='Steal',dmg=0,steal=1,stealch=1)],
                    'attacksch':[2,1],
-                   'spawnch': 1},
+                   'spawnch': 1,
+                   'desc' : 'You hear a mischievous snicker from behind you.\nYou quickly turn around to see a small green creature brandishing a crudely crafted knife staring intensly at your gold pouch.',
+                   },
 
         'Slime': {'maxhp': 5,
                   'gold': 1,
                   'xp': 2,
                   'attacks': [EnemyWeapon(name='Roll',dmg=1),EnemyWeapon(name='Reshape',dmg=0,heal=1,healCh=0.5)],
                   'attacksch': [3,2],
-                  'spawnch': 1},
+                  'spawnch': 1,
+                  'desc' : "Standing before you, there is a green gelatinous blob.\nThrough its translucent skin, you can see partially digested bones floating in what seems to be it's stomach."
+                  },
 
         'Baby Spider': {'maxhp': 3,
                         'gold': 1,
                         'xp': 1,
                         'attacks': [EnemyWeapon(name='Bite',dmg=1,crtch=0.05),EnemyWeapon(name='Poisonous Bite',dmg=0,poisonCh=1,poisonDmg=1,poisonDur=3)],
                         'attacksch': [2,1],
-                        'spawnch': 1},
+                        'spawnch': 1,
+                        'desc' : 'You suddenly run into a thick spider web, which blocks your vision.\nAs you hastily remove it, you see a spider the size of a wolf standing before you.',
+                        },
 
         'Skeleton' : {'maxhp': 5,
                       'gold': 2,
                       'xp': 2,
                       'attacks': [EnemyWeapon(name='Slash',dmg=1,crtch=0.25),EnemyWeapon(name='Drink Milk',dmg=0,defence=1,defencech=1,defenceDur=2)],
                       'attacksch': [3,1],
-                      'spawnch': 1},
+                      'spawnch': 1,
+                      'desc' : 'Cold, dead, inanimate eyes stare directly into your soul',
+                      },
     },
     2:
     {
@@ -220,7 +230,8 @@ enemyDict = {
             'xp':3,
             'attacks':[EnemyWeapon(name='Slam',dmg=2),EnemyWeapon(name='Grow Bark',dmg=0,defence=2,defencech=0.5,defenceDur=2)],
             'attacksch':[2,1],
-            'spawnch':1
+            'spawnch':1,
+            'desc' : 'Big TREE MAN'
         }
         # Giant Spider --> Webs, Poison, Bite
         # Minotaur
@@ -236,7 +247,8 @@ bossDict = {
             'gold':4,
             'xp':5,
             'attacks':[EnemyWeapon(name='Stomp',dmg=4),EnemyWeapon(name='Rock Toss',dmg=2,crtch=0.1),EnemyWeapon(name='Roar',dmg=0)],
-            'attacksch':[2,3,1]
+            'attacksch':[2,3,1],
+            'desc' : "A grotesque pale blue creature towers above you, it's singular eye gleaming at you with a gross discontent."
         }
         # Dragon
     }

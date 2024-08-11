@@ -10,7 +10,7 @@ from colours import col
 from grammar import Plural
 
 # Import Dictionaries
-from dictionaries import iconDict,LevelDict,optionDict,enemyDescDict
+from dictionaries import iconDict,LevelDict,optionDict
 
 # Import Classes
 from healthbar import HealthBar
@@ -263,7 +263,7 @@ class Player(Entity):
 
 
 class Enemy(Entity):
-    def __init__(self, name, maxhp,gold,xp,attacks,attacksch,spawnch=0) -> None:
+    def __init__(self, name, maxhp,gold,xp,attacks,attacksch,desc,spawnch=0) -> None:
         super().__init__(name=name, maxhp=maxhp)
         self.gold = gold
         self.xp = xp
@@ -271,7 +271,7 @@ class Enemy(Entity):
         self.attacks = attacks
         self.attacksch = attacksch
         self.spawnch = spawnch
-        self.desc = enemyDescDict[name]
+        self.desc = desc
     
     def death(self,player):
         syst.enterHint()

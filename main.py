@@ -3,7 +3,6 @@ from entity import Player
 from shop import Shop
 
 # Import Objects
-from items import ironSword
 from dungeon import Dungeon,floorStatDict,floorDict
 from system import syst
 from colours import col
