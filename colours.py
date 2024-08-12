@@ -13,6 +13,7 @@ class Colour():
             'poison' : (0,128,0),
             'heal' : (60,245,113),
             'defence' : (137,207,240),
+            'strength' : (178,34,34),
 
             # Rarity Colours
             'common' : (128,128,128),

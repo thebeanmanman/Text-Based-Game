@@ -38,6 +38,8 @@ class HealthBar():
             
             if self.entity.defenceDur:
                 bar += f""" {col.name("defence",f"[+{self.entity.defence} defence for {self.entity.defenceDur} {Plural(self.entity.defenceDur,'turn')}]")} """
+            if self.entity.strengthDur:
+                bar += f""" {col.name("strength",f"[+{self.entity.strength} strength for {self.entity.strengthDur} {Plural(self.entity.strengthDur,'turn')}]")} """
 
         else:
             bar = f'{self.end}{self.death*self.length}{self.end} {self.entity.hp}/{self.entity.maxhp}'

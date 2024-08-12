@@ -44,7 +44,8 @@ optionDict = {
     'buy': ['purchase','buy'],
     'open inventory': ['open invetory','inventory','items','item','open items','open bag','bag'],
     'close inventory': ['close inventory','close items','done','inventory','items','close bag','bag','close','leave','exit','exit inventory','leave inventory'],
-    'exit shop': ['exit','leave','exit shop', 'leave shop','exit the shop','leave the shop','exit store','leave store','leave the store','exit the store']
+    'exit shop': ['exit','leave','exit shop', 'leave shop','exit the shop','leave the shop','exit store','leave store','leave the store','exit the store'],
+    'reroll items' : ['rr','reroll','reroll items','reroll shop','refresh','refresh shop','refresh items']
 }
 
 def levelStat(maxhp=0,fistdmg=0,fistcrt=0):

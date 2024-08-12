@@ -14,6 +14,8 @@ class Shop():
         self.name = name
         self.itemNumber = itemNumber
         self.dialogue = dialogue
+        self.rerollPrice = 2
+        self.rerollIncr = 1
 
     def rollWeapons(self):
         self.weapons = []
@@ -45,44 +47,47 @@ class Shop():
             itemprice = itemDict[item]['price']
             print(f'{chr(8226)} {item.title()}: {col.name("gold",f"{itemprice} Gold")}')
         print()
+        print(f'Reroll the shop: {col.name("gold",f"{self.rerollPrice} Gold")}')
         
-
-    def enterShop(self,player):
+    def rollAllItems(self):
         self.rollItems()
         if self.sellWeapons:
             self.rollWeapons()
-        buying = True
-        optionList = []
-        priceList = []
-        itemList = []
+        self.optionList = []
+        self.priceList = []
+        self.itemList = []
         if self.sellWeapons:
-            optionList += self.weaponNames
-            priceList += self.weaponPrices
+            self.optionList += self.weaponNames
+            self.priceList += self.weaponPrices
 
         for item in self.items:
-            optionList.append(item)
-            itemList.append(item)
-            priceList.append(itemDict[item]['price'])
+            self.optionList.append(item)
+            self.itemList.append(item)
+            self.priceList.append(itemDict[item]['price'])
 
+
+    def enterShop(self,player):
+        self.rollAllItems()
+        buying = True
         while buying:
             syst.printStatus()
             if self.dialogue:
                 text(self.dialogue)
                 print()
             self.printItems()
-            choice = syst.Option(options=[optionList,optionDict['exit shop']])
-            if choice in optionList:
-                index = optionList.index(choice)
+            choice = syst.Option(options=[self.optionList,optionDict['exit shop'],optionDict['reroll items']])
+            if choice in self.optionList:
+                index = self.optionList.index(choice)
                 syst.printStatus()
-                text(f"Are you sure you want to buy the {optionList[index]} for {col.name('gold',f'{priceList[index]} gold')}?")
+                text(f"Do you want to buy the {self.optionList[index]} for {col.name('gold',f'{self.priceList[index]} gold')}?")
                 if choice in self.weaponNames:
                     item = self.weapons[index]
-                elif choice in itemList:
-                    item = UsableItem(optionList[index], **itemDict[optionList[index]])
+                elif choice in self.itemList:
+                    item = UsableItem(self.optionList[index], **itemDict[self.optionList[index]])
                 item.showInfo()
                 confirm = syst.Option(options=[optionDict['buy'],optionDict['yes'],optionDict['no']])
                 if confirm in optionDict['yes'] or confirm in optionDict['buy']:
-                    if player.buy(priceList[index]):
+                    if player.buy(self.priceList[index]):
                         if item.__class__.__name__ == 'PlayerWeapon':
                             player.weapon = item
                             text(f'You have purchased and equipped the {self.weapons[index].name}!')
@@ -93,11 +98,19 @@ class Shop():
                             player.printItems()
                             syst.enterHint(text='Press enter to return to the shop...',space=False)
                     else:
-                        text('You do not have enough funds to buy this.')
+                        text('You do not have enough gold to buy this.')
                         syst.enterHint(text='Press enter to return to the shop...')
                 elif confirm in optionDict['no']:
                     text('You decide not to buy this.')
                     syst.enterHint(text='Press enter to return to the shop...')
-
+            elif choice in optionDict['reroll items']:
+                if player.buy(self.rerollPrice):
+                    text('Rerolling items...')
+                    self.rerollPrice += self.rerollIncr
+                    self.rollAllItems()
+                    syst.enterHint(text='Press enter to see the new items.')
+                else:
+                    text('You do not have enough gold to reroll the shop')
+                    syst.enterHint()
             elif choice in optionDict['exit shop']:
                 buying = False

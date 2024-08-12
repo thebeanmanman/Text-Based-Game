@@ -15,7 +15,7 @@ class Item():
         self.onInfo()
 
 class UsableItem(Item):
-    def __init__(self, name: str, desc:str,useText:str,price:int,healAmt=0,dmg=0,defence=0,defenceDur=0) -> None:
+    def __init__(self, name: str, desc:str,useText:str,price:int,healAmt=0,dmg=0,defence=0,defenceDur=0,strength=0,strengthDur=0) -> None:
         super().__init__(name,desc)
         self.useText = useText
         self.price = price
@@ -23,6 +23,8 @@ class UsableItem(Item):
         self.dmg = dmg
         self.defence = defence
         self.defenceDur = defenceDur
+        self.strength = strength
+        self.strengthDur = strengthDur
     
     def use(self,player):
         syst.printStatus()
@@ -48,6 +50,13 @@ class UsableItem(Item):
             text(col.name('defence',f'You gained +{self.defence} defence for {self.defenceDur} {Plural(self.defenceDur,"turn")}!'))
             syst.enterHint()
 
+        if self.strength:
+            player.strength = self.strength
+            player.strengthDur = self.strengthDur
+            syst.printStatus()
+            text(col.name('strength',f'You gained +{self.strength} strength for {self.strengthDur} {Plural(self.strengthDur,"turn")}!'))
+            syst.enterHint()
+
     def onInfo(self):
         if self.healAmt:
             text(col.name('heal',f'Heals {self.healAmt} health.'))
@@ -57,6 +66,9 @@ class UsableItem(Item):
 
         if self.defence:
             text(col.name('defence',f'Gives you +{self.defence} defence for {self.defenceDur} {Plural(self.defenceDur,"turn")}.'))
+
+        if self.strength:
+            text(col.name('strength',f'Gives you +{self.strength} strength for {self.strengthDur} {Plural(self.strengthDur,"turn")}.'))
 
 class Weapon(Item):
     def __init__(self,name:str,desc:str,dmg:int,crtch=0,poisonCh=0,poisonDmg=0,poisonDur=0,heal=0,healCh=0) -> None:
@@ -70,13 +82,16 @@ class Weapon(Item):
         self.healCh = healCh
 
 class EnemyWeapon(Weapon):
-    def __init__(self, name: str,dmg: int, crtch=0, stealch=0, steal=0,poisonCh=0,poisonDmg=0,poisonDur=0,heal=0,healCh=0,defence=0,defencech=0,defenceDur=0) -> None:
+    def __init__(self, name: str,dmg: int, crtch=0, stealch=0, steal=0,poisonCh=0,poisonDmg=0,poisonDur=0,heal=0,healCh=0,defence=0,defencech=0,defenceDur=0,strength=0,strengthch=0,strengthDur=0) -> None:
         super().__init__(name,'',dmg,crtch,poisonCh,poisonDmg,poisonDur,heal,healCh)
         self.stealch = stealch
         self.steal = steal
         self.defencech = defencech
         self.defence = defence
         self.defenceDur = defenceDur
+        self.strengthch = strengthch
+        self.strength = strength
+        self.strengthDur = strengthDur
 
 class PlayerWeapon(Weapon):
     def __init__(self, name: str, dmg: int, desc='', rarity=0, crtch=0, poisonCh=0,poisonDmg=0,poisonDur=0,heal=0,healCh=0) -> None:
@@ -142,6 +157,7 @@ Entity.fists = fists
 ### Item Dictionary ###
 # '': {'desc':'','useText':'','price':}
 itemDict = {
+    # Healing Items
     'apple': {'desc':'A red juicy apple',
               'useText':'You eat the apple.',
               'healAmt': 2,
@@ -153,19 +169,40 @@ itemDict = {
                      'dmg' : 1,
                      'price':10},
 
+    # Defense Items
     'milk' : {'desc':'High in calcium for big strong bones',
               'useText':'You drink the milk.',
               'defence':1,
               'defenceDur':2,
               'price':4},
 
-    'steel ingot' : {'desc':"This doesn't seem very edible...",
-                     'useText':'You hesitantly bite into the chunk of steel... Ouch...',
+    'dense durian' : {'desc':'Rumoured to give whoever eats it incredible defensible capabilities.\nAlthough it is also rumoured to be the worst smelling fruit in the land.',
+              'useText':'You eat the dense durian, trying your best to ignore the stench...',
+              'defence':2,
+              'defenceDur':2,
+              'price':6},
+
+    'iron ingot' : {'desc':"This doesn't seem very edible...",
+                     'useText':'You hesitantly bite into the chunk of iron... Ouch...',
                      'dmg':3,
-                     'defence':2,
+                     'defence':3,
                      'defenceDur':2,
                      'price':7
-    }
+    },
+
+    # Strength Items
+    'strength potion' : {'desc':"Brewed by the town's local alchemist.\nIt isn't too potent though...",
+              'useText':'You drink the strength potion...',
+              'strength':1,
+              'strengthDur':2,
+              'price':4},
+
+    'mighty mango' : {'desc':"Rumoured to give whoever eats it immense strength.\nIt is also renowned for it's incredible flavour.",
+              'useText':'You eat the mighty mango...',
+              'strength':2,
+              'strengthDur':2,
+              'price':6},
+
 
 }
 ### Enemy Types ###
@@ -246,7 +283,7 @@ bossDict = {
             'maxhp':12,
             'gold':4,
             'xp':5,
-            'attacks':[EnemyWeapon(name='Stomp',dmg=4),EnemyWeapon(name='Rock Toss',dmg=2,crtch=0.1),EnemyWeapon(name='Roar',dmg=0)],
+            'attacks':[EnemyWeapon(name='Stomp',dmg=4),EnemyWeapon(name='Rock Toss',dmg=2,crtch=0.1),EnemyWeapon(name='Roar',dmg=0,strengthch=1,strength=1,strengthDur=2)],
             'attacksch':[2,3,1],
             'desc' : "A grotesque pale blue creature towers above you, it's singular eye gleaming at you with a gross discontent."
         }

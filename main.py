@@ -98,6 +98,6 @@ def enterDungeon():
     player.room = floorDict[1].startRoom
     player.room.enter(player)
 
-player = Player(maxhp=10)
+player = Player(maxhp=100)
 syst.setPlayer(player)
 title_screen()

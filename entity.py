@@ -26,6 +26,8 @@ class Entity():
         self.poisonDmg = 0
         self.defence = 0
         self.defenceDur = 0
+        self.strength = 0
+        self.strengthDur = 0
 
     def takeDamage(self,dmg):
         dmg = max(dmg,0)
@@ -42,8 +44,8 @@ class Player(Entity):
         self.defaultWeapon = Entity.fists
         self.room = None
         self.icon = iconDict['Player']
-        self.gold = 0
-        # Level Variables
+        self.gold = 20
+        # Level Up Variables
         self.lvl = 1
         self.xp = 0
         self.maxxp = 4
@@ -120,14 +122,22 @@ class Player(Entity):
 
     def attack(self, target):
         if chance(self.weapon.crtch+self.weaponCrit):
-            dmgDealt = max(2*(self.weapon.dmg+self.weaponDmg) -target.defence,0)
+            dmgDealt = max(2*(self.weapon.dmg+self.weaponDmg) +self.strength -target.defence,0)
             dmgMessage = f'You dealt {col.name("red",dmgDealt)} damage using your {self.weapon.name}! {col.name("red","[Critial Hit!]")}'
         else:
-            dmgDealt = max(self.weapon.dmg+self.weaponDmg-target.defence,0)
+            dmgDealt = max(self.weapon.dmg+self.weaponDmg+self.strength-target.defence,0)
             dmgMessage = f'You dealt {dmgDealt} damage using your {self.weapon.name}!'
 
         if target.defence:
             dmgMessage += col.name('defence',f'[-{target.defence}]')
+
+        if self.strength:
+            dmgMessage += col.name('strength',f' [+{self.strength}]')
+
+        if self.strengthDur:
+            self.strengthDur -= 1
+            if self.strengthDur == 0:
+                self.strength = 0
 
         target.takeDamage(dmgDealt)
         self.turn(target)
@@ -289,14 +299,17 @@ class Enemy(Entity):
         syst.enterHint()
         if attack.dmg:
             if chance(attack.crtch):
-                dmgDealt = max((attack.dmg*2) - player.defence,0)
+                dmgDealt = max(2*(attack.dmg) +self.strength - player.defence,0)
                 dmgMessage = (f'You took {col.name("red",dmgDealt)} damage. {col.name("red","[Critical Hit!]")}')
             else:
-                dmgDealt = max(attack.dmg - player.defence,0)
+                dmgDealt = max(attack.dmg +self.strength - player.defence,0)
                 dmgMessage = (f'You took {dmgDealt} damage.')
 
             if player.defence:
                 dmgMessage += col.name('defence',f' [-{player.defence}]')
+
+            if self.strength:
+                dmgMessage += col.name('strength',f' [+{self.strength}]')
 
             player.takeDamage(max(dmgDealt,0))
             player.turn(self)
@@ -344,6 +357,21 @@ class Enemy(Entity):
                 player.turn(self)
                 print('The attack failed.')
             
+        if self.strengthDur:
+            self.strengthDur -= 1
+            if self.strengthDur == 0:
+                self.strength = 0
+
+        if attack.strengthch:
+            if chance(attack.strengthch):
+                self.strength = attack.strength
+                self.strengthDur = attack.strengthDur
+                player.turn(self)
+                print(col.name('strength',f'The {self.name} gained +{attack.strength} strength for {attack.strengthDur} {Plural(attack.strengthDur,"turn")}.'))
+            else:
+                player.turn(self)
+                print('The attack failed.')
+
         if player.hp <= 0:
                 player.battling = False
                 syst.enterHint()
