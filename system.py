@@ -6,7 +6,7 @@ from dictionaries import optionDict
 class System():
     #Control Variables
     ClearTerminal = True
-    Devmap = True
+    Devmap = False
     Hints = True
     NarSpeed = 0.075
 
@@ -56,7 +56,7 @@ class System():
             input()
 
     #Returns a players choice from a list of options
-    def Option(self,options,player=None,prompt='',Map=False,Drop=False,WeaponInfo=False):
+    def Option(self,options,prompt='',Map=False,Drop=False,WeaponInfo=False):
         choosing = True
         if prompt:
             text(prompt)

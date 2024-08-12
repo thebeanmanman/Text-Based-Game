@@ -42,7 +42,7 @@ class Player(Entity):
         self.defaultWeapon = Entity.fists
         self.room = None
         self.icon = iconDict['Player']
-        self.gold = 20000
+        self.gold = 0
         # Level Variables
         self.lvl = 1
         self.xp = 0
