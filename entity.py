@@ -116,10 +116,6 @@ class Player(Entity):
         syst.printStatus()
         text(f'You have equipped the {self.weapon.name}!')
 
-    def drop(self) -> None:
-        text(f'You dropped the {self.weapon.name}!')
-        self.weapon = self.defaultWeapon
-
     def attack(self, target):
         if chance(self.weapon.crtch+self.weaponCrit):
             dmgDealt = max(2*(self.weapon.dmg+self.weaponDmg) +self.strength -target.defence,0)

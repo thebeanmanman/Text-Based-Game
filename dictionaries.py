@@ -45,7 +45,7 @@ optionDict = {
     'open inventory': ['open invetory','inventory','items','item','open items','open bag','bag'],
     'close inventory': ['close inventory','close items','done','inventory','items','close bag','bag','close','leave','exit','exit inventory','leave inventory'],
     'exit shop': ['exit','leave','exit shop', 'leave shop','exit the shop','leave the shop','exit store','leave store','leave the store','exit the store'],
-    'reroll items' : ['rr','reroll','reroll items','reroll shop','refresh','refresh shop','refresh items']
+    'reroll items' : ['rr','reroll','reroll items','reroll shop','refresh','refresh shop','refresh items','reroll the shop','refresh the shop']
 }
 
 def levelStat(maxhp=0,fistdmg=0,fistcrt=0):

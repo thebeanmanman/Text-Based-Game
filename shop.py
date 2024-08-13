@@ -34,6 +34,10 @@ class Shop():
             allItems.remove(item)
 
     def printItems(self):
+        if self.dialogue:
+            text(self.dialogue)
+            syst.hint('Type the name of any item to purchase it and type "leave" to exit the store.')
+            print()
         header = f'----- {self.name} -----'
         print(header)
         print()
@@ -71,9 +75,6 @@ class Shop():
         buying = True
         while buying:
             syst.printStatus()
-            if self.dialogue:
-                text(self.dialogue)
-                print()
             self.printItems()
             choice = syst.Option(options=[self.optionList,optionDict['exit shop'],optionDict['reroll items']])
             if choice in self.optionList:

@@ -202,7 +202,9 @@ class Room():
             Adjroom.discovered = True
         syst.enterHint()
         syst.printStatus()
-        direction = syst.Option(options=directions,Map=True,Drop=True,WeaponInfo=True,prompt=f'You can move {orChoice([direction[0] for direction in directions])}.')
+        text(f'You can move {orChoice([direction[0] for direction in directions])}.')
+        syst.hint('You can type "map" to see where you have already travelled.')
+        direction = syst.Option(options=directions,Map=True,WeaponInfo=True)
         if direction in optionDict['north']:
             chosenRoom = self.floorObject.map[self.y-1][self.x]
         elif direction in optionDict['south']:
@@ -296,7 +298,6 @@ class EnemyRoom(Room):
             InstantiatedEnemy = Enemy(enemyName,**enemyDict[self.Floor][enemyName])
             self.enemies.append(InstantiatedEnemy)
 
-
     def onEnter(self,player):
         self.battling = True
         enemy = self.spawnEnemy()
@@ -310,7 +311,7 @@ class EnemyRoom(Room):
                 enemy = self.spawnEnemy()
         if player.hp > 0:
             self.move(player)
-    
+
     def spawnEnemy(self):
         if self.enemies:
             enemy = self.enemies[0]

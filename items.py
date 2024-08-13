@@ -238,7 +238,7 @@ enemyDict = {
                   'attacks': [EnemyWeapon(name='Roll',dmg=1),EnemyWeapon(name='Reshape',dmg=0,heal=1,healCh=0.5)],
                   'attacksch': [3,2],
                   'spawnch': 1,
-                  'desc' : "Standing before you, there is a green gelatinous blob.\nThrough its translucent skin, you can see partially digested bones floating in what seems to be it's stomach."
+                  'desc' : "Standing before you, there is a green gelatinous blob of goo.\nThrough its translucent skin, you can see partially digested bones floating in what seems to be it's stomach."
                   },
 
         'Baby Spider': {'maxhp': 3,
@@ -247,7 +247,7 @@ enemyDict = {
                         'attacks': [EnemyWeapon(name='Bite',dmg=1,crtch=0.05),EnemyWeapon(name='Poisonous Bite',dmg=0,poisonCh=1,poisonDmg=1,poisonDur=3)],
                         'attacksch': [2,1],
                         'spawnch': 1,
-                        'desc' : 'You suddenly run into a thick spider web, which blocks your vision.\nAs you hastily remove it, you see a spider the size of a wolf standing before you.',
+                        'desc' : 'A faint, skittering sound makes your skin crawl.\nYou glance upward to find a large, sinister spider descending from its web, its beady eyes locked onto you with predatory focus.',
                         },
 
         'Skeleton' : {'maxhp': 5,
@@ -256,7 +256,7 @@ enemyDict = {
                       'attacks': [EnemyWeapon(name='Slash',dmg=1,crtch=0.25),EnemyWeapon(name='Drink Milk',dmg=0,defence=1,defencech=1,defenceDur=2)],
                       'attacksch': [3,1],
                       'spawnch': 1,
-                      'desc' : 'Cold, dead, inanimate eyes stare directly into your soul',
+                      'desc' : "You hear the clattering of bones echoing throughout the room.\nAs you spin around, you see a gaunt figure emerging from the shadows...\nIts hollow inanimate eye sockets are fixed on you with a menacing gleam.\nThe skeletal remains rattle as it raises an ancient, rusted sword, with its intentions clear."
                       },
     },
     2:
@@ -268,9 +268,26 @@ enemyDict = {
             'attacks':[EnemyWeapon(name='Slam',dmg=2),EnemyWeapon(name='Grow Bark',dmg=0,defence=2,defencech=0.5,defenceDur=2)],
             'attacksch':[2,1],
             'spawnch':1,
-            'desc' : 'Big TREE MAN'
+            'desc' : "A massive figure steps forward, its bark-covered limbs resembling twisted roots. Its old weathered eyes depict that it has seen centuries pass and absorbed countless wisdom."
+        },
+        'Giant Spider': { # Maybe add web ability
+            'maxhp': 7,
+            'gold':2,
+            'xp':4,
+            'attacks':[EnemyWeapon(name='Venom Spit',dmg=1,poisonCh=0.4,poisonDur=4),EnemyWeapon(name='Shove',dmg=3),EnemyWeapon(name='IDk',dmg=0,poisonCh=1,poisonDur=4)],
+            'attacksch': [2,3,1],
+            'spawnch':1,
+            'desc' : "A deep, unsettling silence falls over the forest.\nYou turn just in time to see a massive spider emerging from the shadows, its monstrous size making you quiver at the sight of it..."
+        },
+        'Minotaur' : {
+            'maxhp': 8,
+            'gold':3,
+            'xp':5,
+            'attacks':[EnemyWeapon(name='Hoof Stomp',dmg=2,crtch=0.25),EnemyWeapon(name='Axe Chop',dmg=4,crtch=0.1),EnemyWeapon(name='Bull Charge',dmg=3,crtch=0.15)],
+            'attacksch': [3,1,2],
+            'spawnch':1,
+            'desc' : "Rushing out from the shadows, a massive beast with the head of a bull and the body of a warrior snorts angrily, its horns gleaming in the dim light.\nThe minotaur's eyes lock onto you, and it tightens its grip on a brutal, spiked axe."
         }
-        # Giant Spider --> Webs, Poison, Bite
         # Minotaur
         # Earth Golem
     }
@@ -283,9 +300,9 @@ bossDict = {
             'maxhp':12,
             'gold':4,
             'xp':5,
-            'attacks':[EnemyWeapon(name='Stomp',dmg=4),EnemyWeapon(name='Rock Toss',dmg=2,crtch=0.1),EnemyWeapon(name='Roar',dmg=0,strengthch=1,strength=1,strengthDur=2)],
+            'attacks':[EnemyWeapon(name='Stomp',dmg=4),EnemyWeapon(name='Boulder Toss',dmg=2,crtch=0.1),EnemyWeapon(name='Roar',dmg=0,strengthch=1,strength=1,strengthDur=2)],
             'attacksch':[2,3,1],
-            'desc' : "A grotesque pale blue creature towers above you, it's singular eye gleaming at you with a gross discontent."
+            'desc' : "You feel the ground tremble beneath your feet.\nBefore you stands a towering pale blue figure with a single glaring eye, its gaze locked on you with fierce determination.\nClutched in its massive hand is a jagged boulder, ready to be hurled at anyone who dares challenge its strength."
         }
         # Dragon
     }

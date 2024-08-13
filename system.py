@@ -55,11 +55,13 @@ class System():
         else:
             input()
 
+    def hint(self,text):
+        if self.Hints:
+            print(col.name('hint',text))
+
     #Returns a players choice from a list of options
-    def Option(self,options,prompt='',Map=False,Drop=False,WeaponInfo=False):
+    def Option(self,options,Map=False,WeaponInfo=False):
         choosing = True
-        if prompt:
-            text(prompt)
         while choosing:
             choice = input('> ').lower()
             for option in options:
@@ -80,20 +82,6 @@ class System():
             # Player Choices
             elif Map and choice in optionDict['map']:
                 self.player.dungeonFloor.printPlayerMap(self.player)
-
-            elif Drop and choice in optionDict['drop']:
-                if self.player.weapon == self.player.defaultWeapon:
-                    text("You can't drop your fists...")
-                else:
-                    text(f'Are you sure you want to drop your {self.player.weapon.name}?')
-                    option = self.Option(options=[optionDict['drop'],optionDict['yes'],optionDict['no']])
-                    if option in optionDict['yes'] or option in optionDict['drop']:
-                        self.player.drop()
-                        syst.enterHint()
-                        syst.printStatus()
-                        text(prompt)
-                    elif option in optionDict['no']:
-                        text(f"You choose to not drop your {self.player.weapon.name}.")
 
             elif WeaponInfo and choice in optionDict['weaponinfo']:
                 self.player.currentWeaponStats()
