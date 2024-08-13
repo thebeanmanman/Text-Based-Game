@@ -204,9 +204,9 @@ class Player(Entity):
     def round(self,enemy):
         if self.poisonDur:
             self.poisonDur -= 1
-            self.takeDamage(self.poisonDmg)
+            self.takeDamage(1)
             self.turn(enemy)
-            print(f'You take {col.name("poison",self.poisonDmg)} poison damage.')
+            print(f'You take {col.name("poison",'1')} poison damage.')
             syst.enterHint()
 
         if self.defenceDur:
@@ -326,10 +326,9 @@ class Enemy(Entity):
 
         if attack.poisonCh:
             if chance(attack.poisonCh):
-                player.poisonDmg = attack.poisonDmg
                 player.poisonDur += attack.poisonDur
                 player.turn(self)
-                print(col.name('poison',f'You have been poisoned for {attack.poisonDur} {Plural(attack.poisonDur, "turn")}].'))
+                print(col.name('poison',f'You have been poisoned for {attack.poisonDur} {Plural(attack.poisonDur, "turn")}.'))
             else:
                 player.turn(self)
                 print('The attack failed.')
@@ -386,9 +385,9 @@ class Enemy(Entity):
 
         if self.poisonDur:
             self.poisonDur -= 1
-            self.takeDamage(self.poisonDmg)
+            self.takeDamage(1)
             player.turn(self)
-            print(f'The {self.name} takes {col.name("poison",self.poisonDmg)} poison damage.')
+            print(f'The {self.name} takes {col.name("poison",'1')} poison damage.')
             syst.enterHint()
         
         if self.hp <= 0:

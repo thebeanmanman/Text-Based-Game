@@ -71,19 +71,18 @@ class UsableItem(Item):
             text(col.name('strength',f'Gives you +{self.strength} strength for {self.strengthDur} {Plural(self.strengthDur,"turn")}.'))
 
 class Weapon(Item):
-    def __init__(self,name:str,desc:str,dmg:int,crtch=0,poisonCh=0,poisonDmg=0,poisonDur=0,heal=0,healCh=0) -> None:
+    def __init__(self,name:str,desc:str,dmg:int,crtch=0,poisonCh=0,poisonDur=0,heal=0,healCh=0) -> None:
         super().__init__(name,desc)
         self.dmg = dmg
         self.crtch = crtch
         self.poisonCh = poisonCh
-        self.poisonDmg = poisonDmg
         self.poisonDur = poisonDur
         self.heal = heal
         self.healCh = healCh
 
 class EnemyWeapon(Weapon):
-    def __init__(self, name: str,dmg: int, crtch=0, stealch=0, steal=0,poisonCh=0,poisonDmg=0,poisonDur=0,heal=0,healCh=0,defence=0,defencech=0,defenceDur=0,strength=0,strengthch=0,strengthDur=0) -> None:
-        super().__init__(name,'',dmg,crtch,poisonCh,poisonDmg,poisonDur,heal,healCh)
+    def __init__(self, name: str,dmg: int, crtch=0, stealch=0, steal=0,poisonCh=0,poisonDur=0,heal=0,healCh=0,defence=0,defencech=0,defenceDur=0,strength=0,strengthch=0,strengthDur=0) -> None:
+        super().__init__(name,'',dmg,crtch,poisonCh,poisonDur,heal,healCh)
         self.stealch = stealch
         self.steal = steal
         self.defencech = defencech
@@ -94,8 +93,8 @@ class EnemyWeapon(Weapon):
         self.strengthDur = strengthDur
 
 class PlayerWeapon(Weapon):
-    def __init__(self, name: str, dmg: int, desc='', rarity=0, crtch=0, poisonCh=0,poisonDmg=0,poisonDur=0,heal=0,healCh=0) -> None:
-        super().__init__(name, desc,dmg,crtch,poisonCh,poisonDmg,poisonDur,heal,healCh)
+    def __init__(self, name: str, dmg: int, desc='', rarity=0, crtch=0, poisonCh=0,poisonDur=0,heal=0,healCh=0) -> None:
+        super().__init__(name, desc,dmg,crtch,poisonCh,poisonDur,heal,healCh)
         self.assignRarity(rarity)
 
     def assignRarity(self, rarity):
@@ -238,16 +237,16 @@ enemyDict = {
                   'attacks': [EnemyWeapon(name='Roll',dmg=1),EnemyWeapon(name='Reshape',dmg=0,heal=1,healCh=0.5)],
                   'attacksch': [3,2],
                   'spawnch': 1,
-                  'desc' : "Standing before you, there is a green gelatinous blob of goo.\nThrough its translucent skin, you can see partially digested bones floating in what seems to be it's stomach."
+                  'desc' : "Standing before you, there is a green gelatinous blob.\nThrough its translucent skin, you can see partially digested bones floating in what seems to be it's stomach."
                   },
 
         'Baby Spider': {'maxhp': 3,
                         'gold': 1,
                         'xp': 1,
-                        'attacks': [EnemyWeapon(name='Bite',dmg=1,crtch=0.05),EnemyWeapon(name='Poisonous Bite',dmg=0,poisonCh=1,poisonDmg=1,poisonDur=3)],
+                        'attacks': [EnemyWeapon(name='Bite',dmg=1,crtch=0.05),EnemyWeapon(name='Poisonous Bite',dmg=0,poisonCh=1,poisonDur=3)],
                         'attacksch': [2,1],
                         'spawnch': 1,
-                        'desc' : 'A faint, skittering sound makes your skin crawl.\nYou glance upward to find a large, sinister spider descending from its web, its beady eyes locked onto you with predatory focus.',
+                        'desc' : 'A faint scuttling sound makes your skin crawl.\nYou glance upward to find a large, sinister spider descending from its web, its beady eyes locked onto you with predatory focus.',
                         },
 
         'Skeleton' : {'maxhp': 5,
@@ -268,13 +267,13 @@ enemyDict = {
             'attacks':[EnemyWeapon(name='Slam',dmg=2),EnemyWeapon(name='Grow Bark',dmg=0,defence=2,defencech=0.5,defenceDur=2)],
             'attacksch':[2,1],
             'spawnch':1,
-            'desc' : "A massive figure steps forward, its bark-covered limbs resembling twisted roots. Its old weathered eyes depict that it has seen centuries pass and absorbed countless wisdom."
+            'desc' : "A massive figure steps forward, its bark-covered limbs resembling twisted roots.\nIts old weathered eyes depict that it has seen centuries pass and absorbed countless wisdom."
         },
         'Giant Spider': { # Maybe add web ability
             'maxhp': 7,
             'gold':2,
             'xp':4,
-            'attacks':[EnemyWeapon(name='Venom Spit',dmg=1,poisonCh=0.4,poisonDur=4),EnemyWeapon(name='Shove',dmg=3),EnemyWeapon(name='IDk',dmg=0,poisonCh=1,poisonDur=4)],
+            'attacks':[EnemyWeapon(name='Venom Spit',dmg=0,poisonCh=0.4,poisonDur=4),EnemyWeapon(name='Shove',dmg=3),EnemyWeapon(name='IDk',dmg=0,poisonCh=1,poisonDur=4)],
             'attacksch': [2,3,1],
             'spawnch':1,
             'desc' : "A deep, unsettling silence falls over the forest.\nYou turn just in time to see a massive spider emerging from the shadows, its monstrous size making you quiver at the sight of it..."
@@ -283,10 +282,10 @@ enemyDict = {
             'maxhp': 8,
             'gold':3,
             'xp':5,
-            'attacks':[EnemyWeapon(name='Hoof Stomp',dmg=2,crtch=0.25),EnemyWeapon(name='Axe Chop',dmg=4,crtch=0.1),EnemyWeapon(name='Bull Charge',dmg=3,crtch=0.15)],
+            'attacks':[EnemyWeapon(name='Hoof Stomp',dmg=1,crtch=0.25),EnemyWeapon(name='Axe Chop',dmg=3,crtch=0.1),EnemyWeapon(name='Bull Charge',dmg=2,crtch=0.1)],
             'attacksch': [3,1,2],
             'spawnch':1,
-            'desc' : "Rushing out from the shadows, a massive beast with the head of a bull and the body of a warrior snorts angrily, its horns gleaming in the dim light.\nThe minotaur's eyes lock onto you, and it tightens its grip on a brutal, spiked axe."
+            'desc' : "Rushing out from the shadows, a massive beast with the head of a bull and the body of a warrior snorts angrily, its horns gleaming in the dim light.\nThe beasts eyes lock onto you, and it tightens its grip on a brutal, spiked axe."
         }
         # Minotaur
         # Earth Golem
