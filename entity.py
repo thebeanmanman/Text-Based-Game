@@ -6,11 +6,10 @@ from system import syst
 
 #Import Functions
 from functions import text,chance
-from colours import col
 from grammar import Plural
 
 # Import Dictionaries
-from dictionaries import iconDict,LevelDict,optionDict
+from dictionaries import LevelDict,optionDict
 
 # Import Classes
 from healthbar import HealthBar
@@ -43,7 +42,7 @@ class Player(Entity):
         super().__init__(maxhp)
         self.defaultWeapon = Entity.fists
         self.room = None
-        self.icon = iconDict['Player']
+        self.icon = f'[{syst.col("red","X")}]'
         self.gold = 20
         # Level Up Variables
         self.lvl = 1
@@ -119,16 +118,16 @@ class Player(Entity):
     def attack(self, target):
         if chance(self.weapon.crtch+self.weaponCrit):
             dmgDealt = max(2*(self.weapon.dmg+self.weaponDmg) +self.strength -target.defence,0)
-            dmgMessage = f'You dealt {col.name("red",dmgDealt)} damage using your {self.weapon.name}! {col.name("red","[Critial Hit!]")}'
+            dmgMessage = f'You dealt {syst.col("red",dmgDealt)} damage using your {self.weapon.name}! {syst.col("red","[Critial Hit!]")}'
         else:
             dmgDealt = max(self.weapon.dmg+self.weaponDmg+self.strength-target.defence,0)
             dmgMessage = f'You dealt {dmgDealt} damage using your {self.weapon.name}!'
 
         if target.defence:
-            dmgMessage += col.name('defence',f'[-{target.defence}]')
+            dmgMessage += syst.col('defence',f'[-{target.defence}]')
 
         if self.strength:
-            dmgMessage += col.name('strength',f' [+{self.strength}]')
+            dmgMessage += syst.col('strength',f' [+{self.strength}]')
 
         if self.strengthDur:
             self.strengthDur -= 1
@@ -148,7 +147,7 @@ class Player(Entity):
 
     def battleChoice(self, target):
         self.turn(target)
-        print(col.name('hint','Press enter to attack, or type "items" to use your items'))
+        print(syst.col('hint','Press enter to attack, or type "items" to use your items'))
         choosing = True
         while choosing:
             choice = input('> ')
@@ -157,7 +156,7 @@ class Player(Entity):
                 self.printItems()
                 self.chooseItems()
                 self.turn(target)
-                print(col.name('hint','Press enter to attack, or type "items" to use your items'))
+                print(syst.col('hint','Press enter to attack, or type "items" to use your items'))
 
             elif choice == '' or 'attack' in choice or 'kill' in choice:
                 choosing = False
@@ -206,7 +205,7 @@ class Player(Entity):
             self.poisonDur -= 1
             self.takeDamage(1)
             self.turn(enemy)
-            print(f'You take {col.name("poison",'1')} poison damage.')
+            print(f'You take {syst.col("poison","1")} poison damage.')
             syst.enterHint()
 
         if self.defenceDur:
@@ -228,7 +227,7 @@ class Player(Entity):
                 hpGain = gains[0]
                 weaponDmgGain = gains[1]
                 weaponCrtGain = gains[2]
-                lvltext = col.name('heal',f'You leveled up to level {self.lvl}! You gained:')
+                lvltext = syst.col('heal',f'You leveled up to level {self.lvl}! You gained:')
                 if hpGain:
                     lvltext += f'\n{chr(8226)} +{hpGain} Max Health!'
                     self.maxhp += hpGain
@@ -243,7 +242,7 @@ class Player(Entity):
                     self.fists.crtch += weaponCrtGain
                     
                 if self.lvl == self.maxlvl:
-                    lvltext += f'\n{col.name("heal","You have reached the max level!")}'
+                    lvltext += f'\n{syst.col("heal","You have reached the max level!")}'
 
                 syst.printStatus()
                 text(lvltext)
@@ -259,7 +258,7 @@ class Player(Entity):
 
     def death(self):
         syst.printStatus()
-        text(col.name('red','You have died... Game Over'))
+        text(syst.col('red','You have died... Game Over'))
         syst.enterHint()
 
     def deathReset(self):
@@ -284,7 +283,7 @@ class Enemy(Entity):
         player.gold += self.gold
         player.xp += self.xp
         syst.printStatus()
-        text(f'You have slain the {self.name}. Gained {col.name("gold",f"+{self.gold} gold")} and +{self.xp} experience.')
+        text(f'You have slain the {self.name}. Gained {syst.col("gold",f"+{self.gold} gold")} and +{self.xp} experience.')
         syst.enterHint()
         syst.printStatus()
 
@@ -296,16 +295,16 @@ class Enemy(Entity):
         if attack.dmg:
             if chance(attack.crtch):
                 dmgDealt = max(2*(attack.dmg) +self.strength - player.defence,0)
-                dmgMessage = (f'You took {col.name("red",dmgDealt)} damage. {col.name("red","[Critical Hit!]")}')
+                dmgMessage = (f'You took {syst.col("red",dmgDealt)} damage. {syst.col("red","[Critical Hit!]")}')
             else:
                 dmgDealt = max(attack.dmg +self.strength - player.defence,0)
                 dmgMessage = (f'You took {dmgDealt} damage.')
 
             if player.defence:
-                dmgMessage += col.name('defence',f' [-{player.defence}]')
+                dmgMessage += syst.col('defence',f' [-{player.defence}]')
 
             if self.strength:
-                dmgMessage += col.name('strength',f' [+{self.strength}]')
+                dmgMessage += syst.col('strength',f' [+{self.strength}]')
 
             player.takeDamage(max(dmgDealt,0))
             player.turn(self)
@@ -316,7 +315,7 @@ class Enemy(Entity):
                 if player.gold > 0:
                     player.gold = max(player.gold-attack.steal,0)
                     player.turn(self)
-                    print(f'The {self.name} stole {col.name("gold",f"{attack.steal} gold")}!')
+                    print(f'The {self.name} stole {syst.col("gold",f"{attack.steal} gold")}!')
                 else:
                     player.turn(self)
                     print(f'You had no gold for the {self.name} to steal.')
@@ -328,7 +327,7 @@ class Enemy(Entity):
             if chance(attack.poisonCh):
                 player.poisonDur += attack.poisonDur
                 player.turn(self)
-                print(col.name('poison',f'You have been poisoned for {attack.poisonDur} {Plural(attack.poisonDur, "turn")}.'))
+                print(syst.col('poison',f'You have been poisoned for {attack.poisonDur} {Plural(attack.poisonDur, "turn")}.'))
             else:
                 player.turn(self)
                 print('The attack failed.')
@@ -337,7 +336,7 @@ class Enemy(Entity):
             if chance(attack.healCh):
                 self.heal(attack.heal)
                 player.turn(self)
-                print(col.name('heal',f'The {self.name} healed for {attack.heal} hp!'))
+                print(syst.col('heal',f'The {self.name} healed for {attack.heal} hp!'))
             else:
                 player.turn(self)
                 print(f"The {self.name} didn't heal.")
@@ -347,7 +346,7 @@ class Enemy(Entity):
                 self.defence = attack.defence
                 self.defenceDur = attack.defenceDur
                 player.turn(self)
-                print(col.name('defence',f'The {self.name} gained +{attack.defence} defence for {attack.defenceDur} {Plural(attack.defenceDur,"turn")}.'))
+                print(syst.col('defence',f'The {self.name} gained +{attack.defence} defence for {attack.defenceDur} {Plural(attack.defenceDur,"turn")}.'))
             else:
                 player.turn(self)
                 print('The attack failed.')
@@ -362,7 +361,7 @@ class Enemy(Entity):
                 self.strength = attack.strength
                 self.strengthDur = attack.strengthDur
                 player.turn(self)
-                print(col.name('strength',f'The {self.name} gained +{attack.strength} strength for {attack.strengthDur} {Plural(attack.strengthDur,"turn")}.'))
+                print(syst.col('strength',f'The {self.name} gained +{attack.strength} strength for {attack.strengthDur} {Plural(attack.strengthDur,"turn")}.'))
             else:
                 player.turn(self)
                 print('The attack failed.')
@@ -387,7 +386,7 @@ class Enemy(Entity):
             self.poisonDur -= 1
             self.takeDamage(1)
             player.turn(self)
-            print(f'The {self.name} takes {col.name("poison",'1')} poison damage.')
+            print(f'The {self.name} takes {syst.col("poison","1")} poison damage.')
             syst.enterHint()
         
         if self.hp <= 0:

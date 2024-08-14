@@ -1,6 +1,5 @@
 from items import common,uncommon,rare,epic,legendary,itemDict,UsableItem
 from functions import randItem,text
-from colours import col
 from system import syst
 from dictionaries import optionDict
 
@@ -44,14 +43,14 @@ class Shop():
         if self.sellWeapons:
             print('> Weapons <'.center(len(header)))
             for weaponnum,weapon in enumerate(self.weapons):
-                print(f'{chr(8226)} {weapon.rarname}: {col.name("gold",f"{self.weaponPrices[weaponnum]} Gold")}')
+                print(f'{chr(8226)} {weapon.rarname}: {syst.col("gold",f"{self.weaponPrices[weaponnum]} Gold")}')
             print()
         print('> Items <'.center(len(header)))
         for item in self.items:
             itemprice = itemDict[item]['price']
-            print(f'{chr(8226)} {item.title()}: {col.name("gold",f"{itemprice} Gold")}')
+            print(f'{chr(8226)} {item.title()}: {syst.col("gold",f"{itemprice} Gold")}')
         print()
-        print(f'Reroll the shop: {col.name("gold",f"{self.rerollPrice} Gold")}')
+        print(f'Reroll the shop: {syst.col("gold",f"{self.rerollPrice} Gold")}')
         
     def rollAllItems(self):
         self.rollItems()
@@ -80,7 +79,7 @@ class Shop():
             if choice in self.optionList:
                 index = self.optionList.index(choice)
                 syst.printStatus()
-                text(f"Do you want to buy the {self.optionList[index]} for {col.name('gold',f'{self.priceList[index]} gold')}?")
+                text(f"Do you want to buy the {self.optionList[index]} for {syst.col('gold',f'{self.priceList[index]} gold')}?")
                 if choice in self.weaponNames:
                     item = self.weapons[index]
                 elif choice in self.itemList:

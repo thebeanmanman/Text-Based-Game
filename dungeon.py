@@ -20,9 +20,6 @@ from grammar import orChoice
 # Import Weapon Rarity Tiers
 from items import common,uncommon,rare,epic,legendary,enemyDict,bossDict
 
-#Import Colours
-from colours import col
-
 class Dungeon():
     def __init__(self,roomTypes:list,roomAmts:list,mapsize:int,Floor:int) -> None:
         self.startRoom = StartRoom(Floor)
@@ -367,7 +364,7 @@ class TreasureRoom(Room):
     def open(self,player):
         text('Your hands swiftly unlock the chest, awaiting your reward...')
         if self.IsMimic:
-            text(f'{col.name("red","Only to find rows upon rows of gnashing teeth.")}')
+            text(f'{syst.col("red","Only to find rows upon rows of gnashing teeth.")}') 
             player.battle(self.Mimic)
             if player.hp > 0:
                 self.clear()

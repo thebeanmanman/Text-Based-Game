@@ -1,9 +1,6 @@
-from colours import col
-
 iconDict = {
     'EnemyRoom': '[E]',
     'StartRoom': '[O]',
-    'Player' : f'[{col.name("red","X")}]',
     'TreasureRoom': '[T]',
     'Unknown Room': '[?]',
     'Blank': '   ',
@@ -38,6 +35,8 @@ optionDict = {
     'quit': ['quit','quit game','end game','close game'],
     'hintsoff': ['hints off','hint off','no hints','disable hints'],
     'hintson': ['hints on','hint on','enable hints'],
+    'coloursoff': ['colours off','colour off','no colours','disable colours','text colours off'],
+    'colourson': ['colours on','colour on','enable colours','text colours on'],
     'drop': ['drop','drop weapon','equip fists'],
     'weaponinfo' : ['weapon info','weaponinfo','wi','weapon damage','weapon dmg','weapon name','weapon crit','equip info'],
     'exit': ['exit','leave'],

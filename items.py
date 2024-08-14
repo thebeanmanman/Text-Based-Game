@@ -1,4 +1,3 @@
-from colours import col
 from functions import text
 from entity import Entity
 from system import syst
@@ -34,41 +33,41 @@ class UsableItem(Item):
         if self.healAmt:
             player.heal(self.healAmt)
             syst.printStatus()
-            text(col.name('heal',f'You healed {self.healAmt} health!'))
+            text(syst.col('heal',f'You healed {self.healAmt} health!'))
             syst.enterHint()
 
         if self.dmg:
             player.takeDamage(self.dmg)
             syst.printStatus()
-            text(col.name('red',f'You took {self.dmg} damage!'))
+            text(syst.col('red',f'You took {self.dmg} damage!'))
             syst.enterHint()
 
         if self.defence:
             player.defence = self.defence
             player.defenceDur = self.defenceDur
             syst.printStatus()
-            text(col.name('defence',f'You gained +{self.defence} defence for {self.defenceDur} {Plural(self.defenceDur,"turn")}!'))
+            text(syst.col('defence',f'You gained +{self.defence} defence for {self.defenceDur} {Plural(self.defenceDur,"turn")}!'))
             syst.enterHint()
 
         if self.strength:
             player.strength = self.strength
             player.strengthDur = self.strengthDur
             syst.printStatus()
-            text(col.name('strength',f'You gained +{self.strength} strength for {self.strengthDur} {Plural(self.strengthDur,"turn")}!'))
+            text(syst.col('strength',f'You gained +{self.strength} strength for {self.strengthDur} {Plural(self.strengthDur,"turn")}!'))
             syst.enterHint()
 
     def onInfo(self):
         if self.healAmt:
-            text(col.name('heal',f'Heals {self.healAmt} health.'))
+            text(syst.col('heal',f'Heals {self.healAmt} health.'))
 
         if self.dmg:
-            text(col.name('red',f'Deals {self.dmg} damage to you when used.'))
+            text(syst.col('red',f'Deals {self.dmg} damage to you when used.'))
 
         if self.defence:
-            text(col.name('defence',f'Gives you +{self.defence} defence for {self.defenceDur} {Plural(self.defenceDur,"turn")}.'))
+            text(syst.col('defence',f'Gives you +{self.defence} defence for {self.defenceDur} {Plural(self.defenceDur,"turn")}.'))
 
         if self.strength:
-            text(col.name('strength',f'Gives you +{self.strength} strength for {self.strengthDur} {Plural(self.strengthDur,"turn")}.'))
+            text(syst.col('strength',f'Gives you +{self.strength} strength for {self.strengthDur} {Plural(self.strengthDur,"turn")}.'))
 
 class Weapon(Item):
     def __init__(self,name:str,desc:str,dmg:int,crtch=0,poisonCh=0,poisonDur=0,heal=0,healCh=0) -> None:
@@ -100,24 +99,24 @@ class PlayerWeapon(Weapon):
     def assignRarity(self, rarity):
         if rarity == 1:
             common.append(self)
-            self.rarname = f'{col.commont} {col.name("common",self.name)}'
-            self.name = col.name('common',self.name)
+            self.rarname = syst.col("common",f'{syst.commont} {self.name}')
+            self.name = syst.col('common',self.name)
         elif rarity == 2:
             uncommon.append(self)
-            self.rarname = f'{col.uncommont} {col.name("uncommon",self.name)}'
-            self.name = col.name('uncommon',self.name)
+            self.rarname = syst.col("uncommon",f'{syst.uncommont} {self.name}')
+            self.name = syst.col('uncommon',self.name)
         elif rarity == 3:
             rare.append(self)
-            self.rarname = f'{col.raret} {col.name("rare",self.name)}'
-            self.name = col.name('rare',self.name)
+            self.rarname = syst.col("rare",f'{syst.raret} {self.name}')
+            self.name = syst.col('rare',self.name)
         elif rarity == 4:
             epic.append(self)
-            self.rarname = f'{col.epict} {col.name("epic",self.name)}'
-            self.name = col.name('epic',self.name)
+            self.rarname = syst.col("epic",f'{syst.epict} {self.name}')
+            self.name = syst.col('epic',self.name)
         elif rarity == 5:
             legendary.append(self)
-            self.rarname = f'{col.legt} {col.name("leg",self.name)}'
-            self.name = col.name('leg',self.name)
+            self.rarname = syst.col("leg",f'{syst.legt} {self.name}')
+            self.name = syst.col('leg',self.name)
 
     def onInfo(self):
         text(f'Damage: {self.dmg}')
@@ -130,27 +129,28 @@ rare = []
 epic = []
 legendary = []
 
-### Player Weapons ###
-# Common
-woodenSword = PlayerWeapon(name='Wooden Sword',dmg=2,crtch=0.05,rarity=1,desc='A sword made of wood.')
-stick = PlayerWeapon(name='Stick',dmg=1,desc='Utterly Useless',crtch=0.01,rarity=1)
+def InstantiateWeapons():
+    ### Player Weapons ###
+    # Common
+    PlayerWeapon(name='Wooden Sword',dmg=2,crtch=0.05,rarity=1,desc='A sword made of wood.')
+    PlayerWeapon(name='Stick',dmg=1,desc='Utterly Useless',crtch=0.01,rarity=1)
 
-# Uncommon
-shortBow = PlayerWeapon(name='Short Bow',dmg=2,crtch=0.2,desc='A short bow',rarity=2)
+    # Uncommon
+    PlayerWeapon(name='Short Bow',dmg=2,crtch=0.2,desc='A short bow',rarity=2)
 
-# Rare
-ironSword = PlayerWeapon(name='Iron Sword',dmg=3,crtch=0.09,rarity=3,desc='A sword made of iron.')
+    # Rare
+    PlayerWeapon(name='Iron Sword',dmg=3,crtch=0.09,rarity=3,desc='A sword made of iron.')
 
-# Epic
-greatSword = PlayerWeapon(name='Great Sword',dmg=4,crtch=0.05,rarity=4,desc='A great sword.')
+    # Epic
+    PlayerWeapon(name='Great Sword',dmg=4,crtch=0.05,rarity=4,desc='A great sword.')
 
-# Legendary
-diamondSword = PlayerWeapon(name='Diamond Sword',dmg=6,crtch=0.01,rarity=5,desc='A sword made of diamonds.')
-goldenStick = PlayerWeapon(name='Golden Stick',dmg=4,crtch=1,rarity=5,desc='Golden, sticky and WHAAAAT 100% Crtical Hit Chance?!')
+    # Legendary
+    PlayerWeapon(name='Diamond Sword',dmg=6,crtch=0.01,rarity=5,desc='A sword made of diamonds.')
+    PlayerWeapon(name='Golden Stick',dmg=4,crtch=1,rarity=5,desc='Golden, sticky and WHAAAAT 100% Crtical Hit Chance?!')
 
-### Unobtainable Weapons
-fists = PlayerWeapon(name='Fists',dmg=1,desc='Punchy Punchy')
-Entity.fists = fists
+    ### Unobtainable Weapons
+    fists = PlayerWeapon(name='Fists',dmg=1,desc='Punchy Punchy')
+    Entity.fists = fists
 
 
 ### Item Dictionary ###
