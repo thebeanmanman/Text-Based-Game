@@ -5,7 +5,7 @@ from random import choices
 from system import syst
 
 #Import Functions
-from functions import text,chance
+from functions import chance
 from grammar import Plural
 
 # Import Dictionaries
@@ -50,7 +50,7 @@ class Player(Entity):
         self.xp = 0
         self.maxxp = 4
         self.maxlvl = 20
-        self.weaponDmg = 0
+        self.weaponDmg = 12
         self.weaponCrit = 0
 
         self.healthbar = HealthBar(self,type='player')
@@ -65,7 +65,7 @@ class Player(Entity):
             for item in self.items:
                 itemDict[item.name] = itemDict.get(item.name, 0)+1
 
-            text('Your items:')
+            syst.text('Your items:')
             for item in itemDict:
                 print(f'{chr(8226)} {item} x{itemDict[item]}')
             print()
@@ -84,7 +84,7 @@ class Player(Entity):
                         if choice == item.name.lower():
                             if item.dmg >= self.hp:
                                 print()
-                                text('This item will kill you if you use it.')
+                                syst.text('This item will kill you if you use it.')
                                 syst.enterHint('Press enter to choose a different item.')
                                 syst.printStatus()
                                 self.printItems()
@@ -114,7 +114,7 @@ class Player(Entity):
     def equip(self, weapon) -> None:
         self.weapon = weapon
         syst.printStatus()
-        text(f'You have equipped the {self.weapon.name}!')
+        syst.text(f'You have equipped the {self.weapon.name}!')
 
     def attack(self, target):
         if chance(self.weapon.crtch+self.weaponCrit):
@@ -168,9 +168,9 @@ class Player(Entity):
 
     def currentWeaponStats(self):
         if self.weapon == self.defaultWeapon:
-            text(f'Your current weapon is your fists.')
+            syst.text(f'Your current weapon is your fists.')
         else:
-            text(f'Your current weapon is a {self.weapon.rarname}')
+            syst.text(f'Your current weapon is a {self.weapon.rarname}')
         self.weapon.showInfo()
 
     def battle(self,enemy):
@@ -178,8 +178,8 @@ class Player(Entity):
         syst.enterHint()
         syst.printStatus()
         enemy.healthbar.update()
-        text(f'You have encountered a {enemy.name}!')
-        text(f"The {enemy.name}'s Health:",end='')
+        syst.text(f'You have encountered a {enemy.name}!')
+        syst.text(f"The {enemy.name}'s Health:",end='')
         print(f' {enemy.healthbar.getBar()}')
         while self.battling:
             self.round(enemy)
@@ -246,7 +246,7 @@ class Player(Entity):
                     lvltext += f'\n{syst.col("heal","You have reached the max level!")}'
 
                 syst.printStatus()
-                text(lvltext)
+                syst.text(lvltext)
                 syst.enterHint()
                 syst.printStatus()
 
@@ -259,7 +259,7 @@ class Player(Entity):
 
     def death(self):
         syst.printStatus()
-        text(syst.col('red','You have died... Game Over'))
+        syst.text(syst.col('red','You have died... Game Over'))
         syst.enterHint()
 
     def deathReset(self):
@@ -284,7 +284,7 @@ class Enemy(Entity):
         player.gold += self.gold
         player.xp += self.xp
         syst.printStatus()
-        text(f'You have slain the {self.name}. Gained {syst.col("gold",f"+{self.gold} gold")} and +{self.xp} experience.')
+        syst.text(f'You have slain the {self.name}. Gained {syst.col("gold",f"+{self.gold} gold")} and +{self.xp} experience.')
         syst.enterHint()
         syst.printStatus()
 

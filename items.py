@@ -1,4 +1,3 @@
-from functions import text
 from system import syst
 from grammar import Plural
 
@@ -9,7 +8,7 @@ class Item():
         self.desc = desc
 
     def showInfo(self):
-        text(f'Description: {self.desc}')
+        syst.text(f'Description: {self.desc}')
         self.onInfo()
 
 class UsableItem(Item):
@@ -26,47 +25,47 @@ class UsableItem(Item):
     
     def use(self,player):
         syst.printStatus()
-        text(self.useText)
+        syst.text(self.useText)
         syst.enterHint()
         
         if self.healAmt:
             player.heal(self.healAmt)
             syst.printStatus()
-            text(syst.col('heal',f'You healed {self.healAmt} health!'))
+            syst.text(syst.col('heal',f'You healed {self.healAmt} health!'))
             syst.enterHint()
 
         if self.dmg:
             player.takeDamage(self.dmg)
             syst.printStatus()
-            text(syst.col('red',f'You took {self.dmg} damage!'))
+            syst.text(syst.col('red',f'You took {self.dmg} damage!'))
             syst.enterHint()
 
         if self.defence:
             player.defence = self.defence
             player.defenceDur = self.defenceDur
             syst.printStatus()
-            text(syst.col('defence',f'You gained +{self.defence} defence for {self.defenceDur} {Plural(self.defenceDur,"turn")}!'))
+            syst.text(syst.col('defence',f'You gained +{self.defence} defence for {self.defenceDur} {Plural(self.defenceDur,"turn")}!'))
             syst.enterHint()
 
         if self.strength:
             player.strength = self.strength
             player.strengthDur = self.strengthDur
             syst.printStatus()
-            text(syst.col('strength',f'You gained +{self.strength} strength for {self.strengthDur} {Plural(self.strengthDur,"turn")}!'))
+            syst.text(syst.col('strength',f'You gained +{self.strength} strength for {self.strengthDur} {Plural(self.strengthDur,"turn")}!'))
             syst.enterHint()
 
     def onInfo(self):
         if self.healAmt:
-            text(syst.col('heal',f'Heals {self.healAmt} health.'))
+            syst.text(syst.col('heal',f'Heals {self.healAmt} health.'))
 
         if self.dmg:
-            text(syst.col('red',f'Deals {self.dmg} damage to you when used.'))
+            syst.text(syst.col('red',f'Deals {self.dmg} damage to you when used.'))
 
         if self.defence:
-            text(syst.col('defence',f'Gives you +{self.defence} defence for {self.defenceDur} {Plural(self.defenceDur,"turn")}.'))
+            syst.text(syst.col('defence',f'Gives you +{self.defence} defence for {self.defenceDur} {Plural(self.defenceDur,"turn")}.'))
 
         if self.strength:
-            text(syst.col('strength',f'Gives you +{self.strength} strength for {self.strengthDur} {Plural(self.strengthDur,"turn")}.'))
+            syst.text(syst.col('strength',f'Gives you +{self.strength} strength for {self.strengthDur} {Plural(self.strengthDur,"turn")}.'))
 
 class Weapon(Item):
     def __init__(self,name:str,desc:str,dmg:int,crtch=0,poisonCh=0,poisonDur=0,heal=0,healCh=0) -> None:
@@ -98,9 +97,9 @@ class PlayerWeapon(Weapon):
             self.name = syst.col(rarity,self.name)
 
     def onInfo(self):
-        text(f'Damage: {self.dmg}')
+        syst.text(f'Damage: {self.dmg}')
         if self.crtch > 0:
-            text(f'Critical Hit Chance: {int(self.crtch*100)}%')
+            syst.text(f'Critical Hit Chance: {int(self.crtch*100)}%')
 
 # Player Weapon Dictionary 
 # Stores the stats for each weapon when instantiated
@@ -165,6 +164,11 @@ itemDict = {
                      'healAmt': 8,
                      'dmg' : 1,
                      'price':10},
+
+    'luscious liquorice': {'desc':"This luxurious sweet is known for it's incredible healing capabilities, as well as it's exquisite flavour.",
+                           'useText':'You eat the luscious liquorice.',
+                           'healAmt':5,
+                           'price':6},
 
     # Defense Items
     'milk' : {'desc':'High in calcium for big strong bones',

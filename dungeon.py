@@ -9,7 +9,7 @@ from system import syst
 from entity import Enemy
 
 # Import Functions
-from functions import text,randItem,chance
+from functions import randItem,chance
 
 # Import Dictionaries
 from dictionaries import iconDict,optionDict,roomDescDict
@@ -176,7 +176,9 @@ class Room():
         self.discovered = False
         self.roomName = self.__class__.__name__
         self.desc = roomDescDict[self.Floor][self.roomName]
-        self.icon = iconDict['Default']
+        self.icon = iconDict[self.roomName]
+        # self.icon = iconDict['Default']
+        # self.icon = f"[{syst.col('heal','✓')}]"
 
     # Default enter method always called when the player enters the room  (Unless overwritten)
     # This then runs subclass specific onEnter methods
@@ -184,10 +186,10 @@ class Room():
         self.floorObject.devmap[self.y][self.x] = player.icon
         syst.printStatus()
         if self.cleared:
-            text('You have already cleared this room.')
+            syst.text(roomDescDict[self.Floor]['clearText'])
             self.move(player)
         else:
-            text(self.desc)
+            syst.text(self.desc)
             self.onEnter(player)
 
     # Allows the player to move between rooms
@@ -199,7 +201,7 @@ class Room():
             Adjroom.discovered = True
         syst.enterHint()
         syst.printStatus()
-        text(f'You can move {orChoice([direction[0] for direction in directions])}.')
+        syst.text(f'You can move {orChoice([direction[0] for direction in directions])}.')
         syst.hint('You can type "map" to see where you have already travelled.')
         direction = syst.Option(options=directions,Map=True,WeaponInfo=True)
         if direction in optionDict['north']:
@@ -212,10 +214,10 @@ class Room():
             chosenRoom = self.floorObject.map[self.y][self.x+1]
 
         if chosenRoom.__class__.__name__ == 'BossRoom' and not chosenRoom.cleared:
-            text('You feel an ominous presence coming from that direction...\nAre you sure you want to continue?')
+            syst.text('You feel an ominous presence coming from that direction...\nAre you sure you want to continue?')
             confirm = syst.Option(options=[optionDict['yes'],optionDict['no']])
             if confirm in optionDict['no']:
-                text('You decide not to go in that direction...')
+                syst.text('You decide not to go in that direction...')
                 self.move(player)
                 return
 
@@ -225,22 +227,23 @@ class Room():
 
     def clear(self):
         self.cleared = True
-        text('You have cleared this room.')
+        syst.text(roomDescDict[self.Floor]['onClear'])
     
 class StartRoom(Room):
     def __init__(self, Floor) -> None:
         super().__init__(Floor)
-        self.icon = iconDict[self.roomName]
         self.reEnter = roomDescDict[self.Floor]['ReEnterStartRoom']
     
     def enter(self, player):
         self.floorObject.devmap[self.y][self.x] = player.icon
         syst.printStatus()
         if self.cleared:
-            text(self.reEnter)
+            syst.text(self.reEnter)
         else:
             self.cleared = True
-            text(self.desc)
+            syst.text(self.desc)
+            print()
+            syst.text(f'-- Welcome to Floor {self.Floor} --')
         self.move(player)
 
 class BossRoom(Room):
@@ -248,41 +251,42 @@ class BossRoom(Room):
         super().__init__(Floor)
         bossName = list(bossDict[self.Floor])[0]
         self.boss = Enemy(bossName, **bossDict[self.Floor][bossName])
-        self.icon = iconDict[self.roomName]
 
     def enter(self,player):
         self.floorObject.devmap[self.y][self.x] = player.icon
         syst.printStatus()
-        text(self.desc)
+        syst.text(self.desc)
+        syst.enterHint()
+        syst.printStatus()
         if not self.cleared:
+            syst.text(self.boss.desc)
             player.battle(self.boss)
             if player.hp > 0:
                 self.cleared = True
-                text("A mysterious portal appears before you, seemingly out of thin air.\nThe portals shimmering texture intrigues you, almost inviting you step into it.")
+                syst.text("A mysterious portal appears before you, seemingly out of thin air.\nThe portals shimmering texture intrigues you, almost inviting you step into it.")
                 self.portalChoice(player)
         else:
-            text('The portal still remains, inviting you to step inside it...')
+            syst.text('The portal still remains, inviting you to step inside it...')
             self.portalChoice(player)
 
     def portalChoice(self,player):
-        text('Do you want to enter the portal?')
+        syst.text('Do you want to enter the portal?')
         choice = syst.Option(options=[optionDict['yes'],optionDict['no']])
         if choice in optionDict['yes']:
-            text('You decide to step into the portal...')
+            syst.text('You decide to step into the portal...')
             syst.enterHint()
             syst.wipe()
             player.setDungeonFloor(floorDict[self.Floor+1])
             player.room = floorDict[self.Floor+1].startRoom
             player.room.enter(player)
         elif choice in optionDict['no']:
-            text('You decide not to step into the portal...')
+            syst.text('You decide not to step into the portal...')
             self.move(player)
 
 class EnemyRoom(Room):
     def __init__(self,Floor) -> None:
         super().__init__(Floor)
         self.enemies = []
-        self.icon = iconDict[self.roomName]
         
         self.rollEnemy()
 
@@ -304,7 +308,7 @@ class EnemyRoom(Room):
                 self.battling = False
             elif enemy.hp <= 0:
                 self.enemies.pop(0)
-                # text(f'There {AreIs(len(self.enemies))} {len(self.enemies)} {Plural(len(self.enemies),"enemy")} left.')
+                # syst.text(f'There {AreIs(len(self.enemies))} {len(self.enemies)} {Plural(len(self.enemies),"enemy")} left.')
                 enemy = self.spawnEnemy()
         if player.hp > 0:
             self.move(player)
@@ -312,7 +316,7 @@ class EnemyRoom(Room):
     def spawnEnemy(self):
         if self.enemies:
             enemy = self.enemies[0]
-            text(enemy.desc)
+            syst.text(enemy.desc)
             return enemy
         else:
             self.battling = False
@@ -321,9 +325,6 @@ class EnemyRoom(Room):
 class TreasureRoom(Room):
     def __init__(self,Floor):
         super().__init__(Floor)
-
-        # Visual Variables:
-        self.icon = iconDict[self.roomName]
 
         # Chances for each rarity tier
         self.commonCh = 37
@@ -351,42 +352,41 @@ class TreasureRoom(Room):
             self.IsMimic = True        
 
     def onEnter(self,player):
-        text('Open the chest?')
+        syst.text('Open the chest?')
         answer = syst.Option(options=[optionDict['yes'],optionDict['open'],optionDict['no']])
         syst.printStatus()
         if answer in optionDict['yes'] or answer in optionDict['open']:
-            text('Your curiousity is tempted by the chest and you approach it...')
             self.open(player)
         elif answer in optionDict['no']:
-            text('You supress the desire to see what treasure awaits you and you move on.')
+            syst.text('You supress the desire to see what treasure awaits you and you move on.')
             self.clear()
             self.move(player)
         
     def open(self,player):
-        text('Your hands swiftly unlock the chest, awaiting your reward...')
+        syst.text('Your hands swiftly unlock the chest, awaiting your reward...')
         if self.IsMimic:
-            text(f'{syst.col("red","Only to find rows upon rows of gnashing teeth.")}') 
+            syst.text(f'{syst.col("red","Only to find rows upon rows of gnashing teeth.")}') 
             player.battle(self.Mimic)
             if player.hp > 0:
                 self.clear()
                 self.move(player)
         else:
-            text('You find an item lying in the bottom of the chest.')
+            syst.text('You find an item lying in the bottom of the chest.')
             syst.enterHint()
             syst.printStatus()
-            text(f'You have found a {self.treasure.rarname}!')
+            syst.text(f'You have found a {self.treasure.rarname}!')
             self.treasure.showInfo()
             print()
             player.currentWeaponStats()
             print()
-            text(f'Would you like to equip the {self.treasure.rarname}?')
+            syst.text(f'Would you like to equip the {self.treasure.rarname}?')
             answer = syst.Option(options=[optionDict['no'],optionDict['yes']])
             if answer in optionDict['yes']:
                 player.equip(self.treasure)
                 self.clear()
                 self.move(player)
             elif answer in optionDict['no']:
-                text('You leave the item in the chest and move on.')
+                syst.text('You leave the item in the chest and move on.')
                 self.clear()
                 self.move(player)
 

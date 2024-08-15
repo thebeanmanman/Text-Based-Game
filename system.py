@@ -1,4 +1,4 @@
-from functions import text
+from time import sleep
 import os
 from dictionaries import optionDict
 
@@ -11,7 +11,8 @@ class System():
     # Settings Variables
     settingsDict = {
         'Hints' : True,
-        'Text Colours' : True
+        'Text Colours' : True,
+        'Text Animations' : False
     }
     def __init__(self):
         #Player Status Variables
@@ -55,6 +56,35 @@ class System():
     def wipe(self):
         if self.ClearTerminal:
             os.system('cls' if os.name=='nt' else 'clear')
+
+    #Creates a smooth text animation
+    def text(self,toprint,end='\n',time=0) -> None:
+        if self.settingsDict['Text Animations']:
+            for line in str(toprint).split('\n'):
+                avoidValues = []
+                i = 0
+                while i < len(line):
+                    if line[i] == '\033':
+                        End = line.find('m',i)
+                        for j in range(i,End+1):
+                            avoidValues.append(j)
+                        i = End+1
+                    else:
+                        i+=1
+                if not time:
+                    texttime = 1.85/(len(line)-len(avoidValues))
+                else:
+                    texttime = time
+                for charNum,char in enumerate(line):
+                    print(char,flush=True,end='')
+                    if char == '.':
+                        sleep(0.4)
+                    else:
+                        if charNum not in avoidValues:
+                            sleep(texttime)
+                print(end,end='')
+        else:
+            print(toprint)
 
     def col(self,colour,text):
         if self.settingsDict['Text Colours']:
@@ -112,21 +142,28 @@ class System():
             print('If the bar above is grey while text colours are enabled, please turn off text colours to ensure you have the best experience.')
             print()
             print(self.col('hint','Type a specific setting with "off" or "on" at the end to turn a setting on or off.\nPress enter to return back to the main menu.'))
-            choice = self.Option(options=[optionDict['hintsoff'],optionDict['hintson'],optionDict['coloursoff'],optionDict['colourson'],['','back','main menu','menu','leave']],errorMsg='Unknown setting. Please try again')
+            choice = self.Option(options=[optionDict['hintsoff'],optionDict['hintson'],optionDict['coloursoff'],optionDict['colourson'],optionDict['animationsoff'],optionDict['animationson'],['','back','main menu','menu','leave']],errorMsg='Unknown setting. Please try again')
 
             if choice in optionDict['hintsoff']:
                 self.settingsDict['Hints'] = False
-                text('Hints have been turned off.\nType "hints on" to turn them back on.')
+                self.text('Hints have been turned off.\nType "hints on" to turn them back on.')
             elif choice in optionDict['hintson']:
                 self.settingsDict['Hints'] = True
-                text('Hints have been turned on.\nType "hints off" to turn them back off.')
+                self.text('Hints have been turned on.\nType "hints off" to turn them back off.')
 
             elif choice in optionDict['coloursoff']:
                 self.settingsDict['Text Colours'] = False
-                text('Text colours have been turned off.\nType "colours on" to turn them back on.')
+                self.text('Text colours have been turned off.\nType "colours on" to turn them back on.')
             elif choice in optionDict['colourson']:
                 self.settingsDict['Text Colours'] = True
-                text('Text colours have been turned on.\nType "colours off" to turn them back off.')
+                self.text('Text colours have been turned on.\nType "colours off" to turn them back off.')
+
+            elif choice in optionDict['animationsoff']:
+                self.settingsDict['Text Animations'] = False
+                self.text('Text animations have been turned off.\nType "animations on" to turn them back on.')
+            elif choice in optionDict['animationson']:
+                self.settingsDict['Text Animations'] = True
+                self.text('Text animations have been turned on.\nType "animations off" to turn them back off.') 
             
             else:
                 settingChoice = False
@@ -142,7 +179,7 @@ class System():
 
             # Constant Options
             if choice in optionDict['quit']:
-                text('Thanks for playing!')
+                self.text('Thanks for playing!')
                 quit()
             
             # Player Choices

@@ -1,5 +1,5 @@
 from items import itemDict,UsableItem,weaponDict,PlayerWeapon
-from functions import randItem,text
+from functions import randItem
 from system import syst
 from dictionaries import optionDict
 
@@ -34,7 +34,7 @@ class Shop():
 
     def printItems(self):
         if self.dialogue:
-            text(self.dialogue)
+            syst.text(self.dialogue)
             syst.hint('Type the name of any item to purchase it and type "leave" to exit the store.')
             print()
         header = f'----- {self.name} -----'
@@ -79,7 +79,7 @@ class Shop():
             if choice in self.optionList:
                 index = self.optionList.index(choice)
                 syst.printStatus()
-                text(f"Do you want to buy the {self.optionList[index]} for {syst.col('gold',f'{self.priceList[index]} gold')}?")
+                syst.text(f"Do you want to buy the {self.optionList[index]} for {syst.col('gold',f'{self.priceList[index]} gold')}?")
                 if choice in self.weaponNames:
                     item = self.weapons[index]
                 elif choice in self.itemList:
@@ -90,27 +90,27 @@ class Shop():
                     if player.buy(self.priceList[index]):
                         if item.__class__.__name__ == 'PlayerWeapon':
                             player.weapon = item
-                            text(f'You have purchased and equipped the {self.weapons[index].name}!')
+                            syst.text(f'You have purchased and equipped the {self.weapons[index].name}!')
                             syst.enterHint(text='Press enter to return to the shop...')
                         elif item.__class__.__name__ == 'UsableItem':
                             player.items.append(item)
-                            text(f'You have purchased the {item.name}!')
+                            syst.text(f'You have purchased the {item.name}!')
                             player.printItems()
                             syst.enterHint(text='Press enter to return to the shop...',space=False)
                     else:
-                        text('You do not have enough gold to buy this.')
+                        syst.text('You do not have enough gold to buy this.')
                         syst.enterHint(text='Press enter to return to the shop...')
                 elif confirm in optionDict['no']:
-                    text('You decide not to buy this.')
+                    syst.text('You decide not to buy this.')
                     syst.enterHint(text='Press enter to return to the shop...')
             elif choice in optionDict['reroll items']:
                 if player.buy(self.rerollPrice):
-                    text('Rerolling items...')
+                    syst.text('Rerolling items...')
                     self.rerollPrice += self.rerollIncr
                     self.rollAllItems()
                     syst.enterHint(text='Press enter to see the new items.')
                 else:
-                    text('You do not have enough gold to reroll the shop')
+                    syst.text('You do not have enough gold to reroll the shop')
                     syst.enterHint()
             elif choice in optionDict['exit shop']:
                 buying = False

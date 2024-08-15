@@ -6,9 +6,6 @@ from shop import Shop
 from dungeon import Dungeon,floorStatDict,floorDict
 from system import syst
 
-#Import Functions
-from functions import text
-
 #Global Variables
 gameName = 'Dungeon Runner'
 
@@ -19,7 +16,7 @@ def titleSelect():
     elif choice == 'help':
         helpMenu()
     elif choice == 'quit':
-        text('Thanks for playing!')
+        syst.text('Thanks for playing!')
         quit()
     elif choice == 'settings':
         settingsMenu()
@@ -39,8 +36,8 @@ def title_screen():
 def helpMenu():
     syst.wipe()
     print(f'--- Welcome to {gameName}!---')
-    text('Type up, down, left and right to move')
-    text('Press enter to return to the main menu')
+    syst.text('Type up, down, left and right to move')
+    syst.text('Press enter to return to the main menu')
     input()
     title_screen()
 
@@ -55,20 +52,20 @@ def startGame():
     while syst.playing:
         if rounds == 1:
             syst.wipe()
-            # text(toprint=syst.col('nar',"You awake in field of long flowing grass, gradually opening your eyes,\nThey slowly adjust to the warm sunlight splashing on your face,\nTaking in the electric blue of the sky above you,\nSlowly, your body begins to wake up and you summon enough strength to stand.\nYou feel a sense of confidence wash over you, wanting everyone to know the name of...\n \nHang on... What is your name?"),time=syst.NarSpeed)
+            # syst.text(toprint=syst.col('nar',"You awake in field of long flowing grass, gradually opening your eyes,\nThey slowly adjust to the warm sunlight splashing on your face,\nTaking in the electric blue of the sky above you,\nSlowly, your body begins to wake up and you summon enough strength to stand.\nYou feel a sense of confidence wash over you, wanting everyone to know the name of...\n \nHang on... What is your name?"),time=syst.NarSpeed)
             name = input('> ')
             player.setName(name),
             syst.wipe()
-            # text(toprint=syst.col('nar',f"Oh of course! I knew that...\nWell anyways as I was saying...\nYou feel a sense of confidence wash over you, wanting everyone to know the name of... {player.name}.\nHang on... I'm sorry is that your actual name?\nBecause it really doesn't roll off the tongue all that well...\nNarrating is a very difficult job as it is, and you choosing a name such as {player.name} really doesn't help."),time=syst.NarSpeed)
-            # text(toprint=syst.col)
+            # syst.text(toprint=syst.col('nar',f"Oh of course! I knew that...\nWell anyways as I was saying...\nYou feel a sense of confidence wash over you, wanting everyone to know the name of... {player.name}.\nHang on... I'm sorry is that your actual name?\nBecause it really doesn't roll off the tongue all that well...\nNarrating is a very difficult job as it is, and you choosing a name such as {player.name} really doesn't help."),time=syst.NarSpeed)
+            # syst.text(toprint=syst.col)
             # # Add more later...
 
-            # text(syst.col('nar',f'You encounter a humble shopkeeper selling his wares in the village.'))
+            # syst.text(syst.col('nar',f'You encounter a humble shopkeeper selling his wares in the village.'))
             shopEncounter()
         else:
             player.deathReset()
             syst.printStatus()
-            text(syst.col('nar',f'You encounter a humble shopkeeper selling his wares in the village.'))
+            syst.text(syst.col('nar',f'You encounter a humble shopkeeper selling his wares in the village.'))
             shopEncounter()
         rounds += 1
 
@@ -78,7 +75,7 @@ def shopEncounter():
         shop.enterShop(player)
         enterDungeon()
     else:
-        text(f"Shopkeeper: {syst.col('npc','Hello there young traveller, please come back to my store when your pockets are full of gold.')}")
+        syst.text(f"Shopkeeper: {syst.col('npc','Hello there young traveller, please come back to my store when your pockets are full of gold.')}")
         enterDungeon()
 
 def generateFloors():
@@ -94,4 +91,6 @@ def enterDungeon():
 
 player = Player(maxhp=100)
 syst.setPlayer(player)
+print('Note from developer:\n- Check colours\n- Fullscreen Please')
+syst.enterHint('Press enter to continue to the game.')
 title_screen()
