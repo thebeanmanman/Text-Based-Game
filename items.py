@@ -1,5 +1,4 @@
 from functions import text
-from entity import Entity
 from system import syst
 from grammar import Plural
 
@@ -92,69 +91,68 @@ class EnemyWeapon(Weapon):
         self.strengthDur = strengthDur
 
 class PlayerWeapon(Weapon):
-    def __init__(self, name: str, dmg: int, desc='', rarity=0, crtch=0, poisonCh=0,poisonDur=0,heal=0,healCh=0) -> None:
+    def __init__(self, name: str, dmg: int,rarity='', desc='', crtch=0, poisonCh=0,poisonDur=0,heal=0,healCh=0) -> None:
         super().__init__(name, desc,dmg,crtch,poisonCh,poisonDur,heal,healCh)
-        self.assignRarity(rarity)
-
-    def assignRarity(self, rarity):
-        if rarity == 1:
-            common.append(self)
-            self.rarname = syst.col("common",f'{syst.commont} {self.name}')
-            self.name = syst.col('common',self.name)
-        elif rarity == 2:
-            uncommon.append(self)
-            self.rarname = syst.col("uncommon",f'{syst.uncommont} {self.name}')
-            self.name = syst.col('uncommon',self.name)
-        elif rarity == 3:
-            rare.append(self)
-            self.rarname = syst.col("rare",f'{syst.raret} {self.name}')
-            self.name = syst.col('rare',self.name)
-        elif rarity == 4:
-            epic.append(self)
-            self.rarname = syst.col("epic",f'{syst.epict} {self.name}')
-            self.name = syst.col('epic',self.name)
-        elif rarity == 5:
-            legendary.append(self)
-            self.rarname = syst.col("leg",f'{syst.legt} {self.name}')
-            self.name = syst.col('leg',self.name)
+        if rarity:
+            self.rarname = syst.col(rarity,f'[{rarity.title()}] {self.name}')
+            self.name = syst.col(rarity,self.name)
 
     def onInfo(self):
         text(f'Damage: {self.dmg}')
         if self.crtch > 0:
             text(f'Critical Hit Chance: {int(self.crtch*100)}%')
 
-common = []
-uncommon = []
-rare = []
-epic = []
-legendary = []
-
-def InstantiateWeapons():
-    ### Player Weapons ###
-    # Common
-    PlayerWeapon(name='Wooden Sword',dmg=2,crtch=0.05,rarity=1,desc='A sword made of wood.')
-    PlayerWeapon(name='Stick',dmg=1,desc='Utterly Useless',crtch=0.01,rarity=1)
-
-    # Uncommon
-    PlayerWeapon(name='Short Bow',dmg=2,crtch=0.2,desc='A short bow',rarity=2)
-
-    # Rare
-    PlayerWeapon(name='Iron Sword',dmg=3,crtch=0.09,rarity=3,desc='A sword made of iron.')
-
-    # Epic
-    PlayerWeapon(name='Great Sword',dmg=4,crtch=0.05,rarity=4,desc='A great sword.')
-
-    # Legendary
-    PlayerWeapon(name='Diamond Sword',dmg=6,crtch=0.01,rarity=5,desc='A sword made of diamonds.')
-    PlayerWeapon(name='Golden Stick',dmg=4,crtch=1,rarity=5,desc='Golden, sticky and WHAAAAT 100% Crtical Hit Chance?!')
-
-    ### Unobtainable Weapons
-    fists = PlayerWeapon(name='Fists',dmg=1,desc='Punchy Punchy')
-    Entity.fists = fists
-
+# Player Weapon Dictionary 
+# Stores the stats for each weapon when instantiated
+weaponDict = {
+    'common': {
+        'wooden sword': {
+            'dmg':2,
+            'crtch':0.05,
+            'desc':'A sword made of wood.'
+        },
+        'stick' : {
+            'dmg':1,
+            'crtch':0.05,
+            'desc': 'Utterly useless.'
+        }
+    },
+    'uncommon': {
+        'short bow':{
+            'dmg':2,
+            'crtch':0.2,
+            'desc': 'A short bow'
+        }
+    },
+    'rare' : {
+        'iron sword': {
+            'dmg':3,
+            'crtch':0.09,
+            'desc': 'A sword made of iron.'
+        }
+    },
+    'epic' : {
+        'great sword' : {
+            'dmg':4,
+            'crtch':0.05,
+            'desc': 'A great sword.'
+        }
+    },
+    'legendary': {
+        'diamond sword': {
+            'dmg':6,
+            'crtch':0.07,
+            'desc': 'A sword made of diamonds.'
+        },
+        'golden stick' : {
+            'dmg':4,
+            'crtch':1,
+            'desc': 'Golden, sticky and WHAAAAT 100% Crtical Hit Chance?!'
+        }
+    }
+}
 
 ### Item Dictionary ###
-# '': {'desc':'','useText':'','price':}
 itemDict = {
     # Healing Items
     'apple': {'desc':'A red juicy apple',

@@ -8,7 +8,6 @@ from system import syst
 
 #Import Functions
 from functions import text
-from items import InstantiateWeapons
 
 #Global Variables
 gameName = 'Dungeon Runner'
@@ -51,10 +50,6 @@ def settingsMenu():
     title_screen()
 
 def startGame():
-    InstantiateWeapons()
-    global player
-    player = Player(maxhp=100)
-    syst.setPlayer(player)
     syst.playing = True
     rounds = 1
     while syst.playing:
@@ -97,4 +92,6 @@ def enterDungeon():
     player.room = floorDict[1].startRoom
     player.room.enter(player)
 
+player = Player(maxhp=100)
+syst.setPlayer(player)
 title_screen()

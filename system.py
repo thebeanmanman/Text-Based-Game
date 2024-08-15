@@ -39,7 +39,7 @@ class System():
             'uncommon' : (50,185,50),
             'rare' : (30,144,255),
             'epic' : (148,0,211),
-            'leg' : (239,204,0)
+            'legendary' : (239,204,0)
         }
         self.commont = '[Common]'
         self.uncommont = '[Uncommon]'

@@ -13,14 +13,15 @@ from dictionaries import LevelDict,optionDict
 
 # Import Classes
 from healthbar import HealthBar
+from items import PlayerWeapon
 
 class Entity():
-    fists = None
     def __init__(self,maxhp, name='') -> None:
+        self.fists = PlayerWeapon(name='Fists',dmg=1,desc='Punchy Punchy')
         self.name = name
         self.maxhp = maxhp
         self.hp = maxhp
-        self.weapon = Entity.fists
+        self.weapon = self.fists
         self.poisonDur = 0
         self.poisonDmg = 0
         self.defence = 0
@@ -40,7 +41,7 @@ class Entity():
 class Player(Entity):
     def __init__(self, maxhp=10) -> None:
         super().__init__(maxhp)
-        self.defaultWeapon = Entity.fists
+        self.defaultWeapon = self.fists
         self.room = None
         self.icon = f'[{syst.col("red","X")}]'
         self.gold = 20

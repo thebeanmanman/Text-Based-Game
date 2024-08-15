@@ -1,13 +1,11 @@
-from items import common,uncommon,rare,epic,legendary,itemDict,UsableItem
+from items import itemDict,UsableItem,weaponDict,PlayerWeapon
 from functions import randItem,text
 from system import syst
 from dictionaries import optionDict
 
 class Shop():
-    weaponList = [common,uncommon,rare,epic,legendary]
+    rarityList = ['common','uncommon','rare','epic','legendary']
     def __init__(self,sellWeapons:bool,itemNumber,dialogue='',weaponPrices=[5,10,15,20,25],name='Store') -> None:
-        self.weapons = []
-        self.weaponNames = []
         self.weaponPrices = weaponPrices
         self.sellWeapons = sellWeapons
         self.name = name
@@ -19,8 +17,10 @@ class Shop():
     def rollWeapons(self):
         self.weapons = []
         self.weaponNames = []
-        for rarity in self.weaponList:
-            self.weapons.append(randItem(rarity))
+        for rarity in self.rarityList:
+            weaponName = randItem(list(weaponDict[rarity]))
+            self.weapons.append(PlayerWeapon(name=weaponName,rarity=rarity, **weaponDict[rarity][weaponName]))
+
         for weapon in self.weapons:
             self.weaponNames.append(weapon.rawname)
 

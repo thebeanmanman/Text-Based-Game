@@ -18,7 +18,7 @@ from dictionaries import iconDict,optionDict,roomDescDict
 from grammar import orChoice
 
 # Import Weapon Rarity Tiers
-from items import common,uncommon,rare,epic,legendary,enemyDict,bossDict
+from items import weaponDict,enemyDict,bossDict,PlayerWeapon
 
 class Dungeon():
     def __init__(self,roomTypes:list,roomAmts:list,mapsize:int,Floor:int) -> None:
@@ -342,8 +342,9 @@ class TreasureRoom(Room):
         self.rollMimic()
     
     def rollTreasure(self):
-        rarityLvl = choices([common,uncommon,rare,epic,legendary], weights=(self.commonCh,self.uncommonCh,self.rareCh,self.epicCh,self.legCh), k=1)[0]
-        self.treasure = randItem(rarityLvl)
+        rarityLvl = choices(['common','uncommon','rare','epic','legendary'], weights=(self.commonCh,self.uncommonCh,self.rareCh,self.epicCh,self.legCh), k=1)[0]
+        weaponName = randItem(list(weaponDict[rarityLvl]))
+        self.treasure = PlayerWeapon(name=weaponName,rarity=rarityLvl, **weaponDict[rarityLvl][weaponName])
     
     def rollMimic(self):
         if chance(self.mimicChance):
