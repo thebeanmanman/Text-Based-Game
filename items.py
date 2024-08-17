@@ -266,7 +266,7 @@ enemyDict = {
             'maxhp':6,
             'gold':1,
             'xp':3,
-            'attacks':[EnemyWeapon(name='Slam',dmg=2),EnemyWeapon(name='Grow Bark',dmg=0,defence=2,defencech=0.5,defenceDur=2)],
+            'attacks':[EnemyWeapon(name='Slam',dmg=2),EnemyWeapon(name='Regrowth',dmg=0,heal=3,healCh=0.6)],
             'attacksch':[2,1],
             'spawnch':1,
             'desc' : "A massive figure steps forward, its bark-covered limbs resembling twisted roots.\nIts old weathered eyes depict that it has seen centuries pass and absorbed countless wisdom."
@@ -306,5 +306,16 @@ bossDict = {
             'desc' : "You feel the ground tremble beneath your feet.\nBefore you stands a towering pale blue figure with a single glaring eye, its gaze locked on you with fierce determination.\nClutched in its massive hand is a jagged boulder, ready to be hurled at anyone who dares challenge its strength."
         }
         # Dragon
+    },
+    2:
+    {
+        'Forest Guardian' : {
+            'maxhp': 20,
+            'gold' : 6,
+            'xp' : 6,
+            'attacks': [EnemyWeapon(name='Vine Whip',dmg=3,crtch=0.25),EnemyWeapon(name='Tree Shroud',dmg=0,defence=2,defenceDur=2,defencech=1),EnemyWeapon(name='Health Siphon',dmg=2,heal=2,healCh=1),EnemyWeapon(name='Forest Tremor',dmg=4)],
+            'attacksch':[4,2,2,3],
+            'desc': "The wind whispers through the leaves as the shadows deepen around you.\nFrom the heart of the forest, A collossal beast made of stone emerges, letting out a deep guttural roar.\nIt's luminous purple eyes focused on you with an incomprehesible rage.",
+        }
     }
 }

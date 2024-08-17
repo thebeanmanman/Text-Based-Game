@@ -22,7 +22,7 @@ roomDescDict = {
         'onClear': 'You have cleared this area.',
         'EnemyRoom' : 'As you trek onwards, you stop suddenly as the feeling you are being watched washes over you...',
         'TreasureRoom' : 'Amid some tangled vines, a glint catches your eye.\nYou brush aside the vines to reveal an old, moss-covered chest, seemingly still intact.',
-        'StartRoom': "The hard stone beneath your feet transitions to a soft spongy moss, muffling your steps.\nTall trees tower above you, their dense canopy blocking out all but a few shafts of light.\nThis casts the forest floor in a perpetual twilight, shrouding all of the forests secrets in darkness.\nThe sounds of rustling leaves and distant animal calls replace the silence of the dim dungeon, yet something deeply unsettles you about this place.\nThe path ahead spreads out in all directions through the thick forest.\nYet you stop to wonder what may be lurking in the shadows.",
+        'StartRoom': "The hard stone beneath your feet transitions to a soft spongy moss, muffling your steps.\nTall trees tower above you, their dense canopy blocking out all but a few shafts of light.\nThis casts the forest floor in a perpetual twilight, shrouding all of the forests secrets in darkness.\nThe sounds of rustling leaves and distant animal calls replace the silence of the dim dungeon, yet something deeply unsettles you about this place.\nThe path ahead spreads out in all directions through the thick forest.\nYou stop to wonder what may be lurking in the shadows.",
         'ReEnterStartRoom' : 'This place feels familiar...\nAre you sure your not lost?',
         'BossRoom' : 'You cautiously enter the room before you...'
     }
@@ -44,7 +44,6 @@ optionDict = {
     'colourson': ['colours on','colour on','enable colours','text colours on'],
     'animationsoff': ['animations off','animation off','no animations','disable animations','text animations off'],
     'animationson': ['animations on','animation on','enable animations','text animations on'],
-    'drop': ['drop','drop weapon','equip fists'],
     'weaponinfo' : ['weapon info','weaponinfo','wi','weapon damage','weapon dmg','weapon name','weapon crit','equip info'],
     'exit': ['exit','leave'],
     'buy': ['purchase','buy'],

@@ -1,6 +1,5 @@
 # Import external modules
 from random import choices,randint
-import copy
 
 # Import System
 from system import syst
@@ -23,6 +22,7 @@ from items import weaponDict,enemyDict,bossDict,PlayerWeapon
 class Dungeon():
     def __init__(self,roomTypes:list,roomAmts:list,mapsize:int,Floor:int) -> None:
         self.startRoom = StartRoom(Floor)
+        self.bossRoom = BossRoom(Floor)
         self.Floor = Floor
         self.roomTypes = roomTypes
         self.roomAmts = roomAmts
@@ -44,12 +44,18 @@ class Dungeon():
                 room = roomType(self.Floor)
                 instantiatedRooms.append(room)
 
+        bossRoom = True
+        totalRooms = sum(self.roomAmts)
+        print(totalRooms)
         rooms = 1
         center = self.mapsize//2
         x = center
         y = center
         currRoom = self.startRoom
-        while instantiatedRooms and rooms <= self.mapsize**2:
+        while instantiatedRooms and rooms <= self.mapsize**2 and bossRoom:
+            if rooms > totalRooms or rooms == self.mapsize**2:
+                currRoom = self.bossRoom
+                bossRoom = False
             self.map[y][x] = currRoom
             currRoom.x = x
             currRoom.y = y
@@ -64,9 +70,11 @@ class Dungeon():
                         x,y = direction[1],direction[0]
                     else:
                         x,y = center,center
-                if currRoom.roomName != 'StartRoom':
+                if currRoom.roomName != 'StartRoom' and currRoom.roomName != 'BossRoom':
                     instantiatedRooms.remove(currRoom)
+                
                 currRoom = randItem(instantiatedRooms)
+
         self.createDevmap()
 
     def DirList(self,x,y):
@@ -166,6 +174,7 @@ class Dungeon():
         # Map Printing
         self.printMap(hiddenMap)
 
+
 class Room():
     def __init__(self,Floor) -> None:
         self.x = 0
@@ -180,7 +189,7 @@ class Room():
         # self.icon = iconDict['Default']
         # self.icon = f"[{syst.col('heal','✓')}]"
 
-    # Default enter method always called when the player enters the room  (Unless overwritten)
+    # Default enter method always called when the player enters the room  (Unless overwritten by child class)
     # This then runs subclass specific onEnter methods
     def enter(self,player):
         self.floorObject.devmap[self.y][self.x] = player.icon
@@ -247,6 +256,7 @@ class StartRoom(Room):
         self.move(player)
 
 class BossRoom(Room):
+    maxFloor = 2
     def __init__(self, Floor) -> None:
         super().__init__(Floor)
         bossName = list(bossDict[self.Floor])[0]
@@ -276,9 +286,14 @@ class BossRoom(Room):
             syst.text('You decide to step into the portal...')
             syst.enterHint()
             syst.wipe()
-            player.setDungeonFloor(floorDict[self.Floor+1])
-            player.room = floorDict[self.Floor+1].startRoom
-            player.room.enter(player)
+            if self.Floor == self.maxFloor:
+                syst.text('You meet the narrartor')
+                syst.enterHint()
+                syst.narrartorEncounter()
+            else:
+                player.setDungeonFloor(floorDict[self.Floor+1])
+                player.room = floorDict[self.Floor+1].startRoom
+                player.room.enter(player)
         elif choice in optionDict['no']:
             syst.text('You decide not to step into the portal...')
             self.move(player)
@@ -308,7 +323,6 @@ class EnemyRoom(Room):
                 self.battling = False
             elif enemy.hp <= 0:
                 self.enemies.pop(0)
-                # syst.text(f'There {AreIs(len(self.enemies))} {len(self.enemies)} {Plural(len(self.enemies),"enemy")} left.')
                 enemy = self.spawnEnemy()
         if player.hp > 0:
             self.move(player)
@@ -393,7 +407,7 @@ class TreasureRoom(Room):
 
 # Specifies the attributes of each floor
 floorStatDict = {
-    'Floor 1' : {'roomTypes':[TreasureRoom,EnemyRoom,BossRoom],'roomAmts':[2,7,1],'mapsize':5},
+    'Floor 1' : {'roomTypes':[TreasureRoom,EnemyRoom],'roomAmts':[2,9],'mapsize':5},
     'Floor 2' : {'roomTypes':[TreasureRoom,EnemyRoom],'roomAmts':[2,10],'mapsize':7}
 }
 

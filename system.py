@@ -5,14 +5,14 @@ from dictionaries import optionDict
 class System():
     #Control Variables
     ClearTerminal = True
-    Devmap = True
+    Devmap = False
     NarSpeed = 0.075
 
     # Settings Variables
     settingsDict = {
         'Hints' : True,
         'Text Colours' : True,
-        'Text Animations' : False
+        'Text Animations' : True
     }
     def __init__(self):
         #Player Status Variables
@@ -72,7 +72,11 @@ class System():
                     else:
                         i+=1
                 if not time:
-                    texttime = 1.85/(len(line)-len(avoidValues))
+                    totalLen = len(line)-len(avoidValues)
+                    if totalLen > 20:
+                        texttime = 1.85/totalLen
+                    else:
+                        texttime = 1/totalLen
                 else:
                     texttime = time
                 for charNum,char in enumerate(line):
@@ -121,7 +125,8 @@ class System():
         if self.settingsDict['Hints']:
             if space:
                 print()
-            input(self.col('hint',text))
+            print(self.col('hint',text))
+            input()
         else:
             input()
 
