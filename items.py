@@ -298,7 +298,7 @@ enemyDict = {
             'xp':3,
             'attacks':[EnemyWeapon(name='Slam',dmg=2),EnemyWeapon(name='Regrowth',dmg=0,heal=3,healCh=0.6)],
             'attacksch':[2,1],
-            'spawnch':2,
+            'spawnch':1,
             'desc' : "A massive figure steps forward, its bark-covered limbs resembling twisted roots.\nIts old weathered eyes depict that it has seen centuries pass and absorbed countless wisdom."
         },
         'Giant Spider': {

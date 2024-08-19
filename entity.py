@@ -237,7 +237,7 @@ class Player(Entity):
         while self.xp >= self.maxxp and self.lvl < self.maxlvl:
             self.lvl += 1
             self.xp -= self.maxxp
-            self.maxxp += 2
+            self.maxxp += 3
             if self.lvl <= self.maxlvl:
                 gains = LevelDict[self.lvl]
                 hpGain = gains[0]
