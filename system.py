@@ -6,7 +6,7 @@ class System():
     #Control Variables
     ClearTerminal = True
     Devmap = False
-    NarSpeed = 0.075
+    NarSpeed = 0.05
 
     # Settings Variables
     settingsDict = {
@@ -18,6 +18,11 @@ class System():
         #Player Status Variables
         self.divChar = '─'
         self.sideDivLen = 5
+
+        # Player Stats
+        self.deaths = 0
+        self.enemiesDefeated = 0
+        self.chestsOpened = 0
 
         # Colour Variables
         self.colourDict = {
@@ -83,12 +88,30 @@ class System():
                     print(char,flush=True,end='')
                     if char == '.':
                         sleep(0.4)
+                    elif char == '?':
+                        sleep(0.8)
                     else:
                         if charNum not in avoidValues:
                             sleep(texttime)
                 print(end,end='')
         else:
             print(toprint)
+
+    # A method which allows for the addition of Narrartor dialogue much quicker and easier
+    def nar(self,text,enterHint=True,clear=True):
+        self.text(toprint=self.col('nar',text),time=self.NarSpeed)
+        if enterHint:
+            self.enterHint()
+        if clear:
+            self.printStatus()
+
+    def npc(self,name,text,enterHint=True,clear=True):
+        print(f'{name}: ',end='')
+        self.text(self.col('npc',text))
+        if enterHint:
+            self.enterHint()
+        if clear:
+            self.printStatus()
 
     def col(self,colour,text):
         if self.settingsDict['Text Colours']:

@@ -207,7 +207,6 @@ itemDict = {
 
 }
 ### Enemy Types ###
-# '': {'maxhp': , 'gold': , 'xp': , 'attacks': [], 'attacksch': [], 'spawnch': 1},
 enemyDict = {
     'misc':
     {
@@ -227,7 +226,7 @@ enemyDict = {
         'Goblin': {'maxhp':4,
                    'gold':2,
                    'xp':1,
-                   'attacks':[EnemyWeapon(name='Stab',dmg=2,crtch=0.1),EnemyWeapon(name='Steal',dmg=0,steal=1,stealch=1)],
+                   'attacks':[EnemyWeapon(name='Stab',dmg=1,crtch=0.1),EnemyWeapon(name='Steal',dmg=0,steal=1,stealch=1)],
                    'attacksch':[2,1],
                    'spawnch': 1,
                    'desc' : 'You hear a mischievous snicker from behind you.\nYou quickly turn around to see a small green creature brandishing a crudely crafted knife staring intensly at your gold pouch.',
@@ -268,14 +267,14 @@ enemyDict = {
             'xp':3,
             'attacks':[EnemyWeapon(name='Slam',dmg=2),EnemyWeapon(name='Regrowth',dmg=0,heal=3,healCh=0.6)],
             'attacksch':[2,1],
-            'spawnch':1,
+            'spawnch':2,
             'desc' : "A massive figure steps forward, its bark-covered limbs resembling twisted roots.\nIts old weathered eyes depict that it has seen centuries pass and absorbed countless wisdom."
         },
-        'Giant Spider': { # Maybe add web ability
+        'Giant Spider': {
             'maxhp': 7,
             'gold':2,
             'xp':4,
-            'attacks':[EnemyWeapon(name='Venom Spit',dmg=0,poisonCh=0.4,poisonDur=4),EnemyWeapon(name='Shove',dmg=3),EnemyWeapon(name='IDk',dmg=0,poisonCh=1,poisonDur=4)],
+            'attacks':[EnemyWeapon(name='Venom Spit',dmg=0,poisonCh=0.4,poisonDur=4),EnemyWeapon(name='Shove',dmg=3),EnemyWeapon(name='Poisonous Chomp',dmg=0,poisonCh=1,poisonDur=4)],
             'attacksch': [2,3,1],
             'spawnch':1,
             'desc' : "A deep, unsettling silence falls over the forest.\nYou turn just in time to see a massive spider emerging from the shadows, its monstrous size making you quiver at the sight of it..."
@@ -289,8 +288,6 @@ enemyDict = {
             'spawnch':1,
             'desc' : "Rushing out from the shadows, a massive beast with the head of a bull and the body of a warrior snorts angrily, its horns gleaming in the dim light.\nThe beasts eyes lock onto you, and it tightens its grip on a brutal, spiked axe."
         }
-        # Minotaur
-        # Earth Golem
     }
 }
 
@@ -305,7 +302,6 @@ bossDict = {
             'attacksch':[2,3,1],
             'desc' : "You feel the ground tremble beneath your feet.\nBefore you stands a towering pale blue figure with a single glaring eye, its gaze locked on you with fierce determination.\nClutched in its massive hand is a jagged boulder, ready to be hurled at anyone who dares challenge its strength."
         }
-        # Dragon
     },
     2:
     {
@@ -313,7 +309,7 @@ bossDict = {
             'maxhp': 20,
             'gold' : 6,
             'xp' : 6,
-            'attacks': [EnemyWeapon(name='Vine Whip',dmg=3,crtch=0.25),EnemyWeapon(name='Tree Shroud',dmg=0,defence=2,defenceDur=2,defencech=1),EnemyWeapon(name='Health Siphon',dmg=2,heal=2,healCh=1),EnemyWeapon(name='Forest Tremor',dmg=4)],
+            'attacks': [EnemyWeapon(name='Vine Whip',dmg=3,crtch=0.25),EnemyWeapon(name='Tree Shroud',dmg=0,defence=2,defenceDur=2,defencech=1),EnemyWeapon(name='Song Of The Forest',dmg=0,heal=2,healCh=1),EnemyWeapon(name='Forest Tremor',dmg=4)],
             'attacksch':[4,2,2,3],
             'desc': "The wind whispers through the leaves as the shadows deepen around you.\nFrom the heart of the forest, A collossal beast made of stone emerges, letting out a deep guttural roar.\nIt's luminous purple eyes focused on you with an incomprehesible rage.",
         }

@@ -44,13 +44,13 @@ class Player(Entity):
         self.defaultWeapon = self.fists
         self.room = None
         self.icon = f'[{syst.col("red","X")}]'
-        self.gold = 20
+        self.gold = 0
         # Level Up Variables
         self.lvl = 1
         self.xp = 0
         self.maxxp = 4
         self.maxlvl = 20
-        self.weaponDmg = 12
+        self.weaponDmg = 0
         self.weaponCrit = 0
 
         self.healthbar = HealthBar(self,type='player')
@@ -260,6 +260,7 @@ class Player(Entity):
     def death(self):
         syst.printStatus()
         syst.text(syst.col('red','You have died... Game Over'))
+        syst.deaths += 1
         syst.enterHint()
 
     def deathReset(self):
@@ -283,6 +284,7 @@ class Enemy(Entity):
         syst.enterHint()
         player.gold += self.gold
         player.xp += self.xp
+        syst.enemiesDefeated += 1
         syst.printStatus()
         syst.text(f'You have slain the {self.name}. Gained {syst.col("gold",f"+{self.gold} gold")} and +{self.xp} experience.')
         syst.enterHint()

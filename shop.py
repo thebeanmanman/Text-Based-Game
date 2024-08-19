@@ -35,7 +35,7 @@ class Shop():
     def printItems(self):
         if self.dialogue:
             syst.text(self.dialogue)
-            syst.hint('Type the name of any item to purchase it and type "leave" to exit the store.')
+            syst.hint('Type the name of any item to purchase it or type "leave" to exit the store.')
             print()
         header = f'----- {self.name} -----'
         print(header)

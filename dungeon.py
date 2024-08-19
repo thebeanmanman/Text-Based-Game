@@ -377,6 +377,7 @@ class TreasureRoom(Room):
             self.move(player)
         
     def open(self,player):
+        syst.chestsOpened += 1
         syst.text('Your hands swiftly unlock the chest, awaiting your reward...')
         if self.IsMimic:
             syst.text(f'{syst.col("red","Only to find rows upon rows of gnashing teeth.")}') 

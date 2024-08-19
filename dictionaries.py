@@ -13,7 +13,7 @@ roomDescDict = {
         'onClear': 'You have cleared this room.',
         'EnemyRoom' : 'You enter a dimly lit room.\nA sense of unease fills you as you step further in the room.',
         'TreasureRoom' : 'You enter a room with a large treasure chest inside.',
-        'StartRoom': 'As you enter the dungeon, the air turns cold and damp.\nThe flickering torches cast eerie shadows on the moss-covered walls, and the sound of your footsteps echoes through the darkness.\nThe silence is broken only by the distant drip of water and the skittering of unseen creatures.\nAhead, the passageway splits into multiple paths, each leading deeper into the unknown.\nYour journey into the dungeon begins, and with it, the promise of both danger and reward.',
+        'StartRoom': 'As the platform hits the bottom, the air turns cold and damp.\nFlickering torches cast eerie shadows on the moss-covered walls, and the sound of your footsteps echoes through the darkness.\nThe silence is broken only by the distant drip of water and the skittering of unseen creatures.\nAhead, the passageway splits into multiple paths, each leading deeper into the unknown.\nYour journey into the dungeon begins, and with it, the promise of both danger and reward.',
         'ReEnterStartRoom' : 'You enter the room that you started in.\nAre you sure your not lost?',
         'BossRoom' : 'You cautiously enter the room before you...'
     },
@@ -50,7 +50,9 @@ optionDict = {
     'open inventory': ['open invetory','inventory','items','item','open items','open bag','bag'],
     'close inventory': ['close inventory','close items','done','inventory','items','close bag','bag','close','leave','exit','exit inventory','leave inventory'],
     'exit shop': ['exit','leave','exit shop', 'leave shop','exit the shop','leave the shop','exit store','leave store','leave the store','exit the store'],
-    'reroll items' : ['rr','reroll','reroll items','reroll shop','refresh','refresh shop','refresh items','reroll the shop','refresh the shop']
+    'reroll items' : ['rr','reroll','reroll items','reroll shop','refresh','refresh shop','refresh items','reroll the shop','refresh the shop'],
+    'market':['go to village','go to market','go to shop','shop','village','market','s','v'],
+    'dungeon':['go to dungeon','dungeon','go to the dungeon','d','head to the dungeon']
 }
 
 def levelStat(maxhp=0,dmg=0,crtCh=0):
