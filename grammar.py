@@ -1,3 +1,4 @@
+# Modifies text based on how many pieces of text there are
 def orChoice(list,And=False):
     text = ''
     if len(list) > 1:
@@ -11,6 +12,7 @@ def orChoice(list,And=False):
         text += list[0]
     return text
 
+# Returns grammatically correct text based on the number provided
 def AreIs(number):
     if number == 1:
         return 'is'
@@ -19,6 +21,7 @@ def AreIs(number):
     else:
         print('Invalid number')
 
+# Returns the plural of a word if the number is more than one
 def Plural(num,word):
     if num == 1:
         return word

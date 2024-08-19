@@ -16,7 +16,7 @@ from healthbar import HealthBar
 from items import PlayerWeapon
 
 class Entity():
-    def __init__(self,maxhp, name='') -> None:
+    def __init__(self,maxhp, name='???') -> None:
         self.fists = PlayerWeapon(name='Fists',dmg=1,desc='Punchy Punchy')
         self.name = name
         self.maxhp = maxhp
@@ -29,11 +29,13 @@ class Entity():
         self.strength = 0
         self.strengthDur = 0
 
+    # Run whenever an entity takes damage
     def takeDamage(self,dmg):
         dmg = max(dmg,0)
         self.hp -= dmg
         self.hp = max(self.hp,0)
 
+    # Run whenever an entity heals damage
     def heal(self,healAmount):
         self.hp += healAmount
         self.hp = min(self.hp,self.maxhp)
@@ -45,6 +47,7 @@ class Player(Entity):
         self.room = None
         self.icon = f'[{syst.col("red","X")}]'
         self.gold = 0
+
         # Level Up Variables
         self.lvl = 1
         self.xp = 0
@@ -56,9 +59,11 @@ class Player(Entity):
         self.healthbar = HealthBar(self,type='player')
         self.items = []
     
+    # Sets the players name
     def setName(self,name):
         self.name = name.title()
 
+    # Prints the items inside of the players inventory
     def printItems(self):
         if self.items:
             itemDict = {}
@@ -72,6 +77,7 @@ class Player(Entity):
         else:
             print('You currently have no items.')
 
+    # Allows the player to select an item from their inventory to use
     def chooseItems(self):
         if self.items:
             choosing = True
@@ -108,14 +114,17 @@ class Player(Entity):
         else:
             syst.enterHint(text='Press enter to return to the battle.')
         
+    # Sets the players current dungeon floor
     def setDungeonFloor(self,dungeonFloor):
         self.dungeonFloor = dungeonFloor
 
+    # Equips a weapon
     def equip(self, weapon) -> None:
         self.weapon = weapon
         syst.printStatus()
         syst.text(f'You have equipped the {self.weapon.name}!')
 
+    # Allows the player to attack an enemy
     def attack(self, target):
         if chance(self.weapon.crtch+self.weaponCrit):
             dmgDealt = max(2*(self.weapon.dmg+self.weaponDmg) +self.strength -target.defence,0)
@@ -146,6 +155,7 @@ class Player(Entity):
             self.battling = False
             target.death(self)
 
+    # Gives the player an option to fight the enemy or use an item
     def battleChoice(self, target):
         self.turn(target)
         print(syst.col('hint','Press enter to attack, or type "items" to use your items'))
@@ -166,6 +176,7 @@ class Player(Entity):
             else:
                 print('Unknown action. Please try again')
 
+    # Prints the players current weapon stats
     def currentWeaponStats(self):
         if self.weapon == self.defaultWeapon:
             syst.text(f'Your current weapon is your fists.')
@@ -173,6 +184,7 @@ class Player(Entity):
             syst.text(f'Your current weapon is a {self.weapon.rarname}')
         self.weapon.showInfo()
 
+    # Run whenever the player encounters an enemy
     def battle(self,enemy):
         self.battling = True
         syst.enterHint()
@@ -194,6 +206,7 @@ class Player(Entity):
                             syst.enterHint()
         self.levelCheck()
 
+    # Run to update the enemies health bar on your attack turn
     def turn(self,enemy):
         syst.printStatus()
         enemy.healthbar.update()
@@ -201,6 +214,7 @@ class Player(Entity):
         print(f"The {enemy.name}'s Health: {enemy.healthbar.getBar()}")
         print()
 
+    # Run at the end of your attack round to check your health and status effects
     def round(self,enemy):
         if self.poisonDur:
             self.poisonDur -= 1
@@ -218,11 +232,12 @@ class Player(Entity):
             self.battling = False
             self.death()
 
+    # Checks the players xp level
     def levelCheck(self):
         while self.xp >= self.maxxp and self.lvl < self.maxlvl:
             self.lvl += 1
             self.xp -= self.maxxp
-            self.maxxp += 3
+            self.maxxp += 2
             if self.lvl <= self.maxlvl:
                 gains = LevelDict[self.lvl]
                 hpGain = gains[0]
@@ -250,6 +265,7 @@ class Player(Entity):
                 syst.enterHint()
                 syst.printStatus()
 
+    # Allows the player to buy something (If False, then you don't have enough gold, if True, then you do)
     def buy(self,gold):
         if self.gold >= gold:
             self.gold -= gold
@@ -257,12 +273,14 @@ class Player(Entity):
         else:
             return False
 
+    # Run on the players death
     def death(self):
         syst.printStatus()
-        syst.text(syst.col('red','You have died... Game Over'))
+        syst.text(syst.col('red','You have died...'))
         syst.deaths += 1
         syst.enterHint()
 
+    # Resets the players stats on death
     def deathReset(self):
         self.hp = self.maxhp
         self.weapon = self.defaultWeapon
@@ -280,6 +298,7 @@ class Enemy(Entity):
         self.spawnch = spawnch
         self.desc = desc
     
+    # Run whenever the player kills the enemy
     def death(self,player):
         syst.enterHint()
         player.gold += self.gold
@@ -290,6 +309,7 @@ class Enemy(Entity):
         syst.enterHint()
         syst.printStatus()
 
+    # Attacks the player using one of their EnemyWeapons
     def attack(self, player) -> None:
         attack = choices(self.attacks,weights=self.attacksch,k=1)[0]
         player.turn(self)
@@ -378,6 +398,7 @@ class Enemy(Entity):
             player.battling = False
             self.death(player)
 
+    # Run at the end of their turn to test whether they have died
     def round(self,player):
 
         if self.defenceDur:

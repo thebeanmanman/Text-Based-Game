@@ -14,6 +14,7 @@ class Shop():
         self.rerollPrice = 2
         self.rerollIncr = 1
 
+    # Rolls the weapons in the shop
     def rollWeapons(self):
         self.weapons = []
         self.weaponNames = []
@@ -24,6 +25,7 @@ class Shop():
         for weapon in self.weapons:
             self.weaponNames.append(weapon.rawname)
 
+    # Rolls the items in the shop
     def rollItems(self):
         allItems = list(itemDict)
         self.items = []
@@ -32,6 +34,7 @@ class Shop():
             self.items.append(item)
             allItems.remove(item)
 
+    # Prints all of the shops items
     def printItems(self):
         if self.dialogue:
             syst.text(self.dialogue)
@@ -51,7 +54,8 @@ class Shop():
             print(f'{chr(8226)} {item.title()}: {syst.col("gold",f"{itemprice} Gold")}')
         print()
         print(f'Reroll the shop: {syst.col("gold",f"{self.rerollPrice} Gold")}')
-        
+
+    # Rerolls all the shops items
     def rollAllItems(self):
         self.rollItems()
         if self.sellWeapons:
@@ -68,7 +72,7 @@ class Shop():
             self.itemList.append(item)
             self.priceList.append(itemDict[item]['price'])
 
-
+    # Run to allow the player to enter the shop and buy things
     def enterShop(self,player):
         self.rollAllItems()
         buying = True

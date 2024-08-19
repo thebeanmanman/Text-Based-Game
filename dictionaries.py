@@ -1,3 +1,4 @@
+# Contains the icons for each room type when using devmap
 iconDict = {
     'EnemyRoom': '[E]',
     'StartRoom': '[O]',
@@ -8,6 +9,7 @@ iconDict = {
     'Default' : '[✓]'
 }
 
+# Contains all the descriptions of the rooms based on their floor level
 roomDescDict = {
     1: {'clearText': 'It seems you have already cleared this room.',
         'onClear': 'You have cleared this room.',
@@ -28,6 +30,7 @@ roomDescDict = {
     }
 }
 
+# Contains a list of answers the player can give when faced with an option
 optionDict = {
     'north': ['north','up','n','u'],
     'south': ['south','down','s','d'],
@@ -55,16 +58,18 @@ optionDict = {
     'dungeon':['go to dungeon','dungeon','go to the dungeon','d','head to the dungeon']
 }
 
+# Easily creates a new level
 def levelStat(maxhp=0,dmg=0,crtCh=0):
     return [maxhp,dmg,crtCh]
 
+# Contains the stat bonus for each level
 LevelDict = {
-    1:levelStat(maxhp=2),
-    2:levelStat(maxhp=2,crtCh=0.01),
-    3:levelStat(maxhp=1,dmg=1),
-    4:levelStat(maxhp=2),
-    5:levelStat(maxhp=2,crtCh=0.02),
-    6:levelStat(maxhp=4),
+    1:levelStat(maxhp=4),
+    2:levelStat(maxhp=2,crtCh=0.01,dmg=1),
+    3:levelStat(maxhp=3),
+    4:levelStat(maxhp=3,crtCh=0.02,dmg=1),
+    5:levelStat(maxhp=4),
+    6:levelStat(maxhp=5),
     7:levelStat(maxhp=3,dmg=1),
     8:levelStat(maxhp=5),
     9:levelStat(maxhp=4,dmg=1,crtCh=0.02),

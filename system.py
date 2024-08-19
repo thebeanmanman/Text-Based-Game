@@ -15,6 +15,8 @@ class System():
         'Text Animations' : True
     }
     def __init__(self):
+        self.playing = False
+
         #Player Status Variables
         self.divChar = '─'
         self.sideDivLen = 5
@@ -23,9 +25,11 @@ class System():
         self.deaths = 0
         self.enemiesDefeated = 0
         self.chestsOpened = 0
+        self.itemsUsed = 0
 
         # Colour Variables
         self.colourDict = {
+
             # Regular Colours
             'red': (255,0,0),
             'lightred': (250,95,85),
@@ -105,6 +109,7 @@ class System():
         if clear:
             self.printStatus()
 
+    # A method to allow for the implementation of dialogue from npc's a lot easier
     def npc(self,name,text,enterHint=True,clear=True):
         print(f'{name}: ',end='')
         self.text(self.col('npc',text))
@@ -113,6 +118,7 @@ class System():
         if clear:
             self.printStatus()
 
+    # Colours the provided text, if colours are on
     def col(self,colour,text):
         if self.settingsDict['Text Colours']:
             rgb = self.colourDict[colour]
@@ -153,10 +159,12 @@ class System():
         else:
             input()
 
+    # Creates a hint that is only displayed when hints are on
     def hint(self,text):
         if self.settingsDict['Hints']:
             print(self.col('hint',text))
 
+    # Prints the current settings, allowing the player to modify them
     def printSettings(self):
         settingChoice = True
         while settingChoice:
@@ -222,5 +230,27 @@ class System():
                 self.player.dungeonFloor.printMap(self.player.dungeonFloor.devmap)
             else:
                 print(errorMsg)
+
+    # Run at the end of the game
+    def endGame(self):
+        self.playing = False
+        self.nar('You enter a white room, that seemingly goes on forever...\nYou see that there is a man standing in the middle of the room.\nAs it would seem, he is the one who is talking to you right now.\nI am the narrator of your story, I am glad to finally talk to you face to face.\nYou have passed all of my tests with apparent ease...\nBut I wonder whether you can do it any quicker?',clear=False,enterHint=False)
+        self.enterHint()
+        self.wipe()
+        print('-- The End --')
+        sleep(1)
+        print('Your Stats:')
+        sleep(1)
+        print(f'Deaths: {self.deaths}')
+        sleep(1)
+        print(f'Enemies Defeated: {self.enemiesDefeated}')
+        sleep(1)
+        print(f'Treasure Chests Opened: {self.chestsOpened}')
+        sleep(1)
+        print(f'Items Used: {self.itemsUsed}')
+        sleep(1)
+        print()
+        input('Press enter to quit the game')
+        quit()
 
 syst = System()

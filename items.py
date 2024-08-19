@@ -1,7 +1,8 @@
 from system import syst
 from grammar import Plural
+from abc import ABCMeta
 
-class Item():
+class Item(metaclass=ABCMeta):
     def __init__(self,name:str,desc:str) -> None:
         self.name = name.title()
         self.rawname = name.lower()
@@ -23,7 +24,9 @@ class UsableItem(Item):
         self.strength = strength
         self.strengthDur = strengthDur
     
+    # Run whenever a player uses it
     def use(self,player):
+        syst.itemsUsed += 1
         syst.printStatus()
         syst.text(self.useText)
         syst.enterHint()
@@ -54,6 +57,7 @@ class UsableItem(Item):
             syst.text(syst.col('strength',f'You gained +{self.strength} strength for {self.strengthDur} {Plural(self.strengthDur,"turn")}!'))
             syst.enterHint()
 
+    # Displays info about the Item
     def onInfo(self):
         if self.healAmt:
             syst.text(syst.col('heal',f'Heals {self.healAmt} health.'))
@@ -96,6 +100,7 @@ class PlayerWeapon(Weapon):
             self.rarname = syst.col(rarity,f'[{rarity.title()}] {self.name}')
             self.name = syst.col(rarity,self.name)
 
+    # Shows the stats of the weapon
     def onInfo(self):
         syst.text(f'Damage: {self.dmg}')
         if self.crtch > 0:
@@ -114,27 +119,53 @@ weaponDict = {
             'dmg':1,
             'crtch':0.05,
             'desc': 'Utterly useless.'
+        },
+        'rusty dagger': {
+            'dmg' : 2,
+            'desc' : 'A very old dagger.'
         }
     },
     'uncommon': {
         'short bow':{
             'dmg':2,
-            'crtch':0.2,
+            'crtch':0.15,
             'desc': 'A short bow'
+        },
+        'mace' : {
+            'dmg':3,
+            'desc':'Great for crushing monsters'
+        },
+        'short sword' : {
+            'dmg': 2,
+            'crtch' : 0.07,
+            'desc': 'Good at poking enemies I guess...'
         }
     },
     'rare' : {
         'iron sword': {
             'dmg':3,
-            'crtch':0.09,
+            'crtch':0.1,
             'desc': 'A sword made of iron.'
+        },
+        'sturdy dagger': {
+            'dmg':4,
+            'desc': 'A great tool for any assassin'
+        },
+        'spear' : {
+            'dmg':3,
+            'crtch':0.08
         }
     },
     'epic' : {
         'great sword' : {
             'dmg':4,
-            'crtch':0.05,
+            'crtch':0.07,
             'desc': 'A great sword.'
+        },
+        'long bow' : {
+            'dmg':3,
+            'crtch':0.15,
+            'desc': 'Great at hitting enemies from a distance'
         }
     },
     'legendary': {

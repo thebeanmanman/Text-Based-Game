@@ -37,6 +37,7 @@ class Dungeon():
 
         self.generateDungeon()
 
+    # Generates the layout of the dungeon
     def generateDungeon(self):
         instantiatedRooms = []
         for index,roomType in enumerate(self.roomTypes):
@@ -77,6 +78,7 @@ class Dungeon():
 
         self.createDevmap()
 
+    # Returns a list of coordinates adjecent to x and y based on if a room does already exist there
     def DirList(self,x,y):
         dirList = []
         if y-1 >= 0:
@@ -89,6 +91,7 @@ class Dungeon():
             dirList.append([y,x+1])
         return dirList
 
+    # Returns a list of coordinates adjecent to x and y based on if a room doesn't already exist there
     def mapNoDirCheck(self,x,y):
         dirList = []
         if y-1 >= 0 and not self.map[y-1][x]:
@@ -102,6 +105,7 @@ class Dungeon():
 
         return dirList
     
+    # Returns a list of directions based on a current x and y value
     def mapDirCheck(self,x,y):
         dirList = []
         if y-1 >= 0 and self.map[y-1][x]:
@@ -114,7 +118,8 @@ class Dungeon():
             dirList.append(optionDict['west'])
         return dirList
     
-    def mapRoomCheck(self,x,y):
+    # Returns a list of rooms based on a current x and y value
+    def mapRoomCheck(self,x,y): 
         roomList = []
         if y-1 >= 0 and self.map[y-1][x]:
             roomList.append(self.map[y-1][x])
@@ -126,6 +131,7 @@ class Dungeon():
             roomList.append(self.map[y][x-1])
         return roomList
     
+    # Creates the developer map
     def createDevmap(self):
         self.devmap = []
         for row in self.map:
@@ -143,12 +149,6 @@ class Dungeon():
         for row in map:
             print(''.join(row))
         print('')
-        # print(f'Your Location: {iconDict["Player"]}')
-        # print(f'Treasure Room: {iconDict["Treasure Room"]}')
-        # print(f'Unknown Room: {iconDict["Unknown Room"]}')
-        # print(f'Start Room: {iconDict["Start Room"]}')
-        # print(f'Enemy Room: {iconDict["Enemy Room"]}')
-        # print(f'Stair Room: {iconDict["Stair Room"]}')
 
     # Prints the map shown to the players
     def printPlayerMap(self,player):
@@ -185,9 +185,9 @@ class Room():
         self.discovered = False
         self.roomName = self.__class__.__name__
         self.desc = roomDescDict[self.Floor][self.roomName]
-        self.icon = iconDict[self.roomName]
+        # self.icon = iconDict[self.roomName]
         # self.icon = iconDict['Default']
-        # self.icon = f"[{syst.col('heal','✓')}]"
+        self.icon = f"[{syst.col('heal','✓')}]"
 
     # Default enter method always called when the player enters the room  (Unless overwritten by child class)
     # This then runs subclass specific onEnter methods
@@ -234,6 +234,7 @@ class Room():
         player.room = chosenRoom
         player.room.enter(player)
 
+    # Clears the room
     def clear(self):
         self.cleared = True
         syst.text(roomDescDict[self.Floor]['onClear'])
@@ -243,6 +244,7 @@ class StartRoom(Room):
         super().__init__(Floor)
         self.reEnter = roomDescDict[self.Floor]['ReEnterStartRoom']
     
+    # Overrides parent enter method
     def enter(self, player):
         self.floorObject.devmap[self.y][self.x] = player.icon
         syst.printStatus()
@@ -262,6 +264,7 @@ class BossRoom(Room):
         bossName = list(bossDict[self.Floor])[0]
         self.boss = Enemy(bossName, **bossDict[self.Floor][bossName])
 
+    # Overrides parent enter method
     def enter(self,player):
         self.floorObject.devmap[self.y][self.x] = player.icon
         syst.printStatus()
@@ -279,6 +282,7 @@ class BossRoom(Room):
             syst.text('The portal still remains, inviting you to step inside it...')
             self.portalChoice(player)
 
+    # Run whenever the player needs to decide to step into the portal or not
     def portalChoice(self,player):
         syst.text('Do you want to enter the portal?')
         choice = syst.Option(options=[optionDict['yes'],optionDict['no']])
@@ -287,9 +291,7 @@ class BossRoom(Room):
             syst.enterHint()
             syst.wipe()
             if self.Floor == self.maxFloor:
-                syst.text('You meet the narrartor')
-                syst.enterHint()
-                syst.narrartorEncounter()
+                syst.endGame()
             else:
                 player.setDungeonFloor(floorDict[self.Floor+1])
                 player.room = floorDict[self.Floor+1].startRoom
@@ -305,6 +307,7 @@ class EnemyRoom(Room):
         
         self.rollEnemy()
 
+    # Rolls the enemies based on the current floor
     def rollEnemy(self):
         enemyNum  = randint(1,3)
         enemyTypes = list(enemyDict[self.Floor])
@@ -314,6 +317,7 @@ class EnemyRoom(Room):
             InstantiatedEnemy = Enemy(enemyName,**enemyDict[self.Floor][enemyName])
             self.enemies.append(InstantiatedEnemy)
 
+    # Allows the player to battle the enemies in the room
     def onEnter(self,player):
         self.battling = True
         enemy = self.spawnEnemy()
@@ -327,6 +331,7 @@ class EnemyRoom(Room):
         if player.hp > 0:
             self.move(player)
 
+    # Spawns in a new enemy based on what is in self.enemies
     def spawnEnemy(self):
         if self.enemies:
             enemy = self.enemies[0]
@@ -356,15 +361,18 @@ class TreasureRoom(Room):
         self.rollTreasure()
         self.rollMimic()
     
+    # Rolls the treasure based on the weighting set above
     def rollTreasure(self):
         rarityLvl = choices(['common','uncommon','rare','epic','legendary'], weights=(self.commonCh,self.uncommonCh,self.rareCh,self.epicCh,self.legCh), k=1)[0]
         weaponName = randItem(list(weaponDict[rarityLvl]))
         self.treasure = PlayerWeapon(name=weaponName,rarity=rarityLvl, **weaponDict[rarityLvl][weaponName])
     
+    # Rolls the chance of the room containg a mimic
     def rollMimic(self):
         if chance(self.mimicChance):
             self.IsMimic = True        
 
+    # Allows the player to obtain treasure
     def onEnter(self,player):
         syst.text('Open the chest?')
         answer = syst.Option(options=[optionDict['yes'],optionDict['open'],optionDict['no']])
@@ -375,7 +383,8 @@ class TreasureRoom(Room):
             syst.text('You supress the desire to see what treasure awaits you and you move on.')
             self.clear()
             self.move(player)
-        
+
+    # Run when the player opens the chest
     def open(self,player):
         syst.chestsOpened += 1
         syst.text('Your hands swiftly unlock the chest, awaiting your reward...')

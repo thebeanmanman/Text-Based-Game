@@ -12,18 +12,17 @@ from dictionaries import optionDict
 #Global Variables
 gameName = 'Dungeon Runner'
 
+# Allows the player to choose an option from the title screen
 def titleSelect():
-    choice = syst.Option(options=[['play'],['help'],['quit'],['settings']])
+    choice = syst.Option(options=[['play'],['quit'],['settings']])
     if choice == 'play':
         startGame()
-    elif choice == 'help':
-        helpMenu()
     elif choice == 'quit':
         syst.text('Thanks for playing!')
         quit()
     elif choice == 'settings':
         settingsMenu()
-
+# Main Menu
 def title_screen():
     header = f'--- Welcome to {gameName}!---'
     syst.wipe()
@@ -31,33 +30,24 @@ def title_screen():
     print()
     print('▸ Play ◂'.center(len(header)))
     print('▸ Settings ◂'.center(len(header)))
-    print('▸ Help ◂'.center(len(header)))
     print('▸ Quit ◂'.center(len(header)))
     print()
     titleSelect()
 
-def helpMenu():
-    syst.wipe()
-    print(f'--- Welcome to {gameName}!---')
-    syst.text('Type up, down, left and right to move')
-    syst.text('Press enter to return to the main menu')
-    input()
-    title_screen()
-
+# Shows the player the current settings
 def settingsMenu():
     syst.wipe()
     syst.printSettings()
     title_screen()
 
+# Starts the game
 def startGame():
     syst.playing = True
     rounds = 1
     while syst.playing:
         if rounds == 1:
-            syst.wipe()
-            # syst.text(toprint=syst.col('nar',"You awake in field of tall, flowing, green, grass.\nGradually, you open your eyes.\nThey gently adjust to the warm sunlight splashing on your face, taking in the electric blue of the sky above you.\nSlowly, your body begins to wake up and you summon enough strength to stand.\nYou feel a sense of confidence wash over you, wanting everyone to know the name of...\n \nHang on... What is your name?"),time=syst.NarSpeed)
-            syst.nar("You awake in field of tall, flowing, green, grass.\nGradually, you open your eyes.\nThey gently adjust to the warm sunlight splashing on your face, taking in the electric blue of the sky above you.",clear=False)
-            syst.wipe()
+            syst.printStatus()
+            syst.nar("You awake in field of tall, flowing, green, grass.\nGradually, you open your eyes.\nThey gently adjust to the warm sunlight splashing on your face, taking in the electric blue of the sky above you.")
             syst.nar("Slowly, your body begins to wake up and you summon enough strength to stand.\nYou feel a sense of confidence wash over you, wanting everyone to know the name of...\n \nHang on... What is your name?",enterHint=False,clear=False)
             nameSelect = True
             while nameSelect:
@@ -104,6 +94,7 @@ def startGame():
                 enterDungeon()
         rounds += 1
 
+# Run the allow the player to open the shop
 def shopEncounter():
     shop = Shop(sellWeapons=True,itemNumber=3,dialogue=f"Shopkeeper: {syst.col('npc','Hello again young traveller, please take a look at my fine wares.')}",name="Shopkeeper's Store")
     shop.enterShop(player)
@@ -111,10 +102,12 @@ def shopEncounter():
     syst.nar('''You decide to leave the shop and you make your way back to the dungeon to make sense of things...\nOnce you arrive, you enter and flick the lever, and the platform begins to descend once again.''')
     enterDungeon()
 
+# Regenerates dungeon floors
 def generateFloors():
     for floornum,floor in enumerate(floorStatDict,start=1):
         floorDict[floornum] = Dungeon(**floorStatDict[floor],Floor=floornum)
     
+# Run to allow the player to enter the dungeon
 def enterDungeon():
     generateFloors()
     player.setDungeonFloor(floorDict[1])
@@ -124,8 +117,8 @@ def enterDungeon():
 
 player = Player(maxhp=10)
 syst.setPlayer(player)
-# print('Note from developer:\n- Check colours\n- Fullscreen Please')
-# syst.enterHint('Press enter to continue to the game.')
-# title_screen()
+print('Notes from the developer:\n- Before you begin your journey, please ensure you have checked the setting menu and adjusted your colour settings.\n- Please play this game in fullscreen for the best experience.\n- Most importanly, have fun.')
+syst.enterHint('Press enter to continue to the game.')
+title_screen()
 
 startGame()

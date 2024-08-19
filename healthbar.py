@@ -18,10 +18,12 @@ class HealthBar():
         self.currvalue = entity.hp
         self.type = type
 
+    # Updates the healthbar to reflect its values
     def update(self):
         self.currvalue = self.entity.hp
         self.maxvalue = self.entity.maxhp
 
+    # Returns the healthBar
     def getBar(self):
         remaining = round(self.currvalue/self.maxvalue*self.length)
         lost = self.length - remaining
