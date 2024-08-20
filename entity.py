@@ -23,7 +23,6 @@ class Entity():
         self.hp = maxhp
         self.weapon = self.fists
         self.poisonDur = 0
-        self.poisonDmg = 0
         self.defence = 0
         self.defenceDur = 0
         self.strength = 0
@@ -285,6 +284,10 @@ class Player(Entity):
         self.hp = self.maxhp
         self.weapon = self.defaultWeapon
         self.poisonDur = 0
+        self.defence = 0
+        self.defenceDur = 0
+        self.strength = 0 
+        self.strengthDur = 0
 
 
 class Enemy(Entity):
