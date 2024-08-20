@@ -22,6 +22,7 @@ def titleSelect():
         quit()
     elif choice == 'settings':
         settingsMenu()
+
 # Main Menu
 def title_screen():
     header = f'--- Welcome to {gameName}!---'
@@ -120,5 +121,3 @@ syst.setPlayer(player)
 print('Notes from the developer:\n- Before you begin your journey, please ensure you have checked the setting menu and adjusted your colour settings.\n- Please play this game in fullscreen for the best experience.\n- Most importanly, have fun.')
 syst.enterHint('Press enter to continue to the game.')
 title_screen()
-
-startGame()

@@ -47,7 +47,6 @@ class Dungeon():
 
         bossRoom = True
         totalRooms = sum(self.roomAmts)
-        print(totalRooms)
         rooms = 1
         center = self.mapsize//2
         x = center
@@ -78,7 +77,7 @@ class Dungeon():
 
         self.createDevmap()
 
-    # Returns a list of coordinates adjecent to x and y based on if a room does already exist there
+    # Returns a list of coordinates adjecent to x and y so long as the coordinate is within the bounds of the map in order ensure there are no indexing errors
     def DirList(self,x,y):
         dirList = []
         if y-1 >= 0:
@@ -89,20 +88,6 @@ class Dungeon():
             dirList.append([y,x-1])
         if x+1 < self.mapsize:
             dirList.append([y,x+1])
-        return dirList
-
-    # Returns a list of coordinates adjecent to x and y based on if a room doesn't already exist there
-    def mapNoDirCheck(self,x,y):
-        dirList = []
-        if y-1 >= 0 and not self.map[y-1][x]:
-            dirList.append([y-1,x])
-        if y+1 < self.mapsize and not self.map[y+1][x]:
-            dirList.append([y+1,x])
-        if x-1 >= 0 and not self.map[y][x-1]:
-            dirList.append([y,x-1])
-        if x+1 < self.mapsize and not self.map[y][x+1]:
-            dirList.append([y,x+1])
-
         return dirList
     
     # Returns a list of directions based on a current x and y value
